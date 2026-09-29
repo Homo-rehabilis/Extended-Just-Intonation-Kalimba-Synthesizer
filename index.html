@@ -78,6 +78,67 @@
       flex-wrap: wrap;
     }
 
+    /* Record & Download Buttons */
+    .rec-btn {
+      background-color: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .rec-btn:hover {
+      background-color: rgba(239, 68, 68, 0.3);
+      border-color: #ef4444;
+    }
+    .rec-btn.recording {
+      background-color: #ef4444;
+      color: #ffffff;
+      border-color: #f87171;
+    }
+    .rec-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #ef4444;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .rec-btn.recording .rec-dot {
+      background-color: #ffffff;
+      animation: pulse-dot 1s infinite;
+    }
+    @keyframes pulse-dot {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .download-btn {
+      background-color: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      color: #4ade80;
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .download-btn:hover {
+      background-color: rgba(34, 197, 94, 0.3);
+      border-color: #4ade80;
+    }
+
     /* Key Mode Badge */
     .mode-badge {
       background: rgba(234, 179, 8, 0.15);
@@ -183,15 +244,18 @@
       background-color: #2563eb;
       color: #ffffff;
     }
-    .freq-input {
+    .freq-input, .select-input {
       background-color: #0d0f17;
       border: 1px solid #232838;
       color: #38bdf8;
       font-family: monospace;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
-      padding: 2px 4px;
+      padding: 2px 6px;
       border-radius: 6px;
+      outline: none;
+    }
+    .freq-input {
       width: 58px;
       text-align: right;
     }
@@ -457,12 +521,18 @@
         <p id="appSubtitle">Portrait: 8-Key / Landscape: 13-Key</p>
       </div>
       <div class="header-actions">
+        <button class="rec-btn" id="btnRecord">
+          <span class="rec-dot"></span><span id="txtRecord">REC</span>
+        </button>
+        <button class="download-btn" id="btnDownload">
+          <span>💾</span><span id="txtDownload">Download WAV</span>
+        </button>
         <span class="mode-badge" id="badgeKeyMode">Portrait: 8-Key</span>
         <button class="fullscreen-btn" id="btnFullscreen">
           <span>⛶</span><span id="txtFullscreen">Full</span>
         </button>
         <div class="tonic-badge">
-          <div class="col-left"><span>Tonic </span><span>(1/1):</span></div>
+          <div class="col-left"><span>(1/1):</span></div>
           <div class="col-right"><span id="badgeTonicFreq">417.6</span><span>Hz</span></div>
         </div>
       </div>
@@ -493,6 +563,15 @@
             <span style="font-size:0.65rem; color:#6b7280;">Hz</span>
           </div>
         </div>
+        <div class="control-group">
+          <span class="control-label">REC FORMAT</span>
+          <select id="selectRecFormat" class="select-input">
+            <option value="32float-48k" selected>32-bit Float / 48 kHz (Recommended)</option>
+            <option value="32float-96k">32-bit Float / 96 kHz</option>
+            <option value="16pcm-48k">16-bit PCM / 48 kHz</option>
+            <option value="16pcm-96k">16-bit PCM / 96 kHz</option>
+          </select>
+        </div>
       </div>
 
       <!-- Telemetry Card -->
@@ -500,7 +579,7 @@
         <div class="tel-item">
           <span class="tel-label">LAST PLUCKED</span>
           <div class="tel-value" id="valLastPlucked">
-            <span class="line">① Unison / Tonic</span>
+            <span class="line">① Tonic</span>
             <span class="line">(1/1 • 417.60 Hz)</span>
           </div>
         </div>
@@ -541,10 +620,6 @@
       9: '⑨', 10: '⑩', 11: '⑪', 12: '⑫', 13: '⑬'
     };
 
-    /*
-     * 提出された「純正律基礎資料.txt」および「43音23限界自然純正律.txt」に基づいて
-     * 比率（num/den）に対する正確な英文音名（English Interval/Tone Names）を定義
-     */
     const scalesData = {
       'souljazz': {
         title: '7-Limit Soul Jazz Blues',
@@ -553,23 +628,23 @@
           { id: 6, num: 14, den: 9, name: 'Septimal Minor 6th',   cents: 764.92  },
           { id: 4, num: 7,  den: 5, name: 'Septimal Tritone',   cents: 582.51  },
           { id: 2, num: 10, den: 9, name: 'Minor Whole Tone',    cents: 182.40  },
-          { id: 1, num: 1,  den: 1, name: 'Unison / Tonic',      cents: 0.00    },
+          { id: 1, num: 1,  den: 1, name: 'Tonic',               cents: 0.00    },
           { id: 3, num: 4,  den: 3, name: 'Perfect 4th',         cents: 498.04  },
           { id: 5, num: 3,  den: 2, name: 'Perfect 5th',         cents: 701.96  },
-          { id: 7, num: 7,  den: 4, name: 'Septimal Harmonic 7th', cents: 968.83 }
+          { id: 7, num: 7,  den: 4, name: 'Harmonic Minor 7th',  cents: 968.83  }
         ],
         keys13: [
-          { num: 1,  den: 1,  name: 'Unison / Tonic',      cents: 0.00    },
-          { num: 21, den: 20, name: 'Septimal Chromatic Semitone', cents: 84.47 },
+          { num: 1,  den: 1,  name: 'Tonic',               cents: 0.00    },
+          { num: 21, den: 20, name: 'Septimal Semitone',  cents: 84.47   },
           { num: 10, den: 9,  name: 'Minor Whole Tone',   cents: 182.40  },
-          { num: 6,  den: 5,  name: 'Just Minor 3rd',      cents: 315.64  },
-          { num: 5,  den: 4,  name: 'Just Major 3rd',      cents: 386.31  },
+          { num: 6,  den: 5,  name: 'Septimal Minor 3rd',  cents: 315.64  },
+          { num: 5,  den: 4,  name: 'Major 3rd',          cents: 386.31  },
           { num: 4,  den: 3,  name: 'Perfect 4th',        cents: 498.04  },
           { num: 7,  den: 5,  name: 'Septimal Tritone',   cents: 582.51  },
           { num: 3,  den: 2,  name: 'Perfect 5th',        cents: 701.96  },
           { num: 14, den: 9,  name: 'Septimal Minor 6th',  cents: 764.92  },
-          { num: 5,  den: 3,  name: 'Just Major 6th',      cents: 884.36  },
-          { num: 7,  den: 4,  name: 'Septimal Harmonic 7th', cents: 968.83 },
+          { num: 5,  den: 3,  name: 'Major 6th',          cents: 884.36  },
+          { num: 7,  den: 4,  name: 'Harmonic Minor 7th', cents: 968.83  },
           { num: 15, den: 8,  name: 'Classic Major 7th',  cents: 1088.27 },
           { num: 2,  den: 1,  name: 'Octave',             cents: 1200.00 }
         ],
@@ -589,29 +664,29 @@
       'harmonics': {
         title: '23-Limit Natural Harmonics',
         keys8: [
-          { id: 8, num: 2,  den: 1,  name: '32nd Harmonic (Octave)',         cents: 1200.00 },
-          { id: 6, num: 13, den: 8,  name: '26th Harmonic (Tridecimal 6th)', cents: 840.53  },
-          { id: 4, num: 23, den: 16, name: '23rd Harmonic (23-Limit Tritone)',cents: 628.27  },
-          { id: 2, num: 17, den: 16, name: '17th Harmonic (Septendecimal 2nd)', cents: 104.96 },
-          { id: 1, num: 1,  den: 1,  name: '16th Harmonic (Unison/Tonic)',   cents: 0.00    },
-          { id: 3, num: 11, den: 8,  name: '22nd Harmonic (Undecimal 4th)',  cents: 551.32  },
-          { id: 5, num: 3,  den: 2,  name: '24th Harmonic (Perfect 5th)',    cents: 701.96  },
-          { id: 7, num: 7,  den: 4,  name: '28th Harmonic (Septimal 7th)',   cents: 968.83  }
+          { id: 8, num: 2,  den: 1,  name: 'Octave',               cents: 1200.00 },
+          { id: 6, num: 13, den: 8,  name: 'Tridecimal Minor 6th', cents: 840.53  },
+          { id: 4, num: 23, den: 16, name: '23-Limit Tritone',     cents: 628.27  },
+          { id: 2, num: 17, den: 16, name: 'Septendecimal Semitone', cents: 104.96 },
+          { id: 1, num: 1,  den: 1,  name: 'Tonic',                cents: 0.00    },
+          { id: 3, num: 11, den: 8,  name: 'Undecimal Tritone',    cents: 551.32  },
+          { id: 5, num: 3,  den: 2,  name: 'Perfect 5th',          cents: 701.96  },
+          { id: 7, num: 7,  den: 4,  name: 'Harmonic Minor 7th',   cents: 968.83  }
         ],
         keys13: [
-          { num: 1,  den: 1,  name: '16th Harmonic (Unison/Tonic)', cents: 0.00    },
-          { num: 17, den: 16, name: '17th Harmonic (Septendecimal 2nd)', cents: 104.96 },
-          { num: 9,  den: 8,  name: '18th Harmonic (Major Whole Tone)', cents: 203.91 },
-          { num: 19, den: 16, name: '19th Harmonic (Base-19 Minor 3rd)', cents: 297.51 },
-          { num: 5,  den: 4,  name: '20th Harmonic (Just Major 3rd)', cents: 386.31  },
-          { num: 11, den: 8,  name: '22nd Harmonic (Undecimal 4th)', cents: 551.32  },
-          { num: 23, den: 16, name: '23rd Harmonic (23-Limit Tritone)', cents: 628.27 },
-          { num: 3,  den: 2,  name: '24th Harmonic (Perfect 5th)', cents: 701.96    },
-          { num: 13, den: 8,  name: '26th Harmonic (Tridecimal 6th)', cents: 840.53 },
-          { num: 27, den: 16, name: '27th Harmonic (Pythagorean 6th)', cents: 905.87 },
-          { num: 7,  den: 4,  name: '28th Harmonic (Septimal 7th)', cents: 968.83   },
-          { num: 15, den: 8,  name: '30th Harmonic (Classic Major 7th)', cents: 1088.27 },
-          { num: 2,  den: 1,  name: '32nd Harmonic (Octave)', cents: 1200.00 }
+          { num: 1,  den: 1,  name: '16th Harmonic', cents: 0.00    },
+          { num: 17, den: 16, name: '17th Harmonic', cents: 104.96  },
+          { num: 9,  den: 8,  name: '18th Harmonic', cents: 203.91  },
+          { num: 19, den: 16, name: '19th Harmonic', cents: 297.51  },
+          { num: 5,  den: 4,  name: '20th Harmonic', cents: 386.31  },
+          { num: 11, den: 8,  name: '22nd Harmonic', cents: 551.32  },
+          { num: 23, den: 16, name: '23rd Harmonic', cents: 628.27  },
+          { num: 3,  den: 2,  name: '24th Harmonic', cents: 701.96  },
+          { num: 13, den: 8,  name: '26th Harmonic', cents: 840.53  },
+          { num: 27, den: 16, name: '27th Harmonic', cents: 905.87  },
+          { num: 7,  den: 4,  name: '28th Harmonic', cents: 968.83  },
+          { num: 15, den: 8,  name: '30th Harmonic', cents: 1088.27 },
+          { num: 2,  den: 1,  name: '32nd Harmonic', cents: 1200.00 }
         ],
         chords8: [
           { id: 'harmonics', label: 'Harmonic 7th', slotIndices: [4, 5, 6, 7] },
@@ -633,19 +708,19 @@
           { id: 6, num: 27,  den: 16,  name: 'Pythagorean Major 6th', cents: 905.87  },
           { id: 4, num: 4,   den: 3,   name: 'Perfect 4th',           cents: 498.04  },
           { id: 2, num: 9,   den: 8,   name: 'Major Whole Tone',      cents: 203.91  },
-          { id: 1, num: 1,   den: 1,   name: 'Unison / Tonic',        cents: 0.00    },
+          { id: 1, num: 1,   den: 1,   name: 'Tonic',                 cents: 0.00    },
           { id: 3, num: 81,  den: 64,  name: 'Pythagorean Major 3rd', cents: 407.82  },
           { id: 5, num: 3,   den: 2,   name: 'Perfect 5th',           cents: 701.96  },
           { id: 7, num: 243, den: 128, name: 'Pythagorean Major 7th', cents: 1109.78 }
         ],
         keys13: [
-          { num: 1,    den: 1,   name: 'Unison / Tonic',        cents: 0.00    },
+          { num: 1,    den: 1,   name: 'Tonic',                 cents: 0.00    },
           { num: 256,  den: 243, name: 'Pythagorean Minor 2nd', cents: 90.22   },
           { num: 9,    den: 8,   name: 'Major Whole Tone',      cents: 203.91  },
           { num: 32,   den: 27,  name: 'Pythagorean Minor 3rd', cents: 294.13  },
           { num: 81,   den: 64,  name: 'Pythagorean Major 3rd', cents: 407.82  },
           { num: 4,    den: 3,   name: 'Perfect 4th',           cents: 498.04  },
-          { num: 729,  den: 512, name: 'Pythagorean Diminished 5th', cents: 611.73 },
+          { num: 729,  den: 512, name: 'Pythagorean Dim. 5th',  cents: 611.73  },
           { num: 3,    den: 2,   name: 'Perfect 5th',           cents: 701.96  },
           { num: 128,  den: 81,  name: 'Pythagorean Minor 6th', cents: 792.18  },
           { num: 27,   den: 16,  name: 'Pythagorean Major 6th', cents: 905.87  },
@@ -673,13 +748,13 @@
           { id: 6, num: 3,  den: 2,  name: 'Perfect 5th',            cents: 701.96 },
           { id: 4, num: 7,  den: 6,  name: 'Septimal Minor 3rd',     cents: 266.87 },
           { id: 2, num: 28, den: 27, name: 'Septimal Miniscule 2nd', cents: 62.96  },
-          { id: 1, num: 1,  den: 1,  name: 'Unison / Tonic',         cents: 0.00   },
+          { id: 1, num: 1,  den: 1,  name: 'Tonic',                  cents: 0.00   },
           { id: 3, num: 9,  den: 8,  name: 'Major Whole Tone',       cents: 203.91 },
           { id: 5, num: 4,  den: 3,  name: 'Perfect 4th',            cents: 498.04 },
           { id: 7, num: 14, den: 9,  name: 'Septimal Minor 6th',     cents: 764.92 }
         ],
         keys13: [
-          { num: 1,  den: 1,  name: 'Unison / Tonic',         cents: 0.00   },
+          { num: 1,  den: 1,  name: 'Tonic',                  cents: 0.00   },
           { num: 28, den: 27, name: 'Septimal Miniscule 2nd', cents: 62.96  },
           { num: 16, den: 15, name: 'Minor Diatonic Semitone',cents: 111.73 },
           { num: 9,  den: 8,  name: 'Major Whole Tone',       cents: 203.91 },
@@ -713,13 +788,13 @@
           { id: 6, num: 5,  den: 3,  name: 'Just Major 6th',     cents: 884.36  },
           { id: 4, num: 4,  den: 3,  name: 'Perfect 4th',        cents: 498.04  },
           { id: 2, num: 9,  den: 8,  name: 'Major Whole Tone',   cents: 203.91  },
-          { id: 1, num: 1,  den: 1,  name: 'Unison / Tonic',     cents: 0.00    },
+          { id: 1, num: 1,  den: 1,  name: 'Tonic',     cents: 0.00    },
           { id: 3, num: 5,  den: 4,  name: 'Just Major 3rd',     cents: 386.31  },
           { id: 5, num: 3,  den: 2,  name: 'Perfect 5th',        cents: 701.96  },
           { id: 7, num: 15, den: 8,  name: 'Classic Major 7th',  cents: 1088.27 }
         ],
         keys13: [
-          { num: 1,  den: 1,  name: 'Unison / Tonic',         cents: 0.00    },
+          { num: 1,  den: 1,  name: 'Tonic',                 cents: 0.00    },
           { num: 16, den: 15, name: 'Minor Diatonic Semitone',cents: 111.73  },
           { num: 10, den: 9,  name: 'Minor Whole Tone',       cents: 182.40  },
           { num: 9,  den: 8,  name: 'Major Whole Tone',       cents: 203.91  },
@@ -761,6 +836,21 @@
     let isNoiseFilterEnabled = true;
     let lastTine = null, currentTine = null;
 
+    // 録音関連の変数
+    let recorderNode = null;
+    let recordedBuffers = [];
+    let isRecording = false;
+    let recTimerInterval = null;
+    let lastRecordedBlobUrl = null;
+
+    function parseRecFormat(val) {
+      const [type, sr] = val.split('-');
+      return {
+        bitDepth: type, // '32float' or '16pcm'
+        sampleRate: sr === '96k' ? 96000 : 48000
+      };
+    }
+
     function gcd(a, b) {
       a = Math.abs(a); b = Math.abs(b);
       while (b) { const t = b; b = a % b; a = t; }
@@ -801,7 +891,6 @@
       }
 
       if (is8KeyMode) {
-        // ピッチ順（セント値昇順）にソートして、低い音から順に ①, ②, ③ ... を自動割り当て
         const sortedPitches = [...scaleDef.keys8].sort((a, b) => a.cents - b.cents);
         
         currentTines = scaleDef.keys8.map((item, idx) => {
@@ -853,9 +942,18 @@
     }
 
     function initAudio() {
+      const selectFormatVal = document.getElementById('selectRecFormat').value;
+      const { sampleRate: targetSampleRate } = parseRecFormat(selectFormatVal);
+
+      // サンプルレート変更時はコンテキストを再生成
+      if (audioCtx && audioCtx.sampleRate !== targetSampleRate) {
+        audioCtx.close();
+        audioCtx = null;
+      }
+
       if (!audioCtx) {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        audioCtx = new AudioContextClass();
+        audioCtx = new AudioContextClass({ sampleRate: targetSampleRate });
 
         const hpf = audioCtx.createBiquadFilter();
         hpf.type = 'highpass';
@@ -872,6 +970,16 @@
         compressor.connect(hpf);
         hpf.connect(masterGain);
         masterGain.connect(audioCtx.destination);
+
+        // 録音用 ScriptProcessorNode の構築
+        recorderNode = audioCtx.createScriptProcessor(4096, 1, 1);
+        recorderNode.onaudioprocess = (e) => {
+          if (!isRecording) return;
+          const input = e.inputBuffer.getChannelData(0);
+          recordedBuffers.push(new Float32Array(input));
+        };
+        masterGain.connect(recorderNode);
+        recorderNode.connect(audioCtx.destination);
 
         const bufferSize = Math.floor(audioCtx.sampleRate * 0.05);
         sharedNoiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -1003,6 +1111,162 @@
       });
     }
 
+    // --- 汎用 WAV エンコーダ (32-bit Float & 16-bit PCM 対応) ---
+    function encodeWAV(samples, sampleRate, bitDepthType) {
+      const isFloat = (bitDepthType === '32float');
+      const bytesPerSample = isFloat ? 4 : 2;
+      const formatTag = isFloat ? 3 : 1; // 3 = IEEE Float, 1 = PCM
+      const bitsPerSample = isFloat ? 32 : 16;
+
+      const buffer = new ArrayBuffer(44 + samples.length * bytesPerSample);
+      const view = new DataView(buffer);
+
+      function writeString(offset, string) {
+        for (let i = 0; i < string.length; i++) {
+          view.setUint8(offset + i, string.charCodeAt(i));
+        }
+      }
+
+      /* RIFF identifier */
+      writeString(0, 'RIFF');
+      /* RIFF chunk length */
+      view.setUint32(4, 36 + samples.length * bytesPerSample, true);
+      /* RIFF type */
+      writeString(8, 'WAVE');
+      /* format chunk identifier */
+      writeString(12, 'fmt ');
+      /* format chunk length */
+      view.setUint32(16, 16, true);
+      /* sample format */
+      view.setUint16(20, formatTag, true);
+      /* channel count (1 = Mono) */
+      view.setUint16(22, 1, true);
+      /* sample rate */
+      view.setUint32(24, sampleRate, true);
+      /* byte rate */
+      view.setUint32(28, sampleRate * bytesPerSample, true);
+      /* block align */
+      view.setUint16(32, bytesPerSample, true);
+      /* bits per sample */
+      view.setUint16(34, bitsPerSample, true);
+      /* data chunk identifier */
+      writeString(36, 'data');
+      /* data chunk length */
+      view.setUint32(40, samples.length * bytesPerSample, true);
+
+      /* サンプルデータの書き込み */
+      let offset = 44;
+      if (isFloat) {
+        for (let i = 0; i < samples.length; i++, offset += 4) {
+          view.setFloat32(offset, samples[i], true);
+        }
+      } else {
+        for (let i = 0; i < samples.length; i++, offset += 2) {
+          // クリッピング防止 (-1.0 ~ 1.0 にクランプ)
+          let s = Math.max(-1, Math.min(1, samples[i]));
+          // 16-bit 整数に変換 (-32768 ~ 32767)
+          s = s < 0 ? s * 0x8000 : s * 0x7FFF;
+          view.setInt16(offset, s, true);
+        }
+      }
+
+      return new Blob([buffer], { type: 'audio/wav' });
+    }
+
+    // --- 録音ロジック ---
+    const btnRecord = document.getElementById('btnRecord');
+    const txtRecord = document.getElementById('txtRecord');
+    const btnDownload = document.getElementById('btnDownload');
+    const txtDownload = document.getElementById('txtDownload');
+    const selectRecFormat = document.getElementById('selectRecFormat');
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const s = (seconds % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function startRecording() {
+      initAudio();
+      recordedBuffers = [];
+      isRecording = true;
+
+      btnRecord.classList.add('recording');
+      btnDownload.style.display = 'none';
+
+      let seconds = 0;
+      txtRecord.textContent = `00:00`;
+      recTimerInterval = setInterval(() => {
+        seconds++;
+        txtRecord.textContent = formatTime(seconds);
+      }, 1000);
+    }
+
+    function stopRecording() {
+      if (isRecording) {
+        isRecording = false;
+        btnRecord.classList.remove('recording');
+        txtRecord.textContent = 'REC';
+        clearInterval(recTimerInterval);
+
+        // バッファを結合
+        let totalLength = 0;
+        for (let i = 0; i < recordedBuffers.length; i++) {
+          totalLength += recordedBuffers[i].length;
+        }
+        const mergedSamples = new Float32Array(totalLength);
+        let offset = 0;
+        for (let i = 0; i < recordedBuffers.length; i++) {
+          mergedSamples.set(recordedBuffers[i], offset);
+          offset += recordedBuffers[i].length;
+        }
+
+        // フォーマット設定の取得とWAV生成
+        const formatConfig = parseRecFormat(selectRecFormat.value);
+        const wavBlob = encodeWAV(mergedSamples, audioCtx.sampleRate, formatConfig.bitDepth);
+        
+        if (lastRecordedBlobUrl) URL.revokeObjectURL(lastRecordedBlobUrl);
+        lastRecordedBlobUrl = URL.createObjectURL(wavBlob);
+
+        const bitName = formatConfig.bitDepth === '32float' ? '32bit Float' : '16bit PCM';
+        const srName = formatConfig.sampleRate === 96000 ? '96kHz' : '48kHz';
+        txtDownload.textContent = `Download (${bitName}/${srName})`;
+        btnDownload.style.display = 'inline-flex';
+      }
+    }
+
+    btnRecord.addEventListener('click', () => {
+      if (isRecording) {
+        stopRecording();
+      } else {
+        startRecording();
+      }
+    });
+
+    btnDownload.addEventListener('click', () => {
+      if (!lastRecordedBlobUrl) return;
+      const formatConfig = parseRecFormat(selectRecFormat.value);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = lastRecordedBlobUrl;
+      const now = new Date();
+      const dateStr = now.toISOString().slice(0, 19).replace(/[:-]/g, '').replace('T', '_');
+      a.download = `kalimba_${formatConfig.bitDepth}_${formatConfig.sampleRate / 1000}k_${dateStr}.wav`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+      }, 100);
+    });
+
+    selectRecFormat.addEventListener('change', () => {
+      if (!isRecording && audioCtx) {
+        // 音声コンテキストの再生成を促す
+        initAudio();
+      }
+    });
+
+    // --- フルスクリーン切り替え ---
     const btnFullscreen = document.getElementById('btnFullscreen');
     const txtFullscreen = document.getElementById('txtFullscreen');
     const appCard = document.getElementById('appCard');
