@@ -1,4 +1,4 @@
-Extended Just Intonation Kalimba Synthesizer
+#Extended Just Intonation Kalimba Synthesizer
 A browser-based, high-precision Just Intonation Kalimba Synthesizer built with vanilla HTML5, CSS3, and the Web Audio API. This application allows musicians, microtonal enthusiasts, and sound designers to explore historical and alternative tuning systems through an interactive, responsive thumb piano interface.
 🌟 Key Features
  * Adaptive Key Layouts: Automatically switches between an 8-Key mode (ideal for portrait or mobile views) and a 13-Key mode (for landscape or desktop environments).
