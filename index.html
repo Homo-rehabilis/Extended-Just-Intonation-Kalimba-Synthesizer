@@ -6,6 +6,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
   <title>Extended Just Intonation Kalimba Synthesizer</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1073,6 +1074,18 @@
     });
 
     renderApp();
+    // サービスワーカーの登録
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then((reg) => {
+        console.log('Service Worker registered successfully:', reg.scope);
+      })
+      .catch((err) => {
+        console.log('Service Worker registration failed:', err);
+      });
+  });
+}
   </script>
 </body>
 </html>
