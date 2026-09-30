@@ -1338,18 +1338,64 @@
     });
 
     renderApp();
-    // サービスワーカーの登録
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then((reg) => {
-        console.log('Service Worker registered successfully:', reg.scope);
-      })
-      .catch((err) => {
+  // サービスワーカーの登録とアップデート検知
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').then((registration) => {
+        console.log('Service Worker registered successfully:', registration.scope);
+
+        // 新しいアップデートが見つかったときの処理
+        function trackInstalling(worker) {
+          worker.addEventListener('statechange', () => {
+            if (worker.state === 'installed') {
+              if (navigator.serviceWorker.controller) {
+                // 既に古いバージョンが動いている状態で新しいのがインストールされた場合
+                showUpdateNotification(registration);
+              }
+            }
+          });
+        }
+
+        if (registration.waiting) {
+          showUpdateNotification(registration);
+        }
+
+        if (registration.installing) {
+          trackInstalling(registration.installing);
+        }
+
+        registration.addEventListener('updatefound', () => {
+          trackInstalling(registration.installing);
+        });
+      }).catch((err) => {
         console.log('Service Worker registration failed:', err);
       });
-  });
-}
+
+      // 新しいワーカーが有効化されたら自動でリロードして最新状態にする
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
+    });
+  }
+
+  // 更新通知バナーを表示する関数
+  function showUpdateNotification(registration) {
+    const notification = document.getElementById('updateNotification');
+    if (notification) {
+      notification.style.display = 'flex';
+      const btnUpdateReload = document.getElementById('btnUpdateReload');
+      btnUpdateReload.onclick = () => {
+        if (registration.waiting) {
+          // 新しいサービスワーカーへスキップの指示を送る
+          registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+      };
+    }
+  }
   </script>
     <!-- アップデート通知バナー -->
   <div id="updateNotification" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #181b26; border: 1px solid #3b82f6; color: white; padding: 12px 20px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 10000; align-items: center; gap: 14px; font-size: 0.8rem; font-weight: 600;">
