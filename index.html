@@ -1351,5 +1351,10 @@ if ('serviceWorker' in navigator) {
   });
 }
   </script>
+    <!-- アップデート通知バナー -->
+  <div id="updateNotification" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #181b26; border: 1px solid #3b82f6; color: white; padding: 12px 20px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 10000; align-items: center; gap: 14px; font-size: 0.8rem; font-weight: 600;">
+    <span>✨ New Version Update</span>
+    <button id="btnUpdateReload" style="background: #2563eb; color: white; border: none; padding: 6px 14px; border-radius: 8px; font-weight: 700; cursor: pointer;">今すぐ更新</button>
+  </div>
 </body>
 </html>
