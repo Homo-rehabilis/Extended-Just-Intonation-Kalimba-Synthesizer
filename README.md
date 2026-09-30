@@ -28,10 +28,10 @@ A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built wi
 The synthesizer includes five distinct microtonal tuning systems:
 
 1.  **7-Limit Soul Jazz Blues Tuning** – Explores septimal intervals tailored for soulful, bluesy microtonal expressions.
-2.  **23-Limit Natural Harmonics** – Features upper partials derived from natural harmonic series up to the 23rd limit.
-3.  **Pythagorean 3-Limit** – Pure 3-limit tuning based entirely on clean 3:2 fifths.
-4.  **Archytas's 7-Limit Tetrachords** – Ancient Greek tuning system utilizing septimal ratios.
-5.  **Classic 5-Limit Just Intonation** – Traditional 5-limit tuning optimized for pure major and minor triads.
+2.  **23-Limit Natural Harmonics** – Features upper partials derived from 16th to 32th natural harmonic series up to the 23rd limit.
+4.  **Pythagorean 3-Limit** – Pure 3-limit tuning based entirely on clean 3:2 fifths.
+5.  **Archytas's 7-Limit Tetrachords** – Ancient Greek tuning system utilizing septimal ratios.
+6.  **Classic 5-Limit Just Intonation** – Traditional 5-limit tuning optimized for pure major and minor triads.
 
 ---
 
@@ -105,7 +105,7 @@ If you prefer to run or modify the code locally:
 このシンセサイザーには、5つの異なる微小音律システムが含まれています：
 
 1.  **7-Limit Soul Jazz Blues Tuning** – ソウルフルでブルージーな微小音律の表現に合わせたセプティマル音程を探索します。
-2.  **23-Limit Natural Harmonics** – 第23倍音までの自然倍音列から導出された上位倍音を特徴としています。
+2.  **23-Limit Natural Harmonics** – 第16から第36倍音までの自然倍音列から抽出した素数23までの上位倍音を特徴としています。
 3.  **Pythagorean 3-Limit** – クリーンな3:2の完全五度を完全にベースにした純粋な3限界チューニング。
 4.  **Archytas's 7-Limit Tetrachords** – セプティマル比率を利用した古代ギリシャの音律システム。
 5.  **Classic 5-Limit Just Intonation** – 純粋な長三度・短三度に最適化された伝統的な5限界チューニング。
