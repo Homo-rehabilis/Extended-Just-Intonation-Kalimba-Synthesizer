@@ -1,5 +1,5 @@
 <div align="right">
-  🇬🇧 <a href="#english">English</a> | 🇯🇵 <a href="#japanese">日本語</a>
+  <a href="#english">English</a> | <a href="#japanese">日本語</a>
 </div>
 
 ---
@@ -11,11 +11,11 @@ A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built wi
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
 *   **Adaptive Key Layouts:** Automatically switches between an **8-Key mode** (ideal for portrait or mobile views) and a **13-Key mode** (for landscape or desktop environments).
 *   **Multiple Scale Systems:** Switch instantly between microtonal and historical just intonation tuning presets.
-*   **Customizable Base Tonic (1/1):** Tune the root frequency using standard presets (417.6 Hz, 432 Hz, 440 Hz) or input a custom frequency in real-time.
+*   **Customizable Base Tonic (1/1):** Tune the root frequency using standard presets (417.6 Hz, 432 Hz, 440 Hz) or input a custom frequency.
 *   **High-Resolution Audio Recording:** Record your performances directly in the browser and download them as **WAV files** (supports **32-bit Float** and **16-bit PCM** at **48 kHz** or **96 kHz**).
 *   **Real-Time Telemetry Display:** Inspect plucked note details, frequency ratios, and cent differences between notes instantly.
 *   **Interactive Chords & Arpeggios:** Trigger curated chord presets mapped specifically to each scale system.
@@ -23,19 +23,19 @@ A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built wi
 
 ---
 
-## 🎵 Supported Scale Systems
+## Supported Scale Systems
 
 The synthesizer includes five distinct microtonal tuning systems:
 
 1.  **7-Limit Soul Jazz Blues Tuning** – Explores septimal intervals tailored for soulful, bluesy microtonal expressions.
-2.  **23-Limit Natural Harmonics** – Features upper partials derived from 16th to 32th natural harmonic series up to the 23rd limit.
-4.  **Pythagorean 3-Limit** – Pure 3-limit tuning based entirely on clean 3:2 fifths.
+2.  **23-Limit Natural Harmonics** – Features upper partials derived from 16-32 natural harmonic series up to the 23rd limit.
+4.  **Pythagorean 3-Limit** – Pure 3-limit tuning based on 3:2 fifths.
 5.  **Archytas's 7-Limit Tetrachords** – Ancient Greek tuning system utilizing septimal ratios.
 6.  **Classic 5-Limit Just Intonation** – Traditional 5-limit tuning optimized for pure major and minor triads.
 
 ---
 
-## ⌨️ Controls & How to Play
+## Controls & How to Play
 
 ### Playing Tines
 *   **Mouse / Touch:** Click or tap directly on any tine to pluck it.
@@ -47,7 +47,7 @@ The synthesizer includes five distinct microtonal tuning systems:
 
 ---
 
-## 💾 Recording & Exporting
+## Recording & Exporting
 
 1. Click the **REC** button in the header to start capturing audio directly from the master output.
 2. The button will pulse red, and a timer will display the recording duration.
@@ -57,16 +57,16 @@ The synthesizer includes five distinct microtonal tuning systems:
 
 ---
 
-## 🚀 How to Use & Install (PWA)
+## How to Use & Install (PWA)
 
 You can play right away in your browser, or install it as a standalone desktop/mobile application using the latest version of Google Chrome.
 
 ### 1. Try Online & Install
 * Open the live application in **Google Chrome**:
-  👉 **[Extended Just Intonation Kalimba Synthesizer](https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/)**
+  **[Extended Just Intonation Kalimba Synthesizer](https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/)**
 * **To install as an app:**
-  * **Desktop (Chrome / Edge):** Click the install icon (a small monitor with a download arrow or plus badge) on the right side of the address bar, or open the browser menu and select **"Install Extended Just Intonation Kalimba Synthesizer..."**.
   * **Mobile (Android Chrome):** Open the browser menu and select **"Add to Home Screen"** or **"Install app"**.
+　* **Desktop (Chrome / Edge):** Click the install icon (a small monitor with a download arrow or plus badge) on the right side of the address bar, or open the browser menu and select **"Install Extended Just Intonation Kalimba Synthesizer..."**.
 
 ### 2. Local Development (Optional)
 If you prefer to run or modify the code locally:
@@ -76,7 +76,7 @@ If you prefer to run or modify the code locally:
 ---
 
 <div align="right">
-  🇬🇧 <a href="#english">Top (English)</a> | 🇯🇵 <a href="#japanese">トップ (日本語)</a>
+  <a href="#english">Top (English)</a> | <a href="#japanese">トップ (日本語)</a>
 </div>
 
 ---
@@ -88,31 +88,31 @@ If you prefer to run or modify the code locally:
 
 ---
 
-## 🌟 主な特徴
+## 主な特徴
 
-*   **適応型キーレイアウト:** 縦向きやモバイル表示に最適な**8キーモード**と、横向きやデスクトップ環境に最適な**13キーモード**を自動的に切り替えます。
+*   **レスポンシブキーレイアウト:** 縦向きに最適な**8キーモード**と、横向きに最適な**13キーモード**を自動的に切り替えます。
 *   **多彩な音律システム:** 微小音律や歴史的な純正律のチューニングプリセットを瞬時に切り替えられます。
-*   **カスタマイズ可能な基準トニック (1/1):** 標準プリセット（417.6 Hz, 432 Hz, 440 Hz）を使用するか、リアルタイムでカスタム周波数を入力してルート音をチューニングできます。
-*   **高解像度オーディオ録音:** ブラウザ上で直接演奏を録音し、**WAVファイル**としてダウンロードできます（**32-bit Float**および**16-bit PCM**、**48 kHz**または**96 kHz**をサポート）。
+*   **カスタマイズ可能な基準音 (1/1):** 標準プリセット（417.6 Hz, 432 Hz, 440 Hz）を使用するか、カスタム周波数を入力してルート音をチューニングできます。
+*   **ハイレゾオーディオ録音:** アプリケーション上で直接演奏を録音し、**WAVファイル**としてダウンロードできます（**32-bit Float**および**16-bit PCM**、**48 kHz**または**96 kHz**をサポート）。
 *   **リアルタイムテレメトリー表示:** 弾いたノートの詳細、周波数比、ノート間のセント差を即座に確認できます。
 *   **インタラクティブなコードとアルペジオ:** 各音律システム専用にマッピングされた、厳選されたコードプリセットをトリガーできます。
 *   **PWA対応:** フルスクリーンサポートとサービスワーカーによるオフライン機能を備えた、完全にレスポンシブなデザイン。
 
 ---
 
-## 🎵 対応している音律システム
+## 対応している音律
 
 このシンセサイザーには、5つの異なる微小音律システムが含まれています：
 
-1.  **7-Limit Soul Jazz Blues Tuning** – ソウルフルでブルージーな微小音律の表現に合わせたセプティマル音程を探索します。
+1.  **7-Limit Soul Jazz Blues Tuning** – ソウルフルでブルージーな微小音律の表現に合わせたセプティマル音程を探索できます。
 2.  **23-Limit Natural Harmonics** – 第16から第36倍音までの自然倍音列から抽出した素数23までの上位倍音を特徴としています。
-3.  **Pythagorean 3-Limit** – クリーンな3:2の完全五度を完全にベースにした純粋な3限界チューニング。
+3.  **Pythagorean 3-Limit** – 3:2の完全五度をベースにした純粋な3限界チューニング。
 4.  **Archytas's 7-Limit Tetrachords** – セプティマル比率を利用した古代ギリシャの音律システム。
-5.  **Classic 5-Limit Just Intonation** – 純粋な長三度・短三度に最適化された伝統的な5限界チューニング。
+5.  **Classic 5-Limit Just Intonation** – 純正な長三度・短三度に最適化された伝統的な5限界チューニング。
 
 ---
 
-## ⌨️ 操作方法と演奏方法
+## 操作方法と演奏方法
 
 ### 鍵盤の演奏
 *   **マウス / タッチ:** 任意の鍵盤を直接クリックまたはタップして弾きます。
@@ -124,7 +124,7 @@ If you prefer to run or modify the code locally:
 
 ---
 
-## 💾 録音とエクスポート
+## 録音とエクスポート
 
 1. ヘッダーの**REC**ボタンをクリックして、マスター出力から直接音声のキャプチャを開始します。
 2. ボタンが赤く点滅し、タイマーに録音時間が表示されます。
@@ -134,16 +134,16 @@ If you prefer to run or modify the code locally:
 
 ---
 
-## 🚀 使い方とインストール (PWA)
+## 使い方とインストール (PWA)
 
 ブラウザですぐにプレイするか、最新版のGoogle Chromeを使用してスタンドアロンのデスクトップ/モバイルアプリとしてインストールできます。
 
 ### 1. オンラインで試す & インストールする
 * Google Chromeでライブアプリケーションを開く:
-  👉 **[Extended Just Intonation Kalimba Synthesizer](https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/)**
+  **[Extended Just Intonation Kalimba Synthesizer](https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/)**
 * **アプリとしてインストールする場合:**
-  * **デスクトップ (Chrome / Edge):** アドレスバーの右側にあるインストールアイコン（ダウンロード矢印やプラスバッジが付いた小さなモニター）をクリックするか、ブラウザメニューから **「Extended Just Intonation Kalimba Synthesizer をインストール...」** を選択します。
   * **モバイル (Android Chrome):** ブラウザメニューから **「ホーム画面に追加」** または **「アプリをインストール」** を選択します。
+  * **デスクトップ (Chrome / Edge):** アドレスバーの右側にあるインストールアイコン（ダウンロード矢印やプラスバッジが付いた小さなモニター）をクリックするか、ブラウザメニューから **「Extended Just Intonation Kalimba Synthesizer をインストール...」** を選択します。
 
 ### 2. ローカル開発（オプション）
 コードをローカルで実行または修正する場合:
