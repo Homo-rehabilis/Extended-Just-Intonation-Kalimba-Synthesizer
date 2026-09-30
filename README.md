@@ -1,3 +1,10 @@
+<div align="right">
+  🇬🇧 <a href="#english">English</a> | 🇯🇵 <a href="#japanese">日本語</a>
+</div>
+
+---
+
+<a id="english"></a>
 # Extended Just Intonation Kalimba Synthesizer
 
 A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built with vanilla HTML5, CSS3, and the Web Audio API. This application allows musicians, microtonal enthusiasts, and sound designers to explore historical and alternative tuning systems through an interactive, responsive thumb piano interface.
@@ -64,5 +71,81 @@ You can play right away in your browser, or install it as a standalone desktop/m
 ### 2. Local Development (Optional)
 If you prefer to run or modify the code locally:
 1. Clone this repository:
-   ```bash
-   git clone https://github.com/homo-rehabilis/Extended-Just-Intonation-Kalimba-Synthesizer.git
+   git clone [https://github.com/homo-rehabilis/Extended-Just-Intonation-Kalimba-Synthesizer.git](https://github.com/homo-rehabilis/Extended-Just-Intonation-Kalimba-Synthesizer.git)
+
+---
+
+<div align="right">
+  🇬🇧 <a href="#english">Top (English)</a> | 🇯🇵 <a href="#japanese">トップ (日本語)</a>
+</div>
+
+---
+
+<a id="japanese"></a>
+# 拡張純正律カリンバ・シンセサイザー (Extended Just Intonation Kalimba Synthesizer)
+
+バニラHTML5、CSS3、Web Audio APIで構築された、ブラウザベースの高精度な**純正律カリンバ・シンセサイザー**です。音楽家、微小音律（マイクロトーン）の愛好家、サウンドデザイナーが、インタラクティブでレスポンシブなサムピアノ（親指ピアノ）インターフェースを通じて、歴史的およびオルタナティブな音律システムを探索できるようにします。
+
+---
+
+## 🌟 主な特徴
+
+*   **適応型キーレイアウト:** 縦向きやモバイル表示に最適な**8キーモード**と、横向きやデスクトップ環境に最適な**13キーモード**を自動的に切り替えます。
+*   **多彩な音律システム:** 微小音律や歴史的な純正律のチューニングプリセットを瞬時に切り替えられます。
+*   **カスタマイズ可能な基準トニック (1/1):** 標準プリセット（417.6 Hz, 432 Hz, 440 Hz）を使用するか、リアルタイムでカスタム周波数を入力してルート音をチューニングできます。
+*   **高解像度オーディオ録音:** ブラウザ上で直接演奏を録音し、**WAVファイル**としてダウンロードできます（**32-bit Float**および**16-bit PCM**、**48 kHz**または**96 kHz**をサポート）。
+*   **リアルタイムテレメトリー表示:** 弾いたノートの詳細、周波数比、ノート間のセント差を即座に確認できます。
+*   **インタラクティブなコードとアルペジオ:** 各音律システム専用にマッピングされた、厳選されたコードプリセットをトリガーできます。
+*   **PWA対応:** フルスクリーンサポートとサービスワーカーによるオフライン機能を備えた、完全にレスポンシブなデザイン。
+
+---
+
+## 🎵 対応している音律システム
+
+このシンセサイザーには、5つの異なる微小音律システムが含まれています：
+
+1.  **7-Limit Soul Jazz Blues Tuning** – ソウルフルでブルージーな微小音律の表現に合わせたセプティマル音程を探索します。
+2.  **23-Limit Natural Harmonics** – 第23倍音までの自然倍音列から導出された上位倍音を特徴としています。
+3.  **Pythagorean 3-Limit** – クリーンな3:2の完全五度を完全にベースにした純粋な3限界チューニング。
+4.  **Archytas's 7-Limit Tetrachords** – セプティマル比率を利用した古代ギリシャの音律システム。
+5.  **Classic 5-Limit Just Intonation** – 純粋な長三度・短三度に最適化された伝統的な5限界チューニング。
+
+---
+
+## ⌨️ 操作方法と演奏方法
+
+### 鍵盤の演奏
+*   **マウス / タッチ:** 任意の鍵盤を直接クリックまたはタップして弾きます。
+*   **コンピューターキーボード:** アクティブな鍵盤に対応するキーボードショートカットを使用します（例: ポートレートモードは `1` ～ `8`、ランドスケープモードは `1` ～ `0`、`-`、 `=`、 `q`）。
+
+### テレメトリーとモニタリング
+*   **直前に弾いた音 (Last Plucked):** 直前に演奏した鍵盤の比率、名前、正確な周波数（Hz）を表示します。
+*   **音程比 (Inter-Note Ratio):** 前のノートと現在のノートの間の正確な音程比とセント差を計算します。
+
+---
+
+## 💾 録音とエクスポート
+
+1. ヘッダーの**REC**ボタンをクリックして、マスター出力から直接音声のキャプチャを開始します。
+2. ボタンが赤く点滅し、タイマーに録音時間が表示されます。
+3. もう一度**REC**をクリックして停止します。
+4. コントロールパネルから、希望するオーディオフォーマット（`32-bit Float / 48 kHz`、`32-bit Float / 96 kHz`、`16-bit PCM / 48 kHz`、または `16-bit PCM / 96 kHz`）を選択します。
+5. **Download WAV**をクリックして、演奏をローカルに保存します。
+
+---
+
+## 🚀 使い方とインストール (PWA)
+
+ブラウザですぐにプレイするか、最新版のGoogle Chromeを使用してスタンドアロンのデスクトップ/モバイルアプリとしてインストールできます。
+
+### 1. オンラインで試す & インストールする
+* Google Chromeでライブアプリケーションを開く:
+  👉 **[Extended Just Intonation Kalimba Synthesizer](https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/)**
+* **アプリとしてインストールする場合:**
+  * **デスクトップ (Chrome / Edge):** アドレスバーの右側にあるインストールアイコン（ダウンロード矢印やプラスバッジが付いた小さなモニター）をクリックするか、ブラウザメニューから **「Extended Just Intonation Kalimba Synthesizer をインストール...」** を選択します。
+  * **モバイル (Android Chrome):** ブラウザメニューから **「ホーム画面に追加」** または **「アプリをインストール」** を選択します。
+
+### 2. ローカル開発（オプション）
+コードをローカルで実行または修正する場合:
+1. リポジトリをクローンします：
+   git clone [https://github.com/homo-rehabilis/Extended-Just-Intonation-Kalimba-Synthesizer.git](https://github.com/homo-rehabilis/Extended-Just-Intonation-Kalimba-Synthesizer.git)
