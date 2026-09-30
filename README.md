@@ -7,13 +7,13 @@
 <a id="english"></a>
 # Extended Just Intonation Kalimba Synthesizer
 
-A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built with vanilla HTML5, CSS3, and the Web Audio API. This application allows musicians, microtonal enthusiasts, and sound designers to explore historical and alternative tuning systems through an interactive, responsive thumb piano interface.
+A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built with vanilla HTML5, CSS3, and the Web Audio API. This application allows musicians, microtonal enthusiasts, and children to explore historical and alternative tuning systems through an interactive, responsive thumb piano interface.
 
 ---
 
 ## Key Features
 
-*   **Adaptive Key Layouts:** Automatically switches between an **8-Key mode** (ideal for portrait or mobile views) and a **13-Key mode** (for landscape or desktop environments).
+*   **Adaptive Key Layouts:** Automatically switches between an **8-Key mode** (ideal for portrait or mobile views) and a **13-Key mode** (for landscape).
 *   **Multiple Scale Systems:** Switch instantly between microtonal and historical just intonation tuning presets.
 *   **Customizable Base Tonic (1/1):** Tune the root frequency using standard presets (417.6 Hz, 432 Hz, 440 Hz) or input a custom frequency.
 *   **High-Resolution Audio Recording:** Record your performances directly in the browser and download them as **WAV files** (supports **32-bit Float** and **16-bit PCM** at **48 kHz** or **96 kHz**).
@@ -28,8 +28,8 @@ A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built wi
 The synthesizer includes five distinct microtonal tuning systems:
 
 1.  **7-Limit Soul Jazz Blues Tuning** – Explores septimal intervals tailored for soulful, bluesy microtonal expressions.
-2.  **23-Limit Natural Harmonics** – Features upper partials derived from 16-32 natural harmonic series up to the 23rd limit.
-4.  **Pythagorean 3-Limit** – Pure 3-limit tuning based on 3:2 fifths.
+2.  **23-Limit Natural Harmonics** – Features upper partials derived from 16-32th natural harmonic series up to the prime number 23rd limit.
+4.  **Pythagorean 3-Limit** – Pure 3-limit tuning based on 3:2 fifths, recognized as the oldest recorded tuning system in history (Philolaos's Fragment B6).
 5.  **Archytas's 7-Limit Tetrachords** – Ancient Greek tuning system utilizing septimal ratios.
 6.  **Classic 5-Limit Just Intonation** – Traditional 5-limit tuning optimized for pure major and minor triads.
 
@@ -82,19 +82,19 @@ If you prefer to run or modify the code locally:
 ---
 
 <a id="japanese"></a>
-# 拡張純正律カリンバ・シンセサイザー (Extended Just Intonation Kalimba Synthesizer)
+# 拡張純正律カリンバシンセサイザー(Extended Just Intonation Kalimba Synthesizer)
 
-バニラHTML5、CSS3、Web Audio APIで構築された、ブラウザベースの高精度な**純正律カリンバ・シンセサイザー**です。音楽家、微小音律（マイクロトーン）の愛好家、サウンドデザイナーが、インタラクティブでレスポンシブなサムピアノ（親指ピアノ）インターフェースを通じて、歴史的およびオルタナティブな音律システムを探索できるようにします。
+バニラHTML5、CSS3、Web Audio APIで構築された、ブラウザベースの**純正律カリンバ・シンセサイザー**です。楽器演奏者、数比に基づく微小音程（マイクロトーン）に興味をもつ年少者が、直感的な親指ピアノインターフェースを通じて歴史的および未来的な音律システムを探索、学習するために考案されました。
 
 ---
 
 ## 主な特徴
 
 *   **レスポンシブキーレイアウト:** 縦向きに最適な**8キーモード**と、横向きに最適な**13キーモード**を自動的に切り替えます。
-*   **多彩な音律システム:** 微小音律や歴史的な純正律のチューニングプリセットを瞬時に切り替えられます。
-*   **カスタマイズ可能な基準音 (1/1):** 標準プリセット（417.6 Hz, 432 Hz, 440 Hz）を使用するか、カスタム周波数を入力してルート音をチューニングできます。
+*   **多彩な音律システム:** 微小音律や歴史的な純正律のチューニングプリセットを切り替えられます。
+*   **カスタマイズ可能な基準音 (1/1):** 標準プリセット（417.6 Hz, 432 Hz, 440 Hz）を使用するか、カスタム周波数を入力してルート音を変更できます。
 *   **ハイレゾオーディオ録音:** アプリケーション上で直接演奏を録音し、**WAVファイル**としてダウンロードできます（**32-bit Float**および**16-bit PCM**、**48 kHz**または**96 kHz**をサポート）。
-*   **リアルタイムテレメトリー表示:** 弾いたノートの詳細、周波数比、ノート間のセント差を即座に確認できます。
+*   **リアルタイムテレメトリー表示:** 弾いた音程の詳細、周波数比、音程間のセント差を確認できます。
 *   **インタラクティブなコードとアルペジオ:** 各音律システム専用にマッピングされた、厳選されたコードプリセットをトリガーできます。
 *   **PWA対応:** フルスクリーンサポートとサービスワーカーによるオフライン機能を備えた、完全にレスポンシブなデザイン。
 
@@ -104,23 +104,23 @@ If you prefer to run or modify the code locally:
 
 このシンセサイザーには、5つの異なる微小音律システムが含まれています：
 
-1.  **7-Limit Soul Jazz Blues Tuning** – ソウルフルでブルージーな微小音律の表現に合わせたセプティマル音程を探索できます。
-2.  **23-Limit Natural Harmonics** – 第16から第36倍音までの自然倍音列から抽出した素数23までの上位倍音を特徴としています。
-3.  **Pythagorean 3-Limit** – 3:2の完全五度をベースにした純粋な3限界チューニング。
-4.  **Archytas's 7-Limit Tetrachords** – セプティマル比率を利用した古代ギリシャの音律システム。
-5.  **Classic 5-Limit Just Intonation** – 純正な長三度・短三度に最適化された伝統的な5限界チューニング。
+1.  **7-Limit Soul Jazz Blues Tuning** – ソウルフルでブルージーな微小音律の表現に合わせたセプティマル音程を探索してください。
+2.  **23-Limit Natural Harmonics** – 第16から第36倍音までの自然倍音列から抽出した素数23までの上位倍音で構成されています。
+3.  **Pythagorean 3-Limit** – 3:2の完全五度をベースにした、文献史上世界最古の音律です（Philolaos's Fragment B6）。
+4.  **Archytas's 7-Limit Tetrachords** – 素数７までの比率を利用した古代ギリシャの音律システム。
+5.  **Classic 5-Limit Just Intonation** – 純正な長三度・短三度に最適化された伝統的な５限界チューニング。
 
 ---
 
 ## 操作方法と演奏方法
 
 ### 鍵盤の演奏
-*   **マウス / タッチ:** 任意の鍵盤を直接クリックまたはタップして弾きます。
-*   **コンピューターキーボード:** アクティブな鍵盤に対応するキーボードショートカットを使用します（例: ポートレートモードは `1` ～ `8`、ランドスケープモードは `1` ～ `0`、`-`、 `=`、 `q`）。
+*   **マウス / タッチ:** 任意のキーを直接クリックまたはタップして弾きます。
+*   **コンピューターキーボード:** アクティブなキーに対応するキーボードショートカットを使用します（例: ポートレートモードは `1` ～ `8`、ランドスケープモードは `1` ～ `0`、`-`、 `=`、 `q`）。
 
 ### テレメトリーとモニタリング
 *   **直前に弾いた音 (Last Plucked):** 直前に演奏した鍵盤の比率、名前、正確な周波数（Hz）を表示します。
-*   **音程比 (Inter-Note Ratio):** 前のノートと現在のノートの間の正確な音程比とセント差を計算します。
+*   **音程比 (Inter-Note Ratio):** 前の音と現在の音の間の正確な音程比とセント差を計算します。
 
 ---
 
@@ -136,7 +136,7 @@ If you prefer to run or modify the code locally:
 
 ## 使い方とインストール (PWA)
 
-ブラウザですぐにプレイするか、最新版のGoogle Chromeを使用してスタンドアロンのデスクトップ/モバイルアプリとしてインストールできます。
+ブラウザですぐにプレイするか、最新版のGoogle Chromeを使用してスタンドアロンのモバイルアプリとしてインストールできます。
 
 ### 1. オンラインで試す & インストールする
 * Google Chromeでライブアプリケーションを開く:
