@@ -1341,7 +1341,8 @@
   // サービスワーカーの登録とアップデート検知
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').then((registration) => {
+      // 修正後（{ updateViaCache: 'none' } を追加）
+navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((registration) => {
         console.log('Service Worker registered successfully:', registration.scope);
 
         // 新しいアップデートが見つかったときの処理
