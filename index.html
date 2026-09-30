@@ -972,7 +972,7 @@
         masterGain.connect(audioCtx.destination);
 
         // 録音用 ScriptProcessorNode の構築
-        recorderNode = audioCtx.createScriptProcessor(4096, 1, 1);
+        recorderNode = audioCtx.createScriptProcessor(16384, 1, 1);
         recorderNode.onaudioprocess = (e) => {
           if (!isRecording) return;
           const input = e.inputBuffer.getChannelData(0);
