@@ -211,7 +211,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 6px;
+      gap: 3px;
       flex-wrap: wrap;
     }
     .control-label {
@@ -245,6 +245,20 @@
       background-color: #2563eb;
       color: #ffffff;
     }
+
+    /* Circle of Fifths Toggle Button Custom Style */
+    #btnArpToggle {
+      background-color: #0d0f17;
+      border: 1px solid #232838;
+      border-radius: 6px;
+      padding: 3px 8px;
+    }
+    #btnArpToggle.active {
+      background-color: #2563eb;
+      border-color: #3b82f6;
+      color: #ffffff;
+    }
+
     .freq-input, .select-input {
       background-color: #0d0f17;
       border: 1px solid #232838;
@@ -419,31 +433,60 @@
       font-family: monospace;
     }
     
+    /* Compact Chords & Presets Section (Updated to flex-wrap instead of slide) */
     .presets-section {
       display: flex;
       align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      width: 100%;
+      gap: 3px;
       flex-shrink: 0;
-    }
-    .presets-label { font-size: 0.7rem; color: #9ca3af; font-weight: 600; }
-    .presets-grid { display: flex; gap: 6px; flex-wrap: wrap; }
-    .preset-btn {
       background-color: #181b26;
+      border: 1px solid #252b3d;
+      border-radius: 12px;
+      padding: 5px 8px;
+    }
+    .presets-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
+      flex-wrap: wrap;
+    }
+    .presets-grid { 
+      display: flex; 
+      gap: 6px; 
+      align-items: center; 
+      flex-wrap: wrap;
+    }
+    .preset-btn {
+      background-color: #0d0f17;
       border: 1px solid #2e3545;
       color: #e5e7eb;
-      padding: 4px 10px;
-      border-radius: 14px;
-      font-size: 0.68rem;
+      padding: 3px 5px;
+      border-radius: 10px;
+      font-size: 0.65rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.15s ease;
+      white-space: nowrap;
     }
     .preset-btn:hover { background-color: #262b38; border-color: #4b5563; }
     .preset-btn.active {
       background-color: rgba(37, 99, 235, 0.25);
       border-color: #3b82f6;
       color: #60a5fa;
+    }
+    .chord-bpm-card {
+      display: flex;
+      align-items: center;
+      gap: 1px;
+      background-color: #0d0f17;
+      border: 1px solid #232838;
+      padding: 3px 5px;
+      border-radius: 10px;
+      flex-shrink: 0;
     }
 
     /* Landscape & Desktop Responsive Layout */
@@ -538,8 +581,9 @@
         <div class="control-group">
           <span class="control-label">SCALE SYSTEM</span>
           <div class="segmented-btn-group" id="scaleToggle">
-            <button class="segmented-btn active" data-scale="souljazz">7-Limit Soul Jazz Blues Tuning</button>
+            <button class="segmented-btn active" data-scale="souljazz">7-Limit Soul Jazz Blues</button>
             <button class="segmented-btn" data-scale="harmonics">23-Limit Natural Harmonics</button>
+            <button class="segmented-btn" data-scale="chinesetuning">Chinese 3-Limit Dao</button>
             <button class="segmented-btn" data-scale="pythagorean">Pythagorean 3-Limit</button>
             <button class="segmented-btn" data-scale="archytas">Archytas's 7-Limit</button>
             <button class="segmented-btn" data-scale="classic5limit">Classic 5-Limit</button>
@@ -562,6 +606,20 @@
             <option value="16pcm-48k">16-bit PCM / 48 kHz</option>
             <option value="16pcm-96k">16-bit PCM / 96 kHz</option>
           </select>
+        </div>
+
+        <!-- Arpeggio / BPM Control (Visible only for Chinese 3-Limit 8-Key Mode) -->
+        <div class="control-group" id="arpControlGroup" style="display: none;">
+          <span class="control-label">ARPEGGIO LOOP</span>
+          <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+            <button class="segmented-btn" id="btnArpToggle">Circle of Fifths: OFF</button>
+            <div style="display: flex; align-items: center; gap: 2px;">
+              <span style="font-size: 0.62rem; color: #9ca3af;">BPM:</span>
+              <button class="segmented-btn" id="btnBpmMinus" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 2px 6px; color: #9ca3af; cursor: pointer;">-</button>
+              <input type="number" id="inputArpBpm" class="freq-input" value="43.5" min="1" max="500" style="width: 42px; text-align: center;">
+              <button class="segmented-btn" id="btnBpmPlus" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 2px 6px; color: #9ca3af; cursor: pointer;">+</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -599,10 +657,10 @@
         <div class="control-group">
           <div style="display: flex; align-items: center; gap: 6px;">
             <span class="control-label">TONIC RATIO MULTIPLIER</span>
-            <div style="display: flex; align-items: center; gap: 2px; font-size: 0.65rem;">
-              <input type="number" id="inputTonicNum" class="freq-input" value="1" min="1" max="99" style="width: 32px; text-align: center;">
+            <div style="display: flex; align-items: center; gap: 3px; font-size: 0.55rem;">
+              <input type="number" id="inputTonicNum" class="freq-input" value="1" min="1" max="99" style="width: 36px; text-align: center;">
               <span style="color: #6b7280;">/</span>
-              <input type="number" id="inputTonicDen" class="freq-input" value="1" min="1" max="99" style="width: 32px; text-align: center;">
+              <input type="number" id="inputTonicDen" class="freq-input" value="1" min="1" max="99" style="width: 36px; text-align: center;">
             </div>
           </div>
           <div class="segmented-btn-group" id="tonicRatioBtns">
@@ -630,9 +688,17 @@
       </div>
     </div>
 
+    <!-- Compact Chords & BPM Section -->
     <div class="presets-section">
-      <span class="presets-label">Chords:</span>
+      <div class="presets-left">
       <div class="presets-grid" id="presetButtons"></div>
+      </div>
+      <div class="chord-bpm-card">
+        <span style="font-size: 0.55rem; color: #9ca3af; font-weight: 600;">Chord BPM:</span>
+        <button class="segmented-btn" id="btnChordBpmMinus" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 1px 5px; color: #9ca3af; cursor: pointer;">-</button>
+        <input type="number" id="inputChordBpm" class="freq-input" value="87" min="1" max="500" style="width: 24px; text-align: center; font-size: 0.55rem;">
+        <button class="segmented-btn" id="btnChordBpmPlus" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 1px 5px; color: #9ca3af; cursor: pointer;">+</button>
+      </div>
     </div>
   </div>
 
@@ -660,8 +726,8 @@
           { num: 1,  den: 1,  name: 'Tonic',               cents: 0.00    },
           { num: 21, den: 20, name: 'Septimal Semitone',  cents: 84.47   },
           { num: 10, den: 9,  name: 'Minor Whole Tone',   cents: 182.40  },
-          { num: 6,  den: 5,  name: 'Septimal Minor 3rd',  cents: 315.64  },
-          { num: 5,  den: 4,  name: 'Major 3rd',          cents: 386.31  },
+          { num: 7,  den: 6,  name: 'Septimal Minor 3rd',  cents: 315.64  },
+          { num: 5,  den: 4,  name: 'Just Major 3rd',          cents: 386.31  },
           { num: 4,  den: 3,  name: 'Perfect 4th',        cents: 498.04  },
           { num: 7,  den: 5,  name: 'Septimal Tritone',   cents: 582.51  },
           { num: 3,  den: 2,  name: 'Perfect 5th',        cents: 701.96  },
@@ -722,6 +788,44 @@
           { id: 'undecimal', label: 'Undecimal IV', pitchIndices: [1, 5, 7, 12] },
           { id: 'tridecimal', label: 'Tridecimal 6th', pitchIndices: [0, 7, 8, 12] },
           { id: 'limit23', label: '23-Limit Tritone', pitchIndices: [0, 6, 7, 10] }
+        ]
+      },
+      'chinesetuning': {
+        title: 'Chinese 3-Limit Just Intonation',
+        keys8: [
+          { num: 2187, den: 1024, name: '大呂 (mlat ra)',   cents: 1313.69 },
+          { num: 27,   den: 16,   name: '南呂 (mlum ra)',    cents: 905.87 },
+          { num: 729,  den: 512,  name: '蕤賓 (nui pin)',    cents: 611.73 },
+          { num: 9,    den: 8,    name: '太簇 (thhat tshuk)', cents: 203.91 },
+          { num: 1,    den: 1,    name: '黃鐘 (gwang tong)', cents: 0.00 },
+          { num: 81,   den: 64,   name: '姑洗 (ku sin)',     cents: 407.82 },
+          { num: 3,    den: 2,    name: '林鐘 (ram tong)',   cents: 701.96 },
+          { num: 243,  den: 128,  name: '應鐘 (eng tong)',   cents: 1109.78 }
+        ],
+        keys13: [
+          { num: 1,  den: 1,   name: '黃鐘 (gwang tong)', cents: 0.00 },
+          { num: 531441, den: 524288, name: '執始 (trəp sə)', cents: 23.46 },
+          { num: 2187, den: 2048, name: '大呂 (mlat ra)', cents: 113.69 },
+          { num: 9,  den: 8,   name: '太簇 (thhat tshuk)', cents: 203.91 },
+          { num: 19683, den: 16384, name: '夾鐘 (kap tong)', cents: 318.16 },
+          { num: 81, den: 64,  name: '姑洗 (ku sin)', cents: 407.82 },
+          { num: 177147, den: 131072, name: '仲呂 (t-rung ra)', cents: 522.04 },
+          { num: 729, den: 512, name: '蕤賓 (nui pin)', cents: 611.73 },
+          { num: 3,  den: 2,   name: '林鐘 (ram tong)', cents: 701.96 },
+          { num: 6561, den: 4096, name: '夷則 (li tok)', cents: 792.18 },
+          { num: 27, den: 16,  name: '南呂 (mlum ra)', cents: 905.87 },
+          { num: 59049, den: 32768, name: '無射 (ma dak)', cents: 1022.12 },
+          { num: 243, den: 128, name: '應鐘 (eng tong)', cents: 1109.78 }
+        ],
+        chords8: [
+          { id: 'cn8_1', label: 'Major Triad I', slotIndices: [4, 5, 6] },
+          { id: 'cn8_2', label: 'Major Triad II', slotIndices: [3, 2, 1] }
+        ],
+        chords13: [
+          { id: 'cn13_1', label: 'Tonic Trio', pitchIndices: [0, 3, 8, 10] },
+          { id: 'cn13_2', label: 'Full 13 Spread', pitchIndices: [0, 4, 8, 12] },
+          { id: 'cn13_3', label: 'Comma Clash', pitchIndices: [0, 1, 3, 8] },
+          { id: 'cn13_4', label: 'Circle of Fifths', pitchIndices: [0, 3, 8, 5] }
         ]
       },
       'pythagorean': {
@@ -867,6 +971,14 @@
     let isRecording = false;
     let recTimerInterval = null;
     let lastRecordedBlobUrl = null;
+
+    let arpeggioTimer = null;
+    let isArpeggioLooping = false;
+    let arpeggioBpm = 43.5;
+    let arpIndex = 0;
+    const arpSlots = [4, 6, 3, 1, 5, 7, 2, 0];
+
+    let chordBpm = 87;
 
     function parseRecFormat(val) {
       const [type, sr] = val.split('-');
@@ -1072,6 +1184,15 @@
     const presetButtons = document.getElementById('presetButtons');
     const valLastPlucked = document.getElementById('valLastPlucked');
     const valInterval = document.getElementById('valInterval');
+    const arpControlGroup = document.getElementById('arpControlGroup');
+    const btnArpToggle = document.getElementById('btnArpToggle');
+    const inputArpBpm = document.getElementById('inputArpBpm');
+    const btnBpmMinus = document.getElementById('btnBpmMinus');
+    const btnBpmPlus = document.getElementById('btnBpmPlus');
+
+    const inputChordBpm = document.getElementById('inputChordBpm');
+    const btnChordBpmMinus = document.getElementById('btnChordBpmMinus');
+    const btnChordBpmPlus = document.getElementById('btnChordBpmPlus');
 
     function triggerTine(tineObj) {
       playTone(tineObj.freq);
@@ -1095,6 +1216,98 @@
       const el = document.querySelector(`.tine-wrapper[data-slot-index="${tineObj.slotIndex}"]`);
       if (el) { el.classList.add('active'); setTimeout(() => el.classList.remove('active'), 150); }
     }
+
+    function runArpeggioStep() {
+      if (!isArpeggioLooping) return;
+      const sIdx = arpSlots[arpIndex];
+      const targetTine = currentTines[sIdx];
+      if (targetTine) triggerTine(targetTine);
+      arpIndex = (arpIndex + 1) % arpSlots.length;
+    }
+
+    function updateArpUI() {
+      btnArpToggle.className = `segmented-btn ${isArpeggioLooping ? 'active' : ''}`;
+      btnArpToggle.textContent = isArpeggioLooping ? 'Circle of Fifths: ON' : 'Circle of Fifths: OFF';
+      if (document.activeElement !== inputArpBpm) {
+        inputArpBpm.value = arpeggioBpm;
+      }
+    }
+
+    btnArpToggle.addEventListener('click', () => {
+      isArpeggioLooping = !isArpeggioLooping;
+      updateArpUI();
+      if (isArpeggioLooping) {
+        arpIndex = 0;
+        const intervalMs = (60 / arpeggioBpm) * 1000;
+        arpeggioTimer = setInterval(runArpeggioStep, intervalMs);
+      } else {
+        if (arpeggioTimer) {
+          clearInterval(arpeggioTimer);
+          arpeggioTimer = null;
+        }
+      }
+    });
+
+    inputArpBpm.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      if (val >= 1 && val <= 500) {
+        arpeggioBpm = val;
+        if (isArpeggioLooping && arpeggioTimer) {
+          clearInterval(arpeggioTimer);
+          const intervalMs = (60 / arpeggioBpm) * 1000;
+          arpeggioTimer = setInterval(runArpeggioStep, intervalMs);
+        }
+      }
+    });
+
+    btnBpmMinus.addEventListener('click', () => {
+      let val = parseFloat(inputArpBpm.value) - 1;
+      if (isNaN(val)) val = 20;
+      if (val < 1) val = 1;
+      arpeggioBpm = val;
+      inputArpBpm.value = arpeggioBpm;
+      if (isArpeggioLooping && arpeggioTimer) {
+        clearInterval(arpeggioTimer);
+        const intervalMs = (60 / arpeggioBpm) * 1000;
+        arpeggioTimer = setInterval(runArpeggioStep, intervalMs);
+      }
+    });
+
+    btnBpmPlus.addEventListener('click', () => {
+      let val = parseFloat(inputArpBpm.value) + 1;
+      if (isNaN(val)) val = 20;
+      if (val > 500) val = 500;
+      arpeggioBpm = val;
+      inputArpBpm.value = arpeggioBpm;
+      if (isArpeggioLooping && arpeggioTimer) {
+        clearInterval(arpeggioTimer);
+        const intervalMs = (60 / arpeggioBpm) * 1000;
+        arpeggioTimer = setInterval(runArpeggioStep, intervalMs);
+      }
+    });
+
+    inputChordBpm.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      if (val >= 1 && val <= 500) {
+        chordBpm = val;
+      }
+    });
+
+    btnChordBpmMinus.addEventListener('click', () => {
+      let val = parseFloat(inputChordBpm.value) - 1;
+      if (isNaN(val)) val = 87;
+      if (val < 1) val = 1;
+      chordBpm = val;
+      inputChordBpm.value = chordBpm;
+    });
+
+    btnChordBpmPlus.addEventListener('click', () => {
+      let val = parseFloat(inputChordBpm.value) + 1;
+      if (isNaN(val)) val = 87;
+      if (val > 500) val = 500;
+      chordBpm = val;
+      inputChordBpm.value = chordBpm;
+    });
 
     function renderApp() {
       updateTonicFreq();
@@ -1125,6 +1338,20 @@
       });
 
       presetButtons.innerHTML = '';
+      
+      // Control visibility of Chinese Arpeggio / BPM panel in the top controls card
+      const showChineseArp = (is8KeyMode && currentScaleKey === 'chinesetuning');
+      arpControlGroup.style.display = showChineseArp ? 'flex' : 'none';
+
+      if (!showChineseArp && isArpeggioLooping) {
+        isArpeggioLooping = false;
+        if (arpeggioTimer) {
+          clearInterval(arpeggioTimer);
+          arpeggioTimer = null;
+        }
+        updateArpUI();
+      }
+
       const activeChords = is8KeyMode ? scaleDef.chords8 : scaleDef.chords13;
       activeChords.forEach((c, idx) => {
         const btn = document.createElement('button');
@@ -1134,15 +1361,17 @@
           document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           
+          const delayMs = (60 / chordBpm) * 1000;
+
           if (is8KeyMode) {
             c.slotIndices.forEach((sIdx, delay) => {
               const targetTine = currentTines[sIdx];
-              if (targetTine) setTimeout(() => triggerTine(targetTine), delay * 80);
+              if (targetTine) setTimeout(() => triggerTine(targetTine), delay * delayMs);
             });
           } else {
             c.pitchIndices.forEach((pIdx, delay) => {
               const targetTine = currentTines.find(t => t.pitchIndex === pIdx);
-              if (targetTine) setTimeout(() => triggerTine(targetTine), delay * 60);
+              if (targetTine) setTimeout(() => triggerTine(targetTine), delay * delayMs);
             });
           }
         });
@@ -1392,19 +1621,16 @@
     });
 
     renderApp();
-  // サービスワーカーの登録とアップデート検知
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      // 修正後（{ updateViaCache: 'none' } を追加）
-navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((registration) => {
+      navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((registration) => {
         console.log('Service Worker registered successfully:', registration.scope);
 
-        // 新しいアップデートが見つかったときの処理
         function trackInstalling(worker) {
           worker.addEventListener('statechange', () => {
             if (worker.state === 'installed') {
               if (navigator.serviceWorker.controller) {
-                // 既に古いバージョンが動いている状態で新しいのがインストールされた場合
                 showUpdateNotification(registration);
               }
             }
@@ -1426,7 +1652,6 @@ navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((re
         console.log('Service Worker registration failed:', err);
       });
 
-      // 新しいワーカーが有効化されたら自動でリロードして最新状態にする
       let refreshing = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (!refreshing) {
@@ -1437,7 +1662,6 @@ navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((re
     });
   }
 
-  // 更新通知バナーを表示する関数
   function showUpdateNotification(registration) {
     const notification = document.getElementById('updateNotification');
     if (notification) {
@@ -1445,14 +1669,13 @@ navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((re
       const btnUpdateReload = document.getElementById('btnUpdateReload');
       btnUpdateReload.onclick = () => {
         if (registration.waiting) {
-          // 新しいサービスワーカーへスキップの指示を送る
           registration.waiting.postMessage({ type: 'SKIP_WAITING' });
         }
       };
     }
   }
   </script>
-    <!-- アップデート通知バナー -->
+  
   <div id="updateNotification" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #181b26; border: 1px solid #3b82f6; color: white; padding: 12px 20px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 10000; align-items: center; gap: 14px; font-size: 0.8rem; font-weight: 600;">
     <span>✨ New Version Update</span>
     <button id="btnUpdateReload" style="background: #2563eb; color: white; border: none; padding: 6px 14px; border-radius: 8px; font-weight: 700; cursor: pointer;">Now Update</button>
