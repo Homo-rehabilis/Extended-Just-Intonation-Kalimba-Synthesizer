@@ -13,7 +13,7 @@ A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built wi
 
 ## Key Features
 
-*   **Adaptive Key Layouts:** Automatically switches between an **8-Key mode** (ideal for portrait or mobile views) and a **13-Key mode** (for landscape views).
+*   **Adaptive Key Layouts:** Automatically switches between an **8-Key mode** (ideal for portrait or mobile views) and a **13 or 17-Key mode** (for landscape views).
 *   **7 Distinct Scale Systems:** Switch instantly between 7 microtonal and historical just intonation tuning presets.
 *   **Customizable Base Tonic (1/1) & Ratio Multiplier:** Tune the root frequency using standard presets (417.6 Hz, 432 Hz, 440 Hz) or custom input, with real-time tonic fraction multipliers (e.g., 16/15, 9/8, 3/2).
 *   **High-Resolution Audio Recording:** Capture performances directly in the browser and download as **WAV files** (supports **32-bit Float** and **16-bit PCM** at **48 kHz** or **96 kHz** via AudioWorklet or ScriptProcessor engines).
@@ -42,7 +42,7 @@ The synthesizer includes 7 distinct microtonal and just intonation tuning system
 
 ### Playing Tines
 *   **Mouse / Touch:** Click or tap directly on any tine to pluck it.
-*   **Computer Keyboard:** Use keyboard shortcuts corresponding to active tines (`1`–`8` for Portrait 8-Key mode; `1`–`0`, `-`, `=`, `q` for Landscape 13-Key mode).
+*   **Computer Keyboard:** Use keyboard shortcuts corresponding to active tines (`1`–`8` for Portrait 8-Key mode; `1`–`0`, `-`, `=`, `q` for Landscape 13 or 17-Key mode).
 
 ### Telemetry & Monitoring
 *   **Last Plucked:** Displays the ratio, name, and exact frequency (Hz) of the most recently played tine.
@@ -100,7 +100,7 @@ If you prefer to run or modify the code locally:
 
 ## 主な特徴
 
-*   **レスポンシブキーレイアウト:** 縦向き（およびモバイル端末）に適した**8キーモード**と、横向きに適した**13キーモード**を自動的に切り替えます。
+*   **レスポンシブキーレイアウト:** 縦向き（およびモバイル端末）に適した**8キーモード**と、横向きに適した**13or17キーモード**を自動的に切り替えます。
 *   **7つの音律システム:** 実験的な微小音律や歴史的な純正律を含む7種類のチューニングプリセットを即座に切り替えられます。
 *   **カスタマイズ可能な基準音 (1/1) とトニック倍率:** 標準プリセット（417.6 Hz, 432 Hz, 440 Hz）やカスタム周波数入力に加え、分周比（16/15, 9/8, 3/2など）を指定してルート音を動的に変更できます。
 *   **ハイレゾオーディオ録音:** アプリケーション上で直接演奏を録音し、**WAVファイル**としてダウンロードできます（**32-bit Float**および**16-bit PCM**、**48 kHz**または**96 kHz**対応。AudioWorklet / ScriptProcessor エンジン選択可能）。
@@ -129,7 +129,7 @@ If you prefer to run or modify the code locally:
 
 ### キーの演奏
 *   **マウス / タッチ:** 任意のキーを直接クリックまたはタップして弾きます。
-*   **コンピューターキーボード:** アクティブなキーに対応するキーボードショートカットを使用します（縦向き8キーモード: `1` ～ `8`、横向き13キーモード: `1` ～ `0`、`-`、 `=`、 `q`）。
+*   **コンピューターキーボード:** アクティブなキーに対応するキーボードショートカットを使用します（縦向き8キーモード: `1` ～ `8`、横向き13or17キーモード: `1` ～ `0`、`-`、 `=`、 `q`）。
 
 ### テレメトリーとモニタリング
 *   **直前に弾いた音 (Last Plucked):** 直前に演奏したキーの比率、名前、正確な周波数（Hz）を表示します。
