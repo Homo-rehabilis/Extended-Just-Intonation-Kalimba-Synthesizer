@@ -29,8 +29,8 @@ A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built wi
 The synthesizer includes 7 distinct microtonal and just intonation tuning systems:
 
 1.  **7-Limit Soul Jazz Blues Tuning** – Explores septimal intervals tailored for soulful, bluesy microtonal expressions.
-2.  **23-Limit Natural Harmonics** – Features upper partials derived from natural harmonic series up to the 23rd prime limit.
-3.  **Chinese 3-Limit Dao** – Traditional Chinese 3-limit tuning based on the Sanfen Sunyi (pythagorean-like) method, mapping classic 12/15-pitch names.
+2.  **23-Limit Natural Harmonics** – Features upper partials derived from 16-32 natural harmonic series up to the 23rd prime limit.
+3.  **Chinese 3-Limit Dao** – Traditional Chinese 3-limit tuning based on the Sanfen Sunyi (pythagorean-like) method, mapping classic pitch names.
 4.  **Pythagorean 3-Limit** – Pure 3-limit tuning based on 3:2 fifths, recognized as the oldest recorded tuning system in history (Philolaos's Fragment B6).
 5.  **Archytas's 7-Limit Tetrachords** – Ancient Greek tuning system utilizing septimal ratios designed by Archytas.
 6.  **Classic 5-Limit Just Intonation** – Traditional 5-limit tuning optimized for pure major and minor triads.
@@ -57,17 +57,17 @@ The synthesizer includes 7 distinct microtonal and just intonation tuning system
 
 ## Recording & Exporting
 
-1. Click the **REC** button in the header to start capturing audio directly from the master output.
-2. The button will pulse red, and a timer will display the recording duration.
-3. Click **REC** again to stop.
-4. Select your preferred audio format (`32-bit Float / 48 kHz`, `32-bit Float / 96 kHz`, `16-bit PCM / 48 kHz`, or `16-bit PCM / 96 kHz`) and recording engine from the control panel.
+1. Select your preferred audio format (`32-bit Float / 48 kHz`, `32-bit Float / 96 kHz`, `16-bit PCM / 48 kHz`, or `16-bit PCM / 96 kHz`) and recording engine from the control panel.
+2. Click the **REC** button in the header to start capturing audio directly from the master output.
+3. The button will pulse red, and a timer will display the recording duration.
+4. Click **REC** again to stop.
 5. Click **Download WAV** to save your performance locally.
 
 ---
 
 ## How to Use & Install (PWA)
 
-You can play right away in your browser, or install it as a standalone desktop/mobile application using Google Chrome.
+You can play right away in your browser, or install it as a standalone mobile/desktop application using Google Chrome.
 
 ### 1. Try Online & Install
 * Open the live application in **Google Chrome**:
@@ -94,14 +94,14 @@ If you prefer to run or modify the code locally:
 <a id="japanese"></a>
 # 拡張純正律カリンバシンセサイザー (Extended Just Intonation Kalimba Synthesizer)
 
-バニラHTML5、CSS3、Web Audio APIで構築された、ブラウザベースの**純正律カリンバ・シンセサイザー**です。楽器演奏者、数比に基づく微小音程（マイクロトーン）に興味をもつ学習者が、直感的な親指ピアノインターフェースを通じて歴史的および未来的な音律システムを探索、学習するために考案されました。
+バニラHTML5、CSS3、Web Audio APIで構築された、ブラウザベースの**純正律カリンバ・シンセサイザー**です。楽器演奏者、数比に基づく微小音程（マイクロトーン）に興味をもつ人が、直感的な親指ピアノインターフェースを通じて歴史的および未来的な音律システムを探索、学習するために考案されました。
 
 ---
 
 ## 主な特徴
 
 *   **レスポンシブキーレイアウト:** 縦向き（およびモバイル端末）に適した**8キーモード**と、横向きに適した**13キーモード**を自動的に切り替えます。
-*   **7つの音律システム:** 微小音律や歴史的な純正律を含む7種類のチューニングプリセットを即座に切り替えられます。
+*   **7つの音律システム:** 実験的な微小音律や歴史的な純正律を含む7種類のチューニングプリセットを即座に切り替えられます。
 *   **カスタマイズ可能な基準音 (1/1) とトニック倍率:** 標準プリセット（417.6 Hz, 432 Hz, 440 Hz）やカスタム周波数入力に加え、分周比（16/15, 9/8, 3/2など）を指定してルート音を動的に変更できます。
 *   **ハイレゾオーディオ録音:** アプリケーション上で直接演奏を録音し、**WAVファイル**としてダウンロードできます（**32-bit Float**および**16-bit PCM**、**48 kHz**または**96 kHz**対応。AudioWorklet / ScriptProcessor エンジン選択可能）。
 *   **リアルタイムテレメトリー表示:** 弾いた音程の詳細、正確な周波数比、Hz表示、連続する音律間のセント差を即座に確認できます。
@@ -116,10 +116,10 @@ If you prefer to run or modify the code locally:
 このシンセサイザーには、7つの異なる微小音律・純正律システムが含まれています：
 
 1.  **7-Limit Soul Jazz Blues Tuning** – ソウルフルでブルージーな微小音律の表現に合わせたセプティマル音程（7限界）。
-2.  **23-Limit Natural Harmonics** – 自然倍音列から抽出した素数23までの上位倍音で構成された自然倍音列。
+2.  **23-Limit Natural Harmonics** – 第16-32の自然倍音列から抽出した素数23までの上位倍音で音律を構成。
 3.  **Chinese 3-Limit Dao** – 三分損益法に基づく伝統的な中国の3限界純正律（黄鐘・大呂・太簇などの律呂名と執始を含む音律）。
 4.  **Pythagorean 3-Limit** – 3:2の完全五度をベースにした、文献史上世界最古の音律（Philolaos's Fragment B6）。
-5.  **Archytas's 7-Limit Tetrachords** – 古代ギリシャのアルキタスによる素数7の比率を利用したテトラコルド音律。
+5.  **Archytas's 7-Limit Tetrachords** – 古代ギリシャのアルキタスによる素数7までの比率を利用したテトラコルド音律。
 6.  **Classic 5-Limit Just Intonation** – 純正な長三度・短三度に最適化された伝統的な5限界純正律。
 7.  **Nearly TET 19-limit Just Intonation** – 12平均律に近似した音程を持つ19限界純正律プリセット。
 
@@ -127,12 +127,12 @@ If you prefer to run or modify the code locally:
 
 ## 操作方法と演奏方法
 
-### 鍵盤の演奏
+### キーの演奏
 *   **マウス / タッチ:** 任意のキーを直接クリックまたはタップして弾きます。
 *   **コンピューターキーボード:** アクティブなキーに対応するキーボードショートカットを使用します（縦向き8キーモード: `1` ～ `8`、横向き13キーモード: `1` ～ `0`、`-`、 `=`、 `q`）。
 
 ### テレメトリーとモニタリング
-*   **直前に弾いた音 (Last Plucked):** 直前に演奏した鍵盤の比率、名前、正確な周波数（Hz）を表示します。
+*   **直前に弾いた音 (Last Plucked):** 直前に演奏したキーの比率、名前、正確な周波数（Hz）を表示します。
 *   **音程比 (Inter-Note Ratio):** 前の音と現在の音の間の正確な音程比とセント差を計算します。
 
 ### 詳細設定パネル
@@ -144,17 +144,17 @@ If you prefer to run or modify the code locally:
 
 ## 録音とエクスポート
 
-1. ヘッダーの**REC**ボタンをクリックして、マスター出力から直接音声のキャプチャを開始します。
-2. ボタンが赤く点滅し、タイマーに録音時間が表示されます。
-3. もう一度**REC**をクリックして停止します。
-4. コントロールパネルから、希望するオーディオフォーマット（`32-bit Float / 48 kHz`、`32-bit Float / 96 kHz`、`16-bit PCM / 48 kHz`、または `16-bit PCM / 96 kHz`）と録音エンジンを選択します。
+1. コントロールパネルから、希望するオーディオフォーマット（`32-bit Float / 48 kHz`、`32-bit Float / 96 kHz`、`16-bit PCM / 48 kHz`、または `16-bit PCM / 96 kHz`）と録音エンジンを選択します。
+2. ヘッダーの**REC**ボタンをクリックして、マスター出力から直接音声のキャプチャを開始します。
+3. ボタンが赤く点滅し、タイマーに録音時間が表示されます。
+4. もう一度**REC**をクリックして停止します。
 5. **Download WAV**をクリックして、演奏をローカルに保存します。
 
 ---
 
 ## 使い方とインストール (PWA)
 
-ブラウザですぐに演奏するか、Google Chromeを使用してスタンドアロンのデスクトップ/モバイルアプリとしてインストールできます。
+ブラウザですぐに演奏するか、Google Chromeを使用して通信の不要なローカル環境で動くスタンドアロンのモバイルアプリとしてインストールできます。
 
 ### 1. オンラインで試す & インストールする
 * Google Chromeでライブアプリケーションを開く:
