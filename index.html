@@ -36,7 +36,6 @@
       flex-direction: column;
     }
 
-    /* Fullscreen Mode (Restored from previous version) */
     .app-card:fullscreen, .app-card:-webkit-full-screen {
       width: 100vw !important;
       height: 100vh !important;
@@ -79,7 +78,6 @@
       flex-wrap: wrap;
     }
 
-    /* Record & Download Buttons */
     .rec-btn {
       background-color: rgba(239, 68, 68, 0.15);
       border: 1px solid rgba(239, 68, 68, 0.4);
@@ -140,7 +138,6 @@
       border-color: #4ade80;
     }
 
-    /* Key Mode Badge */
     .mode-badge {
       background: rgba(234, 179, 8, 0.15);
       border: 1px solid rgba(234, 179, 8, 0.4);
@@ -152,7 +149,6 @@
       white-space: nowrap;
     }
 
-    /* Fullscreen Toggle Button */
     .fullscreen-btn {
       background-color: rgba(56, 189, 248, 0.15);
       border: 1px solid rgba(56, 189, 248, 0.4);
@@ -187,7 +183,6 @@
     .tonic-badge .col-left { font-size: 0.65rem; color: #94a3b8; }
     .tonic-badge .col-right { font-size: 0.8rem; font-weight: 700; color: #38bdf8; }
 
-    /* Top Panels Container */
     .top-panels {
       display: flex;
       flex-direction: column;
@@ -196,7 +191,6 @@
       flex-shrink: 0;
     }
 
-    /* Control Panel (Portrait Compact) */
     .controls-card {
       background-color: #181b26;
       border-radius: 12px;
@@ -234,7 +228,7 @@
       border: none;
       color: #9ca3af;
       padding: 2px 3px;
-      font-size: 0.65rem;
+      font-size: 0.58rem;
       font-weight: 600;
       border-radius: 3px;
       cursor: pointer;
@@ -246,7 +240,6 @@
       color: #ffffff;
     }
 
-    /* Circle of Fifths Toggle Button Custom Style */
     #btnArpToggle {
       background-color: #0d0f17;
       border: 1px solid #232838;
@@ -275,7 +268,6 @@
       text-align: right;
     }
 
-    /* Telemetry Display (Portrait Side-by-Side Grid) */
     .telemetry-card {
       background-color: #181b26;
       border-radius: 12px;
@@ -324,7 +316,6 @@
     }
     .tel-value.highlight { color: #38bdf8; }
 
-    /* Stage Area */
     .stage-card {
       background-color: #181b26;
       border-radius: 14px;
@@ -433,7 +424,6 @@
       font-family: monospace;
     }
     
-    /* Compact Chords & Presets Section (Updated to flex-wrap instead of slide) */
     .presets-section {
       display: flex;
       align-items: center;
@@ -489,7 +479,6 @@
       flex-shrink: 0;
     }
 
-    /* Landscape & Desktop Responsive Layout */
     @media (orientation: landscape) or (min-width: 768px) {
       .app-card {
         max-width: 1020px;
@@ -523,7 +512,6 @@
       }
     }
 
-    /* Height-constrained landscape mode */
     @media (orientation: landscape) and (max-height: 580px) {
       body { padding: 0; }
       .app-card { 
@@ -587,11 +575,12 @@
             <button class="segmented-btn" data-scale="pythagorean">Pythagorean 3-Limit</button>
             <button class="segmented-btn" data-scale="archytas">Archytas's 7-Limit</button>
             <button class="segmented-btn" data-scale="classic5limit">Classic 5-Limit</button>
+            <button class="segmented-btn" data-scale="nearlytet19">Nearly TET 19-limit</button>
           </div>
         </div>
 
         <div class="control-group">
-          <span class="control-label">NOISE FILTER</span>
+          <span class="control-label">TINE NOISE FILTER</span>
           <div class="segmented-btn-group" id="noiseFilterToggle">
             <button class="segmented-btn active" data-filter="on">ON (Highly Simulated)</button>
             <button class="segmented-btn" data-filter="off">OFF (Fast Processing)</button>
@@ -601,14 +590,21 @@
         <div class="control-group">
           <span class="control-label">REC FORMAT</span>
           <select id="selectRecFormat" class="select-input">
-            <option value="32float-48k" selected>32-bit Float / 48 kHz (Recommended)</option>
             <option value="32float-96k">32-bit Float / 96 kHz</option>
+            <option value="32float-48k" selected>32-bit Float / 48 kHz (Recommended)</option>
             <option value="16pcm-48k">16-bit PCM / 48 kHz</option>
             <option value="16pcm-96k">16-bit PCM / 96 kHz</option>
           </select>
         </div>
 
-        <!-- Arpeggio / BPM Control (Visible only for Chinese 3-Limit 8-Key Mode) -->
+        <div class="control-group">
+          <span class="control-label">REC ENGINE</span>
+          <div class="segmented-btn-group" id="recEngineToggle">
+            <button class="segmented-btn active" data-engine="worklet">AudioWorklet (Fast / May not REC)</button>
+            <button class="segmented-btn" data-engine="script">ScriptProcessor</button>
+          </div>
+        </div>
+
         <div class="control-group" id="arpControlGroup" style="display: none;">
           <span class="control-label">ARPEGGIO LOOP</span>
           <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
@@ -653,7 +649,6 @@
           </div>
         </div>
 
-        <!-- TONIC RATIO MULTIPLIER -->
         <div class="control-group">
           <div style="display: flex; align-items: center; gap: 6px;">
             <span class="control-label">TONIC RATIO MULTIPLIER</span>
@@ -688,7 +683,6 @@
       </div>
     </div>
 
-    <!-- Compact Chords & BPM Section -->
     <div class="presets-section">
       <div class="presets-left">
       <div class="presets-grid" id="presetButtons"></div>
@@ -947,6 +941,46 @@
           { id: 'c5_maj7', label: 'Classic Major 7th', pitchIndices: [0, 5, 7, 11] },
           { id: 'c5_min7', label: 'Just Minor 7th', pitchIndices: [0, 4, 7, 10] }
         ]
+      },
+      'nearlytet19': {
+        title: 'Nearly TET 19-limit Just Intonation',
+        keys8: [
+          { id: 8, num: 2,  den: 1,  name: 'Octave',                cents: 1200.00 },
+          { id: 6, num: 27, den: 16, name: 'Pythagorean Major 6th',   cents: 905.87  },
+          { id: 4, num: 4,  den: 3,  name: 'Perfect 4th',           cents: 498.04  },
+          { id: 2, num: 9,  den: 8,  name: 'Major Whole Tone',      cents: 203.91  },
+          { id: 1, num: 1,  den: 1,  name: 'Tonic',                 cents: 0.00    },
+          { id: 3, num: 63, den: 50, name: '63/50 Major 3rd',       cents: 400.10  },
+          { id: 5, num: 3,  den: 2,  name: 'Perfect 5th',           cents: 701.96  },
+          { id: 7, num: 15, den: 8,  name: 'Classic Major 7th',     cents: 1088.27 }
+        ],
+        keys13: [
+          { num: 1,   den: 1,  name: 'Tonic',                 cents: 0.00    },
+          { num: 17,  den: 16, name: 'Septendecimal Semitone', cents: 104.96  },
+          { num: 9,   den: 8,  name: 'Major Whole Tone',      cents: 203.91  },
+          { num: 19,  den: 16, name: '19/16 Minor 3rd',       cents: 297.51  },
+          { num: 63,  den: 50, name: '63/50 Major 3rd',       cents: 400.10  },
+          { num: 4,   den: 3,  name: 'Perfect 4th',           cents: 498.04  },
+          { num: 45,  den: 32, name: '45/32 Tritone',         cents: 590.22  },
+          { num: 3,   den: 2,  name: 'Perfect 5th',           cents: 701.96  },
+          { num: 100, den: 63, name: '100/63 Minor 6th',      cents: 799.90  },
+          { num: 27,  den: 16, name: 'Pythagorean Major 6th', cents: 905.87  },
+          { num: 25,   den: 14,  name: '25/14 Minor 7th',    cents: 1003.80  },
+          { num: 15,  den: 8,  name: 'Classic Major 7th',     cents: 1088.27 },
+          { num: 2,   den: 1,  name: 'Octave',                cents: 1200.00 }
+        ],
+        chords8: [
+          { id: 'tet19_1', label: '63/50 Major Triad', slotIndices: [4, 5, 6, 0] },
+          { id: 'tet19_2', label: '63/50 Major 7th', slotIndices: [4, 5, 6, 7] },
+          { id: 'tet19_3', label: 'Subdominant IV', slotIndices: [2, 1, 4, 0] },
+          { id: 'tet19_4', label: 'Dominant V7', slotIndices: [6, 7, 3, 2] }
+        ],
+        chords13: [
+          { id: 'tet19_maj', label: '63/50 Major Triad', pitchIndices: [0, 4, 7, 12] },
+          { id: 'tet19_maj7', label: '63/50 Major 7th', pitchIndices: [0, 4, 7, 11] },
+          { id: 'tet19_min7', label: '19/16 Minor 7th', pitchIndices: [0, 3, 7, 10] },
+          { id: 'tet19_approx', label: 'Near 19-TET Sweep', pitchIndices: [0, 4, 8, 12] }
+        ]
       }
     };
 
@@ -967,10 +1001,15 @@
     let lastTine = null, currentTine = null;
 
     let recorderNode = null;
+    let selectedRecEngine = 'worklet';
     let recordedBuffers = [];
     let isRecording = false;
     let recTimerInterval = null;
     let lastRecordedBlobUrl = null;
+    let audioInitPromise = null;
+
+    // AudioContext インスタンスごとの読み込み状態を保持するWeakSet
+    const loadedWorkletContexts = new WeakSet();
 
     let arpeggioTimer = null;
     let isArpeggioLooping = false;
@@ -979,6 +1018,53 @@
     const arpSlots = [4, 6, 3, 1, 5, 7, 2, 0];
 
     let chordBpm = 87;
+
+// 軽量化・バッファリング機能を追加した AudioWorklet プロセッサ
+const recorderWorkletCode = `
+class RecorderProcessor extends AudioWorkletProcessor {
+  constructor() {
+    super();
+    this.isRecording = false;
+    this.bufferSize = 4096; // 4096サンプル（約85ms）ごとにまとめて転送
+    this.buffer = new Float32Array(this.bufferSize);
+    this.bufferIndex = 0;
+
+    this.port.onmessage = (e) => {
+      if (e.data.command === 'START') {
+        this.isRecording = true;
+        this.bufferIndex = 0;
+      } else if (e.data.command === 'STOP') {
+        this.isRecording = false;
+        // 残りバッファがあれば送信
+        if (this.bufferIndex > 0) {
+          const sendBuffer = this.buffer.slice(0, this.bufferIndex);
+          this.port.postMessage(sendBuffer.buffer, [sendBuffer.buffer]);
+          this.bufferIndex = 0;
+        }
+      }
+    };
+  }
+
+  process(inputs, outputs, parameters) {
+    if (!this.isRecording) return true;
+
+    const input = inputs[0];
+    if (input && input.length > 0 && input[0].length > 0) {
+      const channel = input[0];
+      for (let i = 0; i < channel.length; i++) {
+        this.buffer[this.bufferIndex++] = channel[i];
+        if (this.bufferIndex >= this.bufferSize) {
+          const copy = new Float32Array(this.buffer);
+          this.port.postMessage(copy.buffer, [copy.buffer]);
+          this.bufferIndex = 0;
+        }
+      }
+    }
+    return true;
+  }
+}
+registerProcessor('recorder-processor', RecorderProcessor);
+`;
 
     function parseRecFormat(val) {
       const [type, sr] = val.split('-');
@@ -1086,13 +1172,65 @@
       }
     }
 
-    function initAudio() {
+    async function setupRecorderNode(ctx) {
+      if (recorderNode) {
+        try { recorderNode.disconnect(); } catch (e) {}
+        recorderNode = null;
+      }
+
+      if (selectedRecEngine === 'worklet') {
+        try {
+          // 特定の AudioContext に対してモジュールが未登録の場合のみ実行
+          if (!loadedWorkletContexts.has(ctx)) {
+            // Android環境で互換性の高い Data URL を使用
+            const dataUrl = 'data:text/javascript;charset=utf-8,' + encodeURIComponent(recorderWorkletCode);
+            await ctx.audioWorklet.addModule(dataUrl);
+            loadedWorkletContexts.add(ctx);
+          }
+
+          recorderNode = new AudioWorkletNode(ctx, 'recorder-processor');
+          recorderNode.port.onmessage = (e) => {
+            if (isRecording) {
+              recordedBuffers.push(new Float32Array(e.data));
+            }
+          };
+
+          const muteGain = ctx.createGain();
+          muteGain.gain.setValueAtTime(0, ctx.currentTime);
+
+          masterGain.connect(recorderNode);
+          recorderNode.connect(muteGain);
+          muteGain.connect(ctx.destination);
+        } catch (err) {
+          console.error('AudioWorklet setup failed:', err);
+          // フォールバック処理を除去し、指定通り自動変更を行わないように修正
+        }
+      } else {
+        const scriptNode = ctx.createScriptProcessor(4096, 1, 1);
+        scriptNode.onaudioprocess = (e) => {
+          if (isRecording) {
+            const inputData = e.inputBuffer.getChannelData(0);
+            recordedBuffers.push(new Float32Array(inputData));
+          }
+        };
+        const muteGain = ctx.createGain();
+        muteGain.gain.setValueAtTime(0, ctx.currentTime);
+
+        masterGain.connect(scriptNode);
+        scriptNode.connect(muteGain);
+        muteGain.connect(ctx.destination);
+        recorderNode = scriptNode;
+      }
+    }
+
+    async function initAudio() {
       const selectFormatVal = document.getElementById('selectRecFormat').value;
       const { sampleRate: targetSampleRate } = parseRecFormat(selectFormatVal);
 
       if (audioCtx && audioCtx.sampleRate !== targetSampleRate) {
-        audioCtx.close();
+        await audioCtx.close();
         audioCtx = null;
+        recorderNode = null;
       }
 
       if (!audioCtx) {
@@ -1113,23 +1251,7 @@
 
         compressor.connect(hpf);
         hpf.connect(masterGain);
-        masterGain.connect(compressor);
-        hpf.connect(masterGain);
         masterGain.connect(audioCtx.destination);
-
-        recorderNode = audioCtx.createScriptProcessor(16384, 1, 1);
-        recorderNode.onaudioprocess = (e) => {
-          if (!isRecording) return;
-          const input = e.inputBuffer.getChannelData(0);
-          recordedBuffers.push(new Float32Array(input));
-        };
-
-        const muteGain = audioCtx.createGain();
-        muteGain.gain.setValueAtTime(0, audioCtx.currentTime);
-
-        masterGain.connect(recorderNode);
-        recorderNode.connect(muteGain);
-        muteGain.connect(audioCtx.destination);
 
         const bufferSize = Math.floor(audioCtx.sampleRate * 0.05);
         sharedNoiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -1137,12 +1259,24 @@
         for (let i = 0; i < bufferSize; i++) {
           data[i] = Math.random() * 2 - 1;
         }
+
+        audioInitPromise = setupRecorderNode(audioCtx);
+      } else if (!recorderNode) {
+        audioInitPromise = setupRecorderNode(audioCtx);
       }
-      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      if (audioCtx.state === 'suspended') {
+        await audioCtx.resume();
+      }
+
+      if (audioInitPromise) {
+        await audioInitPromise;
+      }
     }
 
-    function playTone(freq) {
-      initAudio();
+    async function playTone(freq) {
+      await initAudio();
+      if (!audioCtx) return;
       const now = audioCtx.currentTime;
       
       const osc1 = audioCtx.createOscillator(), gain1 = audioCtx.createGain();
@@ -1339,7 +1473,6 @@
 
       presetButtons.innerHTML = '';
       
-      // Control visibility of Chinese Arpeggio / BPM panel in the top controls card
       const showChineseArp = (is8KeyMode && currentScaleKey === 'chinesetuning');
       arpControlGroup.style.display = showChineseArp ? 'flex' : 'none';
 
@@ -1436,10 +1569,14 @@
       return `${m}:${s}`;
     }
 
-    function startRecording() {
-      initAudio();
+    async function startRecording() {
+      await initAudio();
       recordedBuffers = [];
       isRecording = true;
+
+      if (selectedRecEngine === 'worklet' && recorderNode && recorderNode.port) {
+        recorderNode.port.postMessage({ command: 'START' });
+      }
 
       btnRecord.classList.add('recording');
       btnDownload.style.display = 'none';
@@ -1455,6 +1592,11 @@
     function stopRecording() {
       if (isRecording) {
         isRecording = false;
+
+        if (selectedRecEngine === 'worklet' && recorderNode && recorderNode.port) {
+          recorderNode.port.postMessage({ command: 'STOP' });
+        }
+
         btnRecord.classList.remove('recording');
         txtRecord.textContent = 'REC';
         clearInterval(recTimerInterval);
@@ -1472,7 +1614,7 @@
 
         const formatConfig = parseRecFormat(selectRecFormat.value);
         const wavBlob = encodeWAV(mergedSamples, audioCtx.sampleRate, formatConfig.bitDepth);
-        
+
         if (lastRecordedBlobUrl) URL.revokeObjectURL(lastRecordedBlobUrl);
         lastRecordedBlobUrl = URL.createObjectURL(wavBlob);
 
@@ -1483,11 +1625,11 @@
       }
     }
 
-    btnRecord.addEventListener('click', () => {
+    btnRecord.addEventListener('click', async () => {
       if (isRecording) {
         stopRecording();
       } else {
-        startRecording();
+        await startRecording();
       }
     });
 
@@ -1507,13 +1649,22 @@
       }, 100);
     });
 
-    selectRecFormat.addEventListener('change', () => {
+    selectRecFormat.addEventListener('change', async () => {
       if (!isRecording && audioCtx) {
-        initAudio();
+        await initAudio();
       }
     });
 
-    // OS Fullscreen API Handler
+    document.getElementById('recEngineToggle').addEventListener('click', async (e) => {
+      const btn = e.target.closest('.segmented-btn'); if (!btn) return;
+      document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedRecEngine = btn.dataset.engine;
+      if (audioCtx && !isRecording) {
+        await setupRecorderNode(audioCtx);
+      }
+    });
+
     const btnFullscreen = document.getElementById('btnFullscreen');
     const txtFullscreen = document.getElementById('txtFullscreen');
 
