@@ -1130,8 +1130,18 @@ registerProcessor('recorder-processor', RecorderProcessor);
     function calcIntervalRatio(tineA, tineB) {
       let num = tineB.num * tineA.den;
       let den = tineB.den * tineA.num;
+      
       const g = gcd(num, den);
-      return `${num / g}/${den / g}`;
+      num /= g;
+      den /= g;
+      
+      const ratioVal = num / den;
+      const cents = 1200 * Math.log2(ratioVal);
+      
+      return {
+        ratioStr: `${num}/${den}`,
+        cents: cents
+      };
     }
 
     function detectKeyMode() {
@@ -1399,9 +1409,9 @@ registerProcessor('recorder-processor', RecorderProcessor);
       
       osc1.connect(gain1);
       osc2.connect(gain2);
+      noiseGain.connect(compressor);
       gain1.connect(compressor);
       gain2.connect(compressor);
-      noiseGain.connect(compressor);
 
       osc1.start(now); osc2.start(now); noise.start(now);
       osc1.stop(now + 2.6); osc2.stop(now + 0.3); noise.stop(now + 0.015);
@@ -1462,11 +1472,12 @@ registerProcessor('recorder-processor', RecorderProcessor);
         <span class="line">(${tineObj.ratioStr} • ${tineObj.freq.toFixed(2)} Hz)</span>
       `;
       
-      const interRatio = calcIntervalRatio(lastTine, currentTine);
-      const diffCents = Math.abs(currentTine.cents - lastTine.cents).toFixed(1);
+      const interval = calcIntervalRatio(lastTine, currentTine);
+      const diffCents = Math.abs(interval.cents).toFixed(1);
+      
       valInterval.innerHTML = `
         <span class="line">${lastTine.labelNum} → ${currentTine.labelNum}</span>
-        <span class="line">(${interRatio} • ${diffCents}¢ diff)</span>
+        <span class="line">(${interval.ratioStr} • ${diffCents}¢ diff)</span>
       `;
 
       const el = document.querySelector(`.tine-wrapper[data-slot-index="${tineObj.slotIndex}"]`);
