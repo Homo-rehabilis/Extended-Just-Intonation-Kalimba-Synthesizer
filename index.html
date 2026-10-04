@@ -1637,6 +1637,15 @@ registerProcessor('recorder-processor', RecorderProcessor);
       isChordLooping = !isChordLooping;
       btnChordLoopToggle.className = `segmented-btn ${isChordLooping ? 'active' : ''}`;
       btnChordLoopToggle.textContent = isChordLooping ? 'Loop: ON' : 'Loop: OFF';
+      if (isChordLooping) {
+        btnChordLoopToggle.style.backgroundColor = '#2563eb';
+        btnChordLoopToggle.style.color = '#ffffff';
+        btnChordLoopToggle.style.border = 'none';
+      } else {
+        btnChordLoopToggle.style.backgroundColor = '#0d0f17';
+        btnChordLoopToggle.style.color = '#9ca3af';
+        btnChordLoopToggle.style.border = '1px solid #232838';
+      }
     });
 
     btnChordStop.addEventListener('click', () => {
