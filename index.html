@@ -183,6 +183,65 @@
     .tonic-badge .col-left { font-size: 0.65rem; color: #94a3b8; }
     .tonic-badge .col-right { font-size: 0.75rem; font-weight: 700; color: #38bdf8; }
 
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background-color: rgba(0, 0, 0, 0.75);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background-color: #12141c;
+      border: 1px solid #1f2433;
+      border-radius: 16px;
+      padding: 16px;
+      width: 90%;
+      max-width: 440px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #252b3d;
+      padding-bottom: 8px;
+      margin-bottom: 2px;
+    }
+    .modal-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.03em;
+    }
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: #9ca3af;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+    .modal-close-btn:hover {
+      background-color: rgba(255,255,255,0.1);
+      color: #ffffff;
+    }
+
     .top-panels {
       display: flex;
       flex-direction: column;
@@ -237,18 +296,6 @@
     }
     .segmented-btn.active {
       background-color: #2563eb;
-      color: #ffffff;
-    }
-
-    #btnArpToggle {
-      background-color: #0d0f17;
-      border: 1px solid #232838;
-      border-radius: 6px;
-      padding: 3px 8px;
-    }
-    #btnArpToggle.active {
-      background-color: #2563eb;
-      border-color: #3b82f6;
       color: #ffffff;
     }
 
@@ -468,10 +515,12 @@
       border-color: #3b82f6;
       color: #60a5fa;
     }
+    
     .chord-bpm-card {
       display: flex;
-      align-items: center;
-      gap: 1px;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 3px;
       background-color: #0d0f17;
       border: 1px solid #232838;
       padding: 3px 5px;
@@ -508,7 +557,13 @@
       }
 
       .tines-container {
-        height: 200px;
+        height: 250px;
+      }
+
+      .chord-bpm-card {
+        flex-direction: row;
+        align-items: center;
+        gap: 2px;
       }
     }
 
@@ -528,7 +583,7 @@
       .top-panels { margin-bottom: 3px; gap: 4px; }
       .controls-card, .telemetry-card { padding: 3px 6px; gap: 2px; }
       .stage-card { padding: 3px; margin-bottom: 3px; }
-      .tines-container { height: 160px; }
+      .tines-container { height: 190px; }
       .tine-name { font-size: 0.46rem; }
       .tine-ratio-text { font-size: 0.52rem; margin-top: 1px; }
       .tine-cents-text { font-size: 0.46rem; }
@@ -561,22 +616,23 @@
           <div class="col-left"><span>(1/1):</span></div>
           <div class="col-right"><span id="badgeTonicFreq">417.6</span><span>Hz</span></div>
         </div>
+        <button class="fullscreen-btn" id="btnOpenSettings" title="Audio & Recording Settings" style="padding: 4px 8px;">⚙️</button>
       </div>
     </div>
 
-    <div class="top-panels">
-      <!-- Controls Panel -->
-      <div class="controls-card">
+    <!-- Audio & Recording Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <span class="modal-title">Audio & Recording Settings</span>
+          <button class="modal-close-btn" id="btnCloseModal">✕</button>
+        </div>
+
         <div class="control-group">
-          <span class="control-label">SCALE SYSTEM</span>
-          <div class="segmented-btn-group" id="scaleToggle">
-            <button class="segmented-btn active" data-scale="souljazz">7-Limit Soul Jazz Blues</button>
-            <button class="segmented-btn" data-scale="harmonics">23-Limit Natural Harmonics</button>
-            <button class="segmented-btn" data-scale="chinesetuning">Chinese 3-Limit Dao</button>
-            <button class="segmented-btn" data-scale="pythagorean">Pythagorean 3-Limit</button>
-            <button class="segmented-btn" data-scale="archytas">Archytas's 7-Limit</button>
-            <button class="segmented-btn" data-scale="classic5limit">Classic 5-Limit</button>
-            <button class="segmented-btn" data-scale="nearlytet19">Nearly TET 19-limit</button>
+          <span class="control-label">RANDOM NOISE for Texture</span>
+          <div class="segmented-btn-group" id="randomNoiseToggle">
+            <button class="segmented-btn active" data-noise="on">ON (Enabled)</button>
+            <button class="segmented-btn" data-noise="off">OFF (Muted)</button>
           </div>
         </div>
 
@@ -589,8 +645,24 @@
         </div>
 
         <div class="control-group">
+          <span class="control-label">HARMONIC EFFECT (OSC 2)</span>
+          <div class="segmented-btn-group" id="harmonicEffectToggle">
+            <button class="segmented-btn active" data-harmonic="on">ON (Enabled)</button>
+            <button class="segmented-btn" data-harmonic="off">OFF (Bypass)</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">COMPRESSOR ROUTING</span>
+          <div class="segmented-btn-group" id="compressorRoutingToggle">
+            <button class="segmented-btn active" data-compressor="on">ON (Compressed)</button>
+            <button class="segmented-btn" data-compressor="off">BYPASS (Direct)</button>
+          </div>
+        </div>
+
+        <div class="control-group">
           <span class="control-label">REC FORMAT</span>
-          <select id="selectRecFormat" class="select-input">
+          <select id="selectRecFormat" class="select-input" style="width: 100%;">
             <option value="32float-48k" selected>32-bit Float / 48 kHz (Recommended)</option>
             <option value="32float-96k">32-bit Float / 96 kHz</option>
             <option value="16pcm-48k">16-bit PCM / 48 kHz</option>
@@ -605,17 +677,36 @@
             <button class="segmented-btn" data-engine="script">ScriptProcessor</button>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div class="control-group" id="arpControlGroup" style="display: none;">
-          <span class="control-label">ARPEGGIO LOOP</span>
-          <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-            <button class="segmented-btn" id="btnArpToggle">Circle of Fifths: OFF</button>
-            <div style="display: flex; align-items: center; gap: 2px;">
-              <span style="font-size: 0.62rem; color: #9ca3af;">BPM:</span>
-              <button class="segmented-btn" id="btnBpmMinus" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 2px 6px; color: #9ca3af; cursor: pointer;">-</button>
-              <input type="number" id="inputArpBpm" class="freq-input" value="43.5" min="1" max="500" style="width: 42px; text-align: center;">
-              <button class="segmented-btn" id="btnBpmPlus" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 2px 6px; color: #9ca3af; cursor: pointer;">+</button>
+    <div class="top-panels">
+      <!-- Controls Panel -->
+      <div class="controls-card">
+        <div class="control-group">
+          <span class="control-label">SCALE SYSTEM</span>
+          <div class="segmented-btn-group" id="scaleToggle">
+            <button class="segmented-btn active" data-scale="souljazz">7-Limit JI Soul Jazz Blues</button>
+            <button class="segmented-btn" data-scale="harmonics">23-Limit Natural Harmonics</button>
+            <button class="segmented-btn" data-scale="chinesetuning">Chinese 3-Limit JI  Dao</button>
+            <button class="segmented-btn" data-scale="pythagorean">Pythagorean 3-Limit JI</button>
+            <button class="segmented-btn" data-scale="archytas">Archytas's 7-Limit JI</button>
+            <button class="segmented-btn" data-scale="classic5limit">Classic 5-Limit JI</button>
+            <button class="segmented-btn" data-scale="nearlytet19">Nearly TET 19-limit JI</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">BASE TONIC (1/1)</span>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <div class="segmented-btn-group" id="tonicPresetBtns">
+              <button class="segmented-btn active" data-freq="417.6">417.6</button>
+              <button class="segmented-btn" data-freq="432">432</button>
+              <button class="segmented-btn" data-freq="440">440</button>
+              <button class="segmented-btn" data-freq="512">512</button>
             </div>
+            <input type="number" id="inputCustomFreq" class="freq-input" value="417.6" step="0.1" min="100" max="2000">
+            <span style="font-size:0.65rem; color:#6b7280;">Hz</span>
           </div>
         </div>
       </div>
@@ -634,19 +725,6 @@
           <div class="tel-value highlight" id="valInterval">
             <span class="line">① → ①</span>
             <span class="line">(1/1 • 0.0¢ diff)</span>
-          </div>
-        </div>
-
-        <div class="control-group">
-          <span class="control-label">BASE TONIC (1/1)</span>
-          <div style="display: flex; gap: 6px; align-items: center;">
-            <div class="segmented-btn-group" id="tonicPresetBtns">
-              <button class="segmented-btn active" data-freq="417.6">417.6</button>
-              <button class="segmented-btn" data-freq="432">432</button>
-              <button class="segmented-btn" data-freq="440">440</button>
-            </div>
-            <input type="number" id="inputCustomFreq" class="freq-input" value="417.6" step="0.1" min="100" max="2000">
-            <span style="font-size:0.65rem; color:#6b7280;">Hz</span>
           </div>
         </div>
 
@@ -695,10 +773,16 @@
       <div class="presets-grid" id="presetButtons"></div>
       </div>
       <div class="chord-bpm-card">
-        <span style="font-size: 0.55rem; color: #9ca3af; font-weight: 600;">Chord BPM:</span>
-        <button class="segmented-btn" id="btnChordBpmMinus" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 1px 5px; color: #9ca3af; cursor: pointer;">-</button>
-        <input type="number" id="inputChordBpm" class="freq-input" value="87" min="1" max="500" style="width: 24px; text-align: center; font-size: 0.55rem;">
-        <button class="segmented-btn" id="btnChordBpmPlus" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 1px 5px; color: #9ca3af; cursor: pointer;">+</button>
+        <div style="display: flex; align-items: center; gap: 2px;">
+          <span style="font-size: 0.55rem; color: #9ca3af; font-weight: 600;">Chord BPM:</span>
+          <button class="segmented-btn" id="btnChordBpmMinus" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 1px 5px; color: #9ca3af; cursor: pointer;">-</button>
+          <input type="number" id="inputChordBpm" class="freq-input" value="87" min="1" max="500" style="width: 24px; text-align: center; font-size: 0.55rem;">
+          <button class="segmented-btn" id="btnChordBpmPlus" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 1px 5px; color: #9ca3af; cursor: pointer;">+</button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 2px;">
+          <button class="segmented-btn" id="btnChordLoopToggle" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 2px 6px; color: #9ca3af; cursor: pointer; font-size: 0.55rem;">Loop: OFF</button>
+          <button class="segmented-btn" id="btnChordStop" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 2px 6px; color: #ef4444; cursor: pointer; font-size: 0.55rem;">Stop</button>
+        </div>
       </div>
     </div>
   </div>
@@ -749,7 +833,9 @@
           { id: 'i7', label: 'I7 Blues', pitchIndices: [0, 6, 7, 10] },
           { id: 'iv', label: 'IV Subminor', pitchIndices: [5, 2, 0, 8] },
           { id: 'ii', label: 'II Minor', pitchIndices: [2, 5, 7, 12] },
-          { id: 'bv', label: '♭V Septimal', pitchIndices: [6, 10, 0, 8] }
+          { id: 'bv', label: '♭V Septimal', pitchIndices: [6, 10, 0, 8] },
+          { id: 'blues', label: ' Minor Blues', pitchIndices: [0, 2, 3, 5, 7, 5, 3, 2, 0, 2, 3, 5, 7, 5, 3, 2, 5, 7, 8, 10, 12, 10, 8, 7, 5, 7, 8, 10, 12, 10, 8, 5, 2, 3, 5, 7, 5, 3, 2, 3, 0, 3, 2, 5, 7, null, null, null] },
+          { id: 'major-blues', label: ' Major Blues', pitchIndices: [0, 2, 4, 5, 7, 5, 4, 2, 0, 2, 4, 5, 7, 5, 4, 2, 5, 7, 9, 10, 12, 10, 9, 7, 5, 7, 9, 10, 12, 10, 9, 5, 2, 4, 5, 7, 5, 4, 2, 4, 0, 4, 2, 5, 7, null, null, null] }
         ]
       },
       'harmonics': {
@@ -840,13 +926,16 @@
         ],
         chords8: [
           { id: 'cn8_1', label: 'Major Triad I', slotIndices: [4, 5, 6] },
-          { id: 'cn8_2', label: 'Major Triad II', slotIndices: [3, 2, 1] }
+          { id: 'cn8_2', label: 'Major Triad II', slotIndices: [3, 2, 1] },
+          { id: 'cn8_3', label: 'Fundamental Circle of 5th', slotIndices: [4, null, 6,null, 3,null, 1, null, 5, null, 7, null, 2, null, 0, null] }
         ],
         chords13: [
           { id: 'cn13_1', label: 'Tonic Trio', pitchIndices: [0, 3, 8, 10] },
           { id: 'cn13_2', label: 'Full 13 Spread', pitchIndices: [0, 4, 8, 12] },
           { id: 'cn13_3', label: 'Comma Clash', pitchIndices: [0, 1, 3, 8] },
-          { id: 'cn13_4', label: 'Circle of Fifths', pitchIndices: [0, 8, 3, 10, 5, 12, 7] }
+          { id: 'cn13_4', label: '7-tone Circle of 5th', pitchIndices: [0, null, 8, null, 3, null,10, null, 5, null, 12, null, 7] },
+          { id: 'cn17_1', label: '8-tone Circle of 5th', pitchIndices: [0, null, 8, null, 3, null,10, null, 5, null, 12, null, 7, null, 14, null] },
+          { id: 'cn17_2', label: '10-tone Circle of 5th', pitchIndices: [0, null, 8, null, 3, null,10, null, 5, null, 12, null, 7, null, 14, null, 9, null, 16, null] }
         ]
       },
       'pythagorean': {
@@ -883,10 +972,13 @@
           { id: 'p_fifth', label: 'Open 5th Octave', slotIndices: [4, 6, 0, 1] }
         ],
         chords13: [
-          { id: 'p13_maj', label: 'Pyth Major Triad', pitchIndices: [0, 4, 7, 12] },
-          { id: 'p13_min', label: 'Pyth Minor Triad', pitchIndices: [0, 3, 7, 12] },
-          { id: 'p13_maj7', label: 'Pyth Major 7th', pitchIndices: [0, 4, 7, 11] },
-          { id: 'p13_fifths', label: 'Circle of 5ths', pitchIndices: [0, 5, 7, 2] }
+          { id: 'p13_maj', label: 'Major Triad', pitchIndices: [0, 4, 7, 12] },
+          { id: 'p13_min', label: 'Minor Triad', pitchIndices: [0, 3, 7, 12] },
+          { id: 'p13_maj7', label: 'Major 7th', pitchIndices: [0, 4, 7, 11] },
+            { id: 'p13_5th', label: '7-tone Circle of 5th', pitchIndices: [1, 8 ,3 ,10, 5, 12, 7] },
+            { id: 'p17_5th', label: '8-tone Circle of 5th', pitchIndices: [1, 8 ,3 ,10, 5, 12, 7, 14] },
+       { id: 'blues', label: ' Minor Blues', pitchIndices: [0, 2, 3, 5, 7, 5, 3, 2, 0, 2, 3, 5, 7, 5, 3, 2, 5, 7, 8, 10, 12, 10, 8, 7, 5, 7, 8, 10, 12, 10, 8, 5, 2, 3, 5, 7, 5, 3, 2, 3, 0, 3, 2, 5, 7, null, null, null] },
+          { id: 'major-blues', label: ' Major Blues', pitchIndices: [0, 2, 4, 5, 7, 5, 4, 2, 0, 2, 4, 5, 7, 5, 4, 2, 5, 7, 9, 10, 12, 10, 9, 7, 5, 7, 9, 10, 12, 10, 9, 5, 2, 4, 5, 7, 5, 4, 2, 4, 0, 4, 2, 5, 7, null, null, null] }
         ]
       },
       'archytas': {
@@ -936,15 +1028,16 @@
           { num: 9,  den: 4,  name: 'Major Whole Tone (Octave)', cents: 1403.91 }
         ],
         chords8: [
-          { id: 'arch8_tet', label: 'Archytas Tetrachord', slotIndices: [4, 3, 5, 6] },
+          { id: 'arch8_Chromatic', label: 'Chromatikon', slotIndices: [4, 3, 5, 6] },
+          { id: 'arch8_Diatonic', label: 'Diatonikon', slotIndices: [5, 2, 6, 1] },
           { id: 'arch8_5th', label: 'Septimal 5th', slotIndices: [4, 2, 1, 7] },
           { id: 'arch8_cad', label: 'Septimal Triad', slotIndices: [4, 2, 1, 0] },
-          { id: 'arch8_full', label: 'Full Scale Sweep', slotIndices: [4, 3, 5, 2] }
         ],
         chords13: [
-          { id: 'arch_tet1', label: 'Diatonic Tetrachord', pitchIndices: [0, 2, 3, 6] },
-          { id: 'arch_tet2', label: 'Chromatic Tetrachord', pitchIndices: [0, 1, 2, 6] },
-          { id: 'arch_tet3', label: 'Enharmonic Tetrachord', pitchIndices: [0, 1, 4, 6] },
+          { id: 'arch_tet1', label: 'Enharmonion', pitchIndices: [0, 1, 2, 6] },
+          { id: 'arch_tet2', label: 'Diatonikon I', pitchIndices: [0, 1, 5, 6] },
+          { id: 'arch_tet3', label: 'Diatonikon II (root 9/8)', pitchIndices: [3, 4, 6, 7] },
+          { id: 'arch_tet4', label: 'Chromatikon', pitchIndices: [0, 1, 3, 6] },
           { id: 'arch_sept', label: 'Septimal Cadence', pitchIndices: [0, 4, 7, 11] }
         ]
       },
@@ -1025,7 +1118,9 @@
           { id: 'tet19_maj', label: '63/50 Major Triad', pitchIndices: [0, 4, 7, 12] },
           { id: 'tet19_maj7', label: '63/50 Major 7th', pitchIndices: [0, 4, 7, 11] },
           { id: 'tet19_min7', label: '19/16 Minor 7th', pitchIndices: [0, 3, 7, 10] },
-          { id: 'tet19_approx', label: 'Near 19-TET Sweep', pitchIndices: [0, 4, 8, 12] }
+          { id: 'tet19_approx', label: 'Near 19-TET Sweep', pitchIndices: [0, 4, 8, 12] },
+          { id: 'blues', label: ' Minor Blues', pitchIndices: [0, 2, 3, 5, 7, 5, 3, 2, 0, 2, 3, 5, 7, 5, 3, 2, 5, 7, 8, 10, 12, 10, 8, 7, 5, 7, 8, 10, 12, 10, 8, 5, 2, 3, 5, 7, 5, 3, 2, 3, 0, 3, 2, 5, 7, null, null, null] },
+          { id: 'major-blues', label: ' Major Blues', pitchIndices: [0, 2, 4, 5, 7, 5, 4, 2, 0, 2, 4, 5, 7, 5, 4, 2, 5, 7, 9, 10, 12, 10, 9, 7, 5, 7, 9, 10, 12, 10, 9, 5, 2, 4, 5, 7, 5, 4, 2, 4, 0, 4, 2, 5, 7, null, null, null] }
         ]
       }
     };
@@ -1043,11 +1138,14 @@
     let tonicOctave = 0;
     let currentTonicFreq = 417.6;
     let is8KeyMode = true;
-    let landscapeKeyCount = 13; // 13 または 17
+    let landscapeKeyCount = 13;
     let currentTines = [];
-    let audioCtx = null, compressor = null, masterGain = null;
+    let audioCtx = null, compressor = null, hpf = null, masterGain = null;
     let sharedNoiseBuffer = null;
     let isNoiseFilterEnabled = true;
+    let isRandomNoiseEnabled = true;
+    let isHarmonicEffectEnabled = true;
+    let isCompressorRoutingEnabled = true;
     let lastTine = null, currentTine = null;
 
     let recorderNode = null;
@@ -1060,13 +1158,11 @@
 
     const loadedWorkletContexts = new WeakSet();
 
-    let arpeggioTimer = null;
-    let isArpeggioLooping = false;
-    let arpeggioBpm = 43.5;
-    let arpIndex = 0;
-    const arpSlots = [4, 6, 3, 1, 5, 7, 2, 0];
-
     let chordBpm = 87;
+    let chordPlayTimer = null;
+    let isChordLooping = false;
+    let activeChordSequence = null;
+    let activeChordIndex = 0;
 
 const recorderWorkletCode = `
 class RecorderProcessor extends AudioWorkletProcessor {
@@ -1167,14 +1263,14 @@ registerProcessor('recorder-processor', RecorderProcessor);
       let baseMaxHeight, heightDiffScale;
 
       if (isShortEnv) {
-        baseMaxHeight = 150;
-        heightDiffScale = 45;
+        baseMaxHeight = 190;
+        heightDiffScale = 57;
       } else if (is8KeyMode) {
         baseMaxHeight = 280;
         heightDiffScale = 85;
       } else {
-        baseMaxHeight = 210;
-        heightDiffScale = 65;
+        baseMaxHeight = 250;
+        heightDiffScale = 75;
       }
 
       if (is8KeyMode) {
@@ -1225,7 +1321,6 @@ registerProcessor('recorder-processor', RecorderProcessor);
           };
         });
       } else {
-        // 17-key Landscape Mode
         let keys17Raw;
         if (scaleDef.keys17) {
           keys17Raw = scaleDef.keys17;
@@ -1340,7 +1435,7 @@ registerProcessor('recorder-processor', RecorderProcessor);
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
         audioCtx = new AudioContextClass({ sampleRate: targetSampleRate });
 
-        const hpf = audioCtx.createBiquadFilter();
+        hpf = audioCtx.createBiquadFilter();
         hpf.type = 'highpass';
         hpf.frequency.setValueAtTime(120, audioCtx.currentTime);
 
@@ -1382,59 +1477,81 @@ registerProcessor('recorder-processor', RecorderProcessor);
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
       
+      const routingTarget = isCompressorRoutingEnabled ? compressor : hpf;
+
       const osc1 = audioCtx.createOscillator(), gain1 = audioCtx.createGain();
       osc1.type = 'sine'; osc1.frequency.setValueAtTime(freq, now);
       gain1.gain.setValueAtTime(0.5, now); gain1.gain.exponentialRampToValueAtTime(0.0001, now + 2.5);
-      
-      const osc2 = audioCtx.createOscillator(), gain2 = audioCtx.createGain();
-      osc2.type = 'sine'; osc2.frequency.setValueAtTime(freq * 2.756, now);
-      gain2.gain.setValueAtTime(0.18, now); gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
-      
-      const noise = audioCtx.createBufferSource();
-      noise.buffer = sharedNoiseBuffer;
-
-      const noiseGain = audioCtx.createGain();
-      noiseGain.gain.setValueAtTime(0.10, now);
-      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.015);
-
-      if (isNoiseFilterEnabled) {
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(1400, now);
-        noise.connect(filter);
-        filter.connect(noiseGain);
-      } else {
-        noise.connect(noiseGain);
-      }
-      
       osc1.connect(gain1);
-      osc2.connect(gain2);
-      noiseGain.connect(compressor);
-      gain1.connect(compressor);
-      gain2.connect(compressor);
+      gain1.connect(routingTarget);
+      osc1.start(now); 
+      osc1.stop(now + 2.6);
 
-      osc1.start(now); osc2.start(now); noise.start(now);
-      osc1.stop(now + 2.6); osc2.stop(now + 0.3); noise.stop(now + 0.015);
+      if (isHarmonicEffectEnabled) {
+        const osc2 = audioCtx.createOscillator(), gain2 = audioCtx.createGain();
+        osc2.type = 'sine'; osc2.frequency.setValueAtTime(freq * 2.756, now);
+        gain2.gain.setValueAtTime(0.18, now); gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+        osc2.connect(gain2);
+        gain2.connect(routingTarget);
+        osc2.start(now); 
+        osc2.stop(now + 0.3);
+      }
+
+      if (isRandomNoiseEnabled && sharedNoiseBuffer) {
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = sharedNoiseBuffer;
+
+        const noiseGain = audioCtx.createGain();
+        noiseGain.gain.setValueAtTime(0.10, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.015);
+
+        if (isNoiseFilterEnabled) {
+          const filter = audioCtx.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(1400, now);
+          noise.connect(filter);
+          filter.connect(noiseGain);
+        } else {
+          noise.connect(noiseGain);
+        }
+        
+        noiseGain.connect(routingTarget);
+        noise.start(now); 
+        noise.stop(now + 0.015);
+      }
     }
 
     const tinesWrapper = document.getElementById('tinesWrapper');
     const presetButtons = document.getElementById('presetButtons');
     const valLastPlucked = document.getElementById('valLastPlucked');
     const valInterval = document.getElementById('valInterval');
-    const arpControlGroup = document.getElementById('arpControlGroup');
-    const btnArpToggle = document.getElementById('btnArpToggle');
-    const inputArpBpm = document.getElementById('inputArpBpm');
-    const btnBpmMinus = document.getElementById('btnBpmMinus');
-    const btnBpmPlus = document.getElementById('btnBpmPlus');
 
     const inputChordBpm = document.getElementById('inputChordBpm');
     const btnChordBpmMinus = document.getElementById('btnChordBpmMinus');
     const btnChordBpmPlus = document.getElementById('btnChordBpmPlus');
+    const btnChordLoopToggle = document.getElementById('btnChordLoopToggle');
+    const btnChordStop = document.getElementById('btnChordStop');
 
     const txtTonicOctave = document.getElementById('txtTonicOctave');
     const btnOctaveMinus = document.getElementById('btnOctaveMinus');
     const btnOctavePlus = document.getElementById('btnOctavePlus');
     const btnLandscapeKeyToggle = document.getElementById('btnLandscapeKeyToggle');
+
+    const settingsModal = document.getElementById('settingsModal');
+    const btnOpenSettings = document.getElementById('btnOpenSettings');
+    const btnCloseModal = document.getElementById('btnCloseModal');
+
+    btnOpenSettings.addEventListener('click', () => {
+      settingsModal.classList.add('open');
+    });
+    btnCloseModal.addEventListener('click', () => {
+      settingsModal.classList.remove('open');
+    });
+    settingsModal.addEventListener('click', (e) => {
+      if (e.target === settingsModal) {
+        settingsModal.classList.remove('open');
+      }
+    });
 
     function updateOctaveUI() {
       if (txtTonicOctave) {
@@ -1484,79 +1601,13 @@ registerProcessor('recorder-processor', RecorderProcessor);
       if (el) { el.classList.add('active'); setTimeout(() => el.classList.remove('active'), 150); }
     }
 
-    function runArpeggioStep() {
-      if (!isArpeggioLooping) return;
-      const sIdx = arpSlots[arpIndex];
-      const targetTine = currentTines[sIdx];
-      if (targetTine) triggerTine(targetTine);
-      arpIndex = (arpIndex + 1) % arpSlots.length;
-    }
-
-    function updateArpUI() {
-      btnArpToggle.className = `segmented-btn ${isArpeggioLooping ? 'active' : ''}`;
-      btnArpToggle.textContent = isArpeggioLooping ? 'Circle of Fifths: ON' : 'Circle of Fifths: OFF';
-      if (document.activeElement !== inputArpBpm) {
-        inputArpBpm.value = arpeggioBpm;
-      }
-    }
-
-    btnArpToggle.addEventListener('click', () => {
-      isArpeggioLooping = !isArpeggioLooping;
-      updateArpUI();
-      if (isArpeggioLooping) {
-        arpIndex = 0;
-        const intervalMs = (60 / arpeggioBpm) * 1000;
-        arpeggioTimer = setInterval(runArpeggioStep, intervalMs);
-      } else {
-        if (arpeggioTimer) {
-          clearInterval(arpeggioTimer);
-          arpeggioTimer = null;
-        }
-      }
-    });
-
-    inputArpBpm.addEventListener('input', (e) => {
-      const val = parseFloat(e.target.value);
-      if (val >= 1 && val <= 500) {
-        arpeggioBpm = val;
-        if (isArpeggioLooping && arpeggioTimer) {
-          clearInterval(arpeggioTimer);
-          const intervalMs = (60 / arpeggioBpm) * 1000;
-          arpeggioTimer = setInterval(runArpeggioStep, intervalMs);
-        }
-      }
-    });
-
-    btnBpmMinus.addEventListener('click', () => {
-      let val = parseFloat(inputArpBpm.value) - 1;
-      if (isNaN(val)) val = 20;
-      if (val < 1) val = 1;
-      arpeggioBpm = val;
-      inputArpBpm.value = arpeggioBpm;
-      if (isArpeggioLooping && arpeggioTimer) {
-        clearInterval(arpeggioTimer);
-        const intervalMs = (60 / arpeggioBpm) * 1000;
-        arpeggioTimer = setInterval(runArpeggioStep, intervalMs);
-      }
-    });
-
-    btnBpmPlus.addEventListener('click', () => {
-      let val = parseFloat(inputArpBpm.value) + 1;
-      if (isNaN(val)) val = 20;
-      if (val > 500) val = 500;
-      arpeggioBpm = val;
-      inputArpBpm.value = arpeggioBpm;
-      if (isArpeggioLooping && arpeggioTimer) {
-        clearInterval(arpeggioTimer);
-        const intervalMs = (60 / arpeggioBpm) * 1000;
-        arpeggioTimer = setInterval(runArpeggioStep, intervalMs);
-      }
-    });
-
     inputChordBpm.addEventListener('input', (e) => {
       const val = parseFloat(e.target.value);
       if (val >= 1 && val <= 500) {
         chordBpm = val;
+        if (chordPlayTimer) {
+          startChordPlayback(activeChordSequence, true);
+        }
       }
     });
 
@@ -1566,6 +1617,9 @@ registerProcessor('recorder-processor', RecorderProcessor);
       if (val < 1) val = 1;
       chordBpm = val;
       inputChordBpm.value = chordBpm;
+      if (chordPlayTimer) {
+        startChordPlayback(activeChordSequence, true);
+      }
     });
 
     btnChordBpmPlus.addEventListener('click', () => {
@@ -1574,7 +1628,62 @@ registerProcessor('recorder-processor', RecorderProcessor);
       if (val > 500) val = 500;
       chordBpm = val;
       inputChordBpm.value = chordBpm;
+      if (chordPlayTimer) {
+        startChordPlayback(activeChordSequence, true);
+      }
     });
+
+    btnChordLoopToggle.addEventListener('click', () => {
+      isChordLooping = !isChordLooping;
+      btnChordLoopToggle.className = `segmented-btn ${isChordLooping ? 'active' : ''}`;
+      btnChordLoopToggle.textContent = isChordLooping ? 'Loop: ON' : 'Loop: OFF';
+    });
+
+    btnChordStop.addEventListener('click', () => {
+      stopChordPlayback();
+    });
+
+    function stopChordPlayback() {
+      if (chordPlayTimer) {
+        clearInterval(chordPlayTimer);
+        chordPlayTimer = null;
+      }
+      activeChordSequence = null;
+      activeChordIndex = 0;
+    }
+
+    function startChordPlayback(chordObj, resetIndex = true) {
+      stopChordPlayback();
+      activeChordSequence = chordObj;
+      if (resetIndex) activeChordIndex = 0;
+
+      const items = is8KeyMode ? chordObj.slotIndices : chordObj.pitchIndices;
+      if (!items || items.length === 0) return;
+
+      const intervalMs = (60 / chordBpm) * 1000;
+
+      function playStep() {
+        if (activeChordIndex >= items.length) {
+          if (isChordLooping) {
+            activeChordIndex = 0;
+          } else {
+            stopChordPlayback();
+            return;
+          }
+        }
+        const targetInd = items[activeChordIndex];
+        if (targetInd !== null && targetInd !== undefined) {
+          const targetTine = is8KeyMode ? currentTines[targetInd] : currentTines.find(t => t.pitchIndex === targetInd);
+          if (targetTine) {
+            triggerTine(targetTine);
+          }
+        }
+        activeChordIndex++;
+      }
+
+      playStep();
+      chordPlayTimer = setInterval(playStep, intervalMs);
+    }
 
     function renderApp() {
       updateTonicFreq();
@@ -1617,20 +1726,14 @@ registerProcessor('recorder-processor', RecorderProcessor);
       });
 
       presetButtons.innerHTML = '';
-      
-      const showChineseArp = (is8KeyMode && currentScaleKey === 'chinesetuning');
-      arpControlGroup.style.display = showChineseArp ? 'flex' : 'none';
 
-      if (!showChineseArp && isArpeggioLooping) {
-        isArpeggioLooping = false;
-        if (arpeggioTimer) {
-          clearInterval(arpeggioTimer);
-          arpeggioTimer = null;
+      const activeChords = is8KeyMode ? scaleDef.chords8 : scaleDef.chords13.filter(c => {
+        const hasExceeded = c.pitchIndices && c.pitchIndices.some(idx => idx !== null && idx >= 13);
+        if (hasExceeded) {
+          return !is8KeyMode && landscapeKeyCount === 17;
         }
-        updateArpUI();
-      }
-
-      const activeChords = is8KeyMode ? scaleDef.chords8 : scaleDef.chords13;
+        return true;
+      });
       activeChords.forEach((c, idx) => {
         const btn = document.createElement('button');
         btn.className = `preset-btn ${idx === 0 ? 'active' : ''}`;
@@ -1638,20 +1741,7 @@ registerProcessor('recorder-processor', RecorderProcessor);
         btn.addEventListener('click', () => {
           document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          
-          const delayMs = (60 / chordBpm) * 1000;
-
-          if (is8KeyMode) {
-            c.slotIndices.forEach((sIdx, delay) => {
-              const targetTine = currentTines[sIdx];
-              if (targetTine) setTimeout(() => triggerTine(targetTine), delay * delayMs);
-            });
-          } else {
-            c.pitchIndices.forEach((pIdx, delay) => {
-              const targetTine = currentTines.find(t => t.pitchIndex === pIdx);
-              if (targetTine) setTimeout(() => triggerTine(targetTine), delay * delayMs);
-            });
-          }
+          startChordPlayback(c, true);
         });
         presetButtons.appendChild(btn);
       });
@@ -1763,8 +1853,6 @@ registerProcessor('recorder-processor', RecorderProcessor);
         if (lastRecordedBlobUrl) URL.revokeObjectURL(lastRecordedBlobUrl);
         lastRecordedBlobUrl = URL.createObjectURL(wavBlob);
 
-        const bitName = formatConfig.bitDepth === '32float' ? '32bit Float' : '16bit PCM';
-        const srName = formatConfig.sampleRate === 96000 ? '96kHz' : '48kHz';
         txtDownload.textContent = `💾`;
         btnDownload.style.display = 'inline-flex';
       }
@@ -1852,11 +1940,32 @@ registerProcessor('recorder-processor', RecorderProcessor);
       renderApp();
     });
 
+    document.getElementById('randomNoiseToggle').addEventListener('click', (e) => {
+      const btn = e.target.closest('.segmented-btn'); if (!btn) return;
+      document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      isRandomNoiseEnabled = (btn.dataset.noise === 'on');
+    });
+
     document.getElementById('noiseFilterToggle').addEventListener('click', (e) => {
       const btn = e.target.closest('.segmented-btn'); if (!btn) return;
       document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       isNoiseFilterEnabled = (btn.dataset.filter === 'on');
+    });
+
+    document.getElementById('harmonicEffectToggle').addEventListener('click', (e) => {
+      const btn = e.target.closest('.segmented-btn'); if (!btn) return;
+      document.querySelectorAll('#harmonicEffectToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      isHarmonicEffectEnabled = (btn.dataset.harmonic === 'on');
+    });
+
+    document.getElementById('compressorRoutingToggle').addEventListener('click', (e) => {
+      const btn = e.target.closest('.segmented-btn'); if (!btn) return;
+      document.querySelectorAll('#compressorRoutingToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      isCompressorRoutingEnabled = (btn.dataset.compressor === 'on');
     });
 
     document.getElementById('tonicPresetBtns').addEventListener('click', (e) => {
