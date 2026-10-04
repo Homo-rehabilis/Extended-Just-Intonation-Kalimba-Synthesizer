@@ -13,14 +13,14 @@ A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built wi
 
 ## Key Features
 
-*   **Adaptive Key Layouts:** Automatically switches between an **8-Key mode** (ideal for portrait or mobile views) and a **13-Key or 17-Key mode** (for landscape views)[span_3](start_span)[span_3](end_span)[span_4](start_span)[span_4](end_span).
-*   **7 Distinct Scale Systems:** Switch instantly between 7 microtonal and historical just intonation tuning presets, including 7-Limit Soul Jazz Blues, 23-Limit Natural Harmonics, Chinese 3-Limit JI, Pythagorean 3-Limit JI, Archytas's 7-Limit JI, Classic 5-Limit JI, and Nearly TET 19-limit JI[span_5](start_span)[span_5](end_span)[span_6](start_span)[span_6](end_span).
-*   **Customizable Base Tonic (1/1) & Ratio Multiplier:** Tune the root frequency using standard presets (417.6 Hz, 432 Hz, 440 Hz, 512 Hz) or custom input, with real-time tonic fraction multipliers and octave shifting (+/-)[span_7](start_span)[span_7](end_span)[span_8](start_span)[span_8](end_span).
-*   **High-Quality Recording Engine:** Built-in WAV audio recording supporting 32-bit Float and 16-bit PCM formats at 48 kHz or 96 kHz[span_9](start_span)[span_9](end_span). Uses low-latency `AudioWorklet` architecture with a fallback to `ScriptProcessor`[span_10](start_span)[span_10](end_span).
-*   **Advanced Audio Customization:** A dedicated settings modal allows toggling of Random Noise textures, Tine Noise Filters, Harmonic Effects (OSC 2), and Compressor Routing to shape the perfect tone[span_11](start_span)[span_11](end_span).
-*   **Automated Chord Playback:** Trigger scale-specific chord patterns with an adjustable BPM controller and loop toggle capabilities[span_12](start_span)[span_12](end_span).
-*   **Real-Time Telemetry:** Visual readout of the last plucked tines, displaying exact frequencies, cents, and inter-note ratio differences[span_13](start_span)[span_13](end_span).
-*   **Progressive Web App (PWA):** Fully installable with built-in service worker caching and on-screen update notifications for offline use[span_14](start_span)[span_14](end_span).
+*   **Adaptive Key Layouts:** Automatically switches between an **8-Key mode** (ideal for portrait or mobile views) and a **13-Key or 17-Key mode** (for landscape views).
+*   **7 Distinct Scale Systems:** Switch instantly between 7 microtonal and historical just intonation tuning presets, including 7-Limit Soul Jazz Blues, 23-Limit Natural Harmonics, Chinese 3-Limit JI, Pythagorean 3-Limit JI, Archytas's 7-Limit JI, Classic 5-Limit JI, and Nearly TET 19-limit JI.
+*   **Customizable Base Tonic (1/1) & Ratio Multiplier:** Tune the root frequency using standard presets (417.6 Hz, 432 Hz, 440 Hz, 512 Hz) or custom input, with real-time tonic fraction multipliers and octave shifting (+/-).
+*   **High-Quality Recording Engine:** Built-in WAV audio recording supporting 32-bit Float and 16-bit PCM formats at 48 kHz or 96 kHz. Enabled to select low-latency `AudioWorklet` or `ScriptProcessor`.
+*   **Advanced Audio Customization:** A dedicated settings modal allows toggling of Random Noise textures, Tine Noise Filters, Harmonic Effects, and Compressor Routing to shape the perfect tone.
+*   **Automated Chord Playback:** Trigger scale-specific chord patterns with an adjustable BPM controller and loop toggle capabilities.
+*   **Real-Time Telemetry:** Visual readout of the last plucked tines, displaying exact frequencies, cents, and inter-note ratio differences.
+*   **Progressive Web App (PWA):** Fully installable with built-in service worker caching and on-screen update notifications for offline use.
 
 ---
 
@@ -32,7 +32,7 @@ The synthesizer includes 7 distinct microtonal and just intonation tuning system
 2.  **23-Limit Natural Harmonics** – Features upper partials derived from 16-32 natural harmonic series up to the 23rd prime limit.
 3.  **Chinese 3-Limit Dao** – Traditional Chinese 3-limit tuning based on the Sanfen Sunyi (pythagorean-like) method, mapping classic pitch names.
 4.  **Pythagorean 3-Limit** – Pure 3-limit tuning based on 3:2 fifths, recognized as the oldest recorded tuning system in history (Philolaos's Fragment B6).
-5.  **Archytas's 7-Limit Tetrachords** – Ancient Greek tuning system utilizing septimal ratios designed by Archytas.
+5.  **Archytas's 7-Limit Tetrachords** – Ancient Greek tuning system utilizing septimal ratios based on Archytas's tetrachord.
 6.  **Classic 5-Limit Just Intonation** – Traditional 5-limit tuning optimized for pure major and minor triads.
 7.  **Nearly TET 19-limit Just Intonation** – A 19-limit just intonation scale approximating 12-tone Equal Temperament intervals.
 
@@ -96,23 +96,16 @@ If you prefer to run or modify the code locally:
 
 バニラHTML5、CSS3、Web Audio APIで構築された、ブラウザベースの**純正律カリンバ・シンセサイザー**です。楽器演奏者、数比に基づく微小音程（マイクロトーン）に興味をもつ人が、直感的な親指ピアノインターフェースを通じて歴史的および未来的な音律システムを探索、学習するために考案されました。
 
----
-
-<a id="japanese"></a>
-# Extended Just Intonation Kalimba Synthesizer (拡張純正律カリンバシンセサイザー)
-
-HTML5、CSS3、Web Audio APIを使用して構築された、ブラウザベースの高精度な純正律カリンバシンセサイザーです[span_15](start_span)[span_15](end_span)[span_16](start_span)[span_16](end_span)。音楽家や微分音の愛好家が、インタラクティブな親指ピアノのインターフェースを通じて、歴史的および代替的なチューニングシステムを探求できるように設計されています[span_17](start_span)[span_17](end_span)。
-
 ## 主な機能
 
-*   **アダプティブ・キーレイアウト:** 縦画面（モバイル）に最適な**8キーモード**と、横画面用の**13キーモードまたは17キーモード**を自動・手動で切り替えることができます[span_18](start_span)[span_18](end_span)[span_19](start_span)[span_19](end_span)。
-*   **7種類の音階システム:** 7-Limit Soul Jazz Blues、23-Limit Natural Harmonics、Chinese 3-Limit JI、Pythagorean 3-Limit JI、Archytas's 7-Limit JI、Classic 5-Limit JI、Nearly TET 19-limit JI の7つのチューニングプリセットを瞬時に切り替え可能です[span_20](start_span)[span_20](end_span)[span_21](start_span)[span_21](end_span)。
-*   **基音（トニック）とレシオのカスタマイズ:** 417.6 Hz、432 Hz、440 Hz、512 Hzの標準プリセット、または任意のカスタム周波数でルート音をチューニングできます[span_22](start_span)[span_22](end_span)[span_23](start_span)[span_23](end_span)。さらに分数倍率やオクターブシフト（+/-）によるリアルタイム調整をサポートしています[span_24](start_span)[span_24](end_span)。
-*   **高品質レコーディングエンジン:** 32-bit Float および 16-bit PCM（48kHz / 96kHz）フォーマットに対応したWAVレコーダーを内蔵しています[span_25](start_span)[span_25](end_span)。低遅延の `AudioWorklet` を採用し、`ScriptProcessor` へのフォールバックエンジンも搭載しています[span_26](start_span)[span_26](end_span)。
-*   **詳細なサウンドエディット:** 専用のオーディオ設定モーダルから、テクスチャ用のランダムノイズ、タイン（キー）ノイズフィルター、ハーモニックエフェクト（OSC 2）、コンプレッサーのルーティングを切り替え、理想の音作りが可能です[span_27](start_span)[span_27](end_span)。
-*   **自動コード・フレーズ再生:** 音階に応じたコードパターンを、BPM調整機能とループ機能を利用して自動再生できます[span_28](start_span)[span_28](end_span)。
-*   **リアルタイム・テレメトリ:** 最後に弾いたキーの正確な周波数、セント値、および音程間の比率（インターバル）の差を画面上で視覚的に確認できます[span_29](start_span)[span_29](end_span)。
-*   **PWA（Progressive Web App）対応:** Service Workerによるキャッシュ管理とアップデート通知を備え、オフラインでも利用できるアプリとしてインストール可能です[span_30](start_span)[span_30](end_span)。
+*   **アダプティブ・キーレイアウト:** 縦画面（モバイル）に最適な**8キーモード**と、横画面用の**13キーモードまたは17キーモード**を自動・手動で切り替えることができます。
+*   **7種類の音階システム:** 7-Limit Soul Jazz Blues、23-Limit Natural Harmonics、Chinese 3-Limit JI、Pythagorean 3-Limit JI、Archytas's 7-Limit JI、Classic 5-Limit JI、Nearly TET 19-limit JI の7つのチューニングプリセットを瞬時に切り替え可能です。
+*   **基音と比率のカスタマイズ:** 417.6 Hz、432 Hz、440 Hz、512 Hzの標準プリセット、または任意のカスタム周波数でルート音をチューニングできます。さらに分数倍率やオクターブシフト（+/-）によるリアルタイム調整をサポートしています。
+*   **高品質レコーディングエンジン:** 32-bit Float および 16-bit PCM（48kHz / 96kHz）フォーマットに対応したWAVレコーダーを内蔵しています。低遅延の `AudioWorklet` を採用し、不具合がある場合の`ScriptProcessor` への切り替え機能も搭載しています。
+*   **詳細なサウンドカスタマイズ:** 右上の⚙️にあるオーディオ設定画面から、サウンドテクスチャ用のランダムノイズ、タイン（キー）ノイズフィルター、インハーモニック倍音エフェクト、コンプレッサーのルーティングを切り替え、理想の音作りが可能です。
+*   **自動コード・アルペジオ再生:** 音階に応じたコードパターンを、BPM調整機能とループ機能を利用して自動再生できます。
+*   **リアルタイム・テレメトリ:** 最後に弾いたキーの正確な周波数、セント値、および音程間の比率（インターバル）の差を画面上で視覚的に確認できます。
+*   **PWA（Progressive Web App）対応:** Service Workerによるキャッシュ管理とアップデート通知を備え、オフラインでも利用できるアプリとしてインストール可能です。
 
 ---
 
@@ -124,7 +117,7 @@ HTML5、CSS3、Web Audio APIを使用して構築された、ブラウザベー�
 2.  **23-Limit Natural Harmonics** – 第16-32の自然倍音列から抽出した素数23までの上位倍音で音律を構成。
 3.  **Chinese 3-Limit Dao** – 三分損益法に基づく伝統的な中国の3限界純正律（黄鐘・大呂・太簇などの律呂名と執始を含む音律）。
 4.  **Pythagorean 3-Limit** – 3:2の完全五度をベースにした、文献史上世界最古の音律（Philolaos's Fragment B6）。
-5.  **Archytas's 7-Limit Tetrachords** – 古代ギリシャのアルキタスによる素数7までの比率を利用したテトラコルド音律。
+5.  **Archytas's 7-Limit Tetrachords** – 古代ギリシャのアルキタスの理論に基づく素数7までの比率を利用したテトラコルド音律。
 6.  **Classic 5-Limit Just Intonation** – 純正な長三度・短三度に最適化された伝統的な5限界純正律。
 7.  **Nearly TET 19-limit Just Intonation** – 12平均律に近似した音程を持つ19限界純正律プリセット。
 
@@ -143,7 +136,7 @@ HTML5、CSS3、Web Audio APIを使用して構築された、ブラウザベー�
 ### 詳細設定パネル
 *   **基準音 (Base Tonic) & 倍率 (Multiplier):** ルート音の周波数を調整し、音程比率を指定して基音を自由に移動できます。
 *   **ノイズフィルター & 録音エンジン:** 音響ノイズシミュレーションのON/OFFおよび録音処理エンジン（`AudioWorklet` / `ScriptProcessor`）の切替が可能です。
-*   **BPM設定 & アルペジオ:** コード再生速度（Chord BPM）や五度圏アルペジオのテンポ（Arp BPM）を調整できます。
+*   **BPM設定 & アルペジオ:** コード再生速度（Chord BPM）や五度圏アルペジオのテンポを調整できます。
 
 ---
 
