@@ -1,6 +1,6 @@
 {
   "name": "Extended Just Intonation Kalimba",
-  "short_name": "EJIKS",
+  "short_name": "JI Kalimba",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#090a0f",
