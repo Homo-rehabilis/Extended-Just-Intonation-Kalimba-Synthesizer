@@ -299,6 +299,14 @@
       color: #ffffff;
     }
 
+    .gain-slider {
+      accent-color: #38bdf8;
+      height: 4px;
+      background: #0d0f17;
+      border-radius: 2px;
+      outline: none;
+    }
+
     .freq-input, .select-input {
       background-color: #0d0f17;
       border: 1px solid #232838;
@@ -693,6 +701,14 @@
             <button class="segmented-btn" data-scale="archytas">Archytas's 7-Limit JI</button>
             <button class="segmented-btn" data-scale="classic5limit">Classic 5-Limit JI</button>
             <button class="segmented-btn" data-scale="nearlytet19">Nearly TET 19-limit JI</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">MASTER GAIN</span>
+          <div style="display: flex; align-items: center; gap: 8px; padding: 3px;">
+            <input type="range" id="inputMasterGain" class="gain-slider" min="0.01" max="0.25" step="0.01" value="0.05" style="width: 145px; cursor: pointer;">
+            <span id="txtMasterGain" style="font-size: 0.6rem; color: #38bdf8; font-family: monospace; font-weight: 700; min-width: 80px; text-align: right;">0.05 (-26dB)</span>
           </div>
         </div>
 
@@ -1137,6 +1153,7 @@
     let tonicDen = 1;
     let tonicOctave = 0;
     let currentTonicFreq = 417.6;
+    let masterGainValue = 0.05;
     let is8KeyMode = true;
     let landscapeKeyCount = 13;
     let currentTines = [];
@@ -1445,7 +1462,7 @@ registerProcessor('recorder-processor', RecorderProcessor);
         compressor.ratio.setValueAtTime(6, audioCtx.currentTime);
 
         masterGain = audioCtx.createGain();
-        masterGain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+        masterGain.gain.setValueAtTime(masterGainValue, audioCtx.currentTime);
 
         compressor.connect(hpf);
         hpf.connect(masterGain);
@@ -1947,6 +1964,20 @@ registerProcessor('recorder-processor', RecorderProcessor);
       btn.classList.add('active');
       currentScaleKey = btn.dataset.scale;
       renderApp();
+    });
+
+    // MASTER GAIN イベントリスナー
+    const inputMasterGain = document.getElementById('inputMasterGain');
+    const txtMasterGain = document.getElementById('txtMasterGain');
+    inputMasterGain.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      masterGainValue = val;
+      const db = (20 * Math.log10(val)).toFixed(1);
+      const dbStr = db.endsWith('.0') ? db.slice(0, -2) : db;
+      txtMasterGain.textContent = `${val.toFixed(2)} (${dbStr}dB)`;
+      if (masterGain && audioCtx) {
+        masterGain.gain.setValueAtTime(masterGainValue, audioCtx.currentTime);
+      }
     });
 
     document.getElementById('randomNoiseToggle').addEventListener('click', (e) => {
