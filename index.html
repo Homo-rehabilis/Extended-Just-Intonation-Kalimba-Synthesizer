@@ -9,596 +9,73 @@
   <link rel="manifest" href="manifest.json">
   <title>Extended Just Intonation Kalimba Synthesizer</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background-color: #090a0f;
-      color: #f3f4f6;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 12px;
-      overflow-x: hidden;
-      overflow-y: auto;
-    }
-    
-    .app-card {
-      background-color: #12141c;
-      border: 1px solid #1f2433;
-      border-radius: 20px;
-      padding: 16px;
-      width: 100%;
-      max-width: 540px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
-      transition: max-width 0.3s ease, padding 0.3s ease;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .app-card:fullscreen, .app-card:-webkit-full-screen {
-      width: 100vw !important;
-      height: 100vh !important;
-      max-width: 100vw !important;
-      max-height: 100vh !important;
-      border-radius: 0 !important;
-      border: none !important;
-      padding: 10px 16px !important;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow: hidden !important;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-    .title-group h1 {
-      font-size: 1.00rem;
-      font-weight: 700;
-      color: #ffffff;
-      line-height: 1.2;
-    }
-    .title-group p {
-      font-size: 0.7rem;
-      color: #8b92a5;
-      margin-top: 1px;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .rec-btn {
-      background-color: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      color: #ef4444;
-      padding: 4px 10px;
-      border-radius: 10px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-    .rec-btn:hover {
-      background-color: rgba(239, 68, 68, 0.3);
-      border-color: #ef4444;
-    }
-    .rec-btn.recording {
-      background-color: #ef4444;
-      color: #ffffff;
-      border-color: #f87171;
-    }
-    .rec-dot {
-      width: 8px;
-      height: 8px;
-      background-color: #ef4444;
-      border-radius: 50%;
-      display: inline-block;
-    }
-    .rec-btn.recording .rec-dot {
-      background-color: #ffffff;
-      animation: pulse-dot 1s infinite;
-    }
-    @keyframes pulse-dot {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.3; transform: scale(0.8); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-    .download-btn {
-      background-color: rgba(34, 197, 94, 0.15);
-      border: 1px solid rgba(34, 197, 94, 0.4);
-      color: #4ade80;
-      padding: 4px 10px;
-      border-radius: 10px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: none;
-      align-items: center;
-      gap: 4px;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-    .download-btn:hover {
-      background-color: rgba(34, 197, 94, 0.3);
-      border-color: #4ade80;
-    }
-
-    .mode-badge {
-      background: rgba(234, 179, 8, 0.15);
-      border: 1px solid rgba(234, 179, 8, 0.4);
-      color: #facc15;
-      padding: 4px 8px;
-      border-radius: 10px;
-      font-size: 0.68rem;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .fullscreen-btn {
-      background-color: rgba(56, 189, 248, 0.15);
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      color: #38bdf8;
-      padding: 4px 10px;
-      border-radius: 10px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-    .fullscreen-btn:hover {
-      background-color: rgba(56, 189, 248, 0.3);
-      border-color: #38bdf8;
-    }
-
-    .tonic-badge {
-      background: rgba(30, 41, 59, 0.7);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 10px;
-      padding: 4px 8px;
-      display: flex;
-      gap: 4px;
-      align-items: center;
-      font-family: ui-monospace, monospace;
-      white-space: nowrap;
-    }
-    .tonic-badge .col-left { font-size: 0.65rem; color: #94a3b8; }
-    .tonic-badge .col-right { font-size: 0.75rem; font-weight: 700; color: #38bdf8; }
-
-    /* Modal Styles */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background-color: rgba(0, 0, 0, 0.75);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
-    .modal-overlay.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .modal-card {
-      background-color: #12141c;
-      border: 1px solid #1f2433;
-      border-radius: 16px;
-      padding: 16px;
-      width: 90%;
-      max-width: 440px;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #252b3d;
-      padding-bottom: 8px;
-      margin-bottom: 2px;
-    }
-    .modal-title {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: #ffffff;
-      letter-spacing: 0.03em;
-    }
-    .modal-close-btn {
-      background: none;
-      border: none;
-      color: #9ca3af;
-      font-size: 1rem;
-      cursor: pointer;
-      padding: 2px 6px;
-      border-radius: 6px;
-    }
-    .modal-close-btn:hover {
-      background-color: rgba(255,255,255,0.1);
-      color: #ffffff;
-    }
-
-    .top-panels {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 6px;
-      flex-shrink: 0;
-    }
-
-    .controls-card {
-      background-color: #181b26;
-      border-radius: 12px;
-      padding: 6px 10px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 4px;
-      border: 1px solid #252b3d;
-    }
-    .control-group {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 3px;
-      flex-wrap: wrap;
-    }
-    .control-label {
-      font-size: 0.62rem;
-      font-weight: 700;
-      color: #9ca3af;
-      letter-spacing: 0.03em;
-    }
-    .segmented-btn-group {
-      display: flex;
-      background-color: #0d0f17;
-      border-radius: 8px;
-      padding: 2px;
-      border: 1px solid #232838;
-      flex-wrap: wrap;
-      gap: 2px;
-    }
-    .segmented-btn {
-      background: none;
-      border: none;
-      color: #9ca3af;
-      padding: 3px 4px;
-      font-size: 0.59rem;
-      font-weight: 600;
-      border-radius: 3px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-    .segmented-btn.active {
-      background-color: #2563eb;
-      color: #ffffff;
-    }
-
-    .gain-slider {
-      accent-color: #38bdf8;
-      height: 4px;
-      background: #0d0f17;
-      border-radius: 2px;
-      outline: none;
-    }
-
-    .freq-input, .select-input {
-      background-color: #0d0f17;
-      border: 1px solid #232838;
-      color: #38bdf8;
-      font-family: monospace;
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 3px 4px;
-      border-radius: 6px;
-      outline: none;
-    }
-    .freq-input {
-      width: 54px;
-      text-align: right;
-    }
-
-    .telemetry-card {
-      background-color: #181b26;
-      border-radius: 12px;
-      padding: 6px 10px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4px 6px;
-      align-items: center;
-      border: 1px solid #252b3d;
-    }
-    .telemetry-card .control-group {
-      grid-column: 1 / -1;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      padding-top: 0px;
-      margin-top: 0px;
-    }
-    .tel-item { 
-      display: flex; 
-      flex-direction: column; 
-      min-width: 0; 
-      overflow: hidden;
-    }
-    .tel-label { 
-      font-size: 0.65rem; 
-      font-weight: 700; 
-      color: #6b7280; 
-      letter-spacing: 0.04em; 
-      white-space: nowrap; 
-    }
-    .tel-value { 
-      font-family: ui-monospace, monospace; 
-      font-size: 0.7rem; 
-      font-weight: 600; 
-      color: #f3f4f6; 
-      line-height: 1.2;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      min-height: 3.1em;
-    }
-    .tel-value .line {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: block;
-    }
-    .tel-value.highlight { color: #38bdf8; }
-
-    .stage-card {
-      background-color: #181b26;
-      border-radius: 14px;
-      padding: 10px 8px;
-      margin-bottom: 8px;
-      border: 1px solid #252b3d;
-      flex-grow: 1;
-      display: flex;
-      align-items: center;
-      min-height: 0;
-    }
-    .tines-container {
-      position: relative;
-      height: 320px;
-      max-height: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding-top: 8px;
-      width: 100%;
-    }
-    .bridge-bar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 10px;
-      background: linear-gradient(180deg, #4a2e1b 0%, #2a180e 100%);
-      border-radius: 5px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.6);
-      z-index: 1;
-    }
-    .tine-wrapper {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      z-index: 2;
-      margin: 0 1px;
-      min-width: 0;
-      height: 100%;
-      justify-content: flex-start;
-    }
-    .tine {
-      width: 100%;
-      max-width: 44px;
-      min-width: 16px;
-      background: linear-gradient(180deg, #4b5263 0%, #2b2f3a 100%);
-      border-radius: 0 0 8px 8px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      padding: 6px 2px 6px;
-      transition: height 0.2s ease, background 0.08s ease, transform 0.08s ease;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-      user-select: none;
-      overflow: hidden;
-    }
-    .tine-wrapper.is-tonic .tine {
-      background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
-    }
-    .tine-wrapper.active .tine {
-      background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%) !important;
-      box-shadow: 0 0 16px rgba(59, 130, 246, 0.9) !important;
-      transform: translateY(4px);
-    }
-    .tine-idx {
-      font-size: 0.68rem;
-      font-weight: 800;
-      color: #facc15;
-      margin-bottom: 2px;
-    }
-    .tine-name {
-      font-size: 0.52rem;
-      font-weight: 700;
-      color: #ffffff;
-      text-align: center;
-      line-height: 1.1;
-      word-break: break-word;
-      max-width: 100%;
-    }
-    .tine-ratio-text {
-      font-size: 0.60rem;
-      font-weight: 700;
-      color: #9ca3af;
-      margin-top: 4px;
-      text-align: center;
-      white-space: nowrap;
-    }
-    .tine-cents-text {
-      font-size: 0.52rem;
-      color: #6b7280;
-      white-space: nowrap;
-    }
-    .tine-key-shortcut {
-      font-size: 0.50rem;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      padding: 1px 4px;
-      border-radius: 3px;
-      margin-top: 2px;
-      white-space: nowrap;
-      font-family: monospace;
-    }
-    
-    .presets-section {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      gap: 3px;
-      flex-shrink: 0;
-      background-color: #181b26;
-      border: 1px solid #252b3d;
-      border-radius: 12px;
-      padding: 5px 8px;
-    }
-    .presets-left {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex: 1;
-      min-width: 0;
-      flex-wrap: wrap;
-    }
-    .presets-grid { 
-      display: flex; 
-      gap: 6px; 
-      align-items: center; 
-      flex-wrap: wrap;
-    }
-    .preset-btn {
-      background-color: #0d0f17;
-      border: 1px solid #2e3545;
-      color: #e5e7eb;
-      padding: 3px 5px;
-      border-radius: 10px;
-      font-size: 0.65rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-    .preset-btn:hover { background-color: #262b38; border-color: #4b5563; }
-    .preset-btn.active {
-      background-color: rgba(37, 99, 235, 0.25);
-      border-color: #3b82f6;
-      color: #60a5fa;
-    }
-    
-    .chord-bpm-card {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 3px;
-      background-color: #0d0f17;
-      border: 1px solid #232838;
-      padding: 3px 5px;
-      border-radius: 10px;
-      flex-shrink: 0;
-    }
-
-    @media (orientation: landscape) or (min-width: 768px) {
-      .app-card {
-        max-width: 1020px;
-        padding: 8px 14px;
-        max-height: 100vh;
-      }
-
-      .header { margin-bottom: 4px; }
-
-      .top-panels {
-        display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
-        gap: 6px;
-        margin-bottom: 4px;
-      }
-
-      .controls-card, .telemetry-card {
-        margin-bottom: 0;
-        height: 100%;
-        padding: 4px 8px;
-        gap: 3px;
-      }
-
-      .stage-card {
-        padding: 4px;
-        margin-bottom: 4px;
-      }
-
-      .tines-container {
-        height: 250px;
-      }
-
-      .chord-bpm-card {
-        flex-direction: row;
-        align-items: center;
-        gap: 2px;
-      }
-    }
-
-    @media (orientation: landscape) and (max-height: 580px) {
-      body { padding: 0; }
-      .app-card { 
-        padding: 4px 10px; 
-        border-radius: 0;
-        border: none;
-        height: 100vh;
-        max-height: 100vh;
-        justify-content: space-between;
-      }
-      .header { margin-bottom: 3px; }
-      .title-group h1 { font-size: 0.88rem; }
-      .title-group p { font-size: 0.58rem; }
-      .top-panels { margin-bottom: 3px; gap: 4px; }
-      .controls-card, .telemetry-card { padding: 3px 6px; gap: 2px; }
-      .stage-card { padding: 3px; margin-bottom: 3px; }
-      .tines-container { height: 190px; }
-      .tine-name { font-size: 0.46rem; }
-      .tine-ratio-text { font-size: 0.52rem; margin-top: 1px; }
-      .tine-cents-text { font-size: 0.46rem; }
-      .tine-key-shortcut { font-size: 0.44rem; margin-top: 1px; }
-      .presets-section { gap: 3px; }
-      .preset-btn { padding: 2px 6px; font-size: 0.58rem; }
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:12px;overflow-x:hidden;overflow-y:auto}
+    .app-card{background-color:#12141c;border:1px solid #1f2433;border-radius:20px;padding:16px;width:100%;max-width:540px;box-shadow:0 20px 50px rgba(0,0,0,0.9);transition:max-width .3s ease,padding .3s ease;display:flex;flex-direction:column}
+    .app-card:fullscreen,.app-card:-webkit-full-screen{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:10px 16px!important;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden!important}
+    .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;flex-shrink:0}
+    .title-group h1{font-size:1rem;font-weight:700;color:#fff;line-height:1.2}
+    .title-group p{font-size:.7rem;color:#8b92a5;margin-top:1px}
+    .header-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+    .rec-btn{background-color:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#ef4444;padding:4px 10px;border-radius:10px;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s ease;white-space:nowrap}
+    .rec-btn:hover{background-color:rgba(239,68,68,.3);border-color:#ef4444}
+    .rec-btn.recording{background-color:#ef4444;color:#fff;border-color:#f87171}
+    .rec-dot{width:8px;height:8px;background-color:#ef4444;border-radius:50%;display:inline-block}
+    .rec-btn.recording .rec-dot{background-color:#fff;animation:pulse-dot 1s infinite}
+    @keyframes pulse-dot{0%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.8)}100%{opacity:1;transform:scale(1)}}
+    .download-btn{background-color:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:#4ade80;padding:4px 10px;border-radius:10px;font-size:.72rem;font-weight:600;cursor:pointer;display:none;align-items:center;gap:4px;transition:all .15s ease;white-space:nowrap}
+    .download-btn:hover{background-color:rgba(34,197,94,.3);border-color:#4ade80}
+    .mode-badge{background:rgba(234,179,8,.15);border:1px solid rgba(234,179,8,.4);color:#facc15;padding:4px 8px;border-radius:10px;font-size:.68rem;font-weight:700;white-space:nowrap}
+    .fullscreen-btn{background-color:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);color:#38bdf8;padding:4px 10px;border-radius:10px;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .15s ease;white-space:nowrap}
+    .fullscreen-btn:hover{background-color:rgba(56,189,248,.3);border-color:#38bdf8}
+    .tonic-badge{background:rgba(30,41,59,.7);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:4px 8px;display:flex;gap:4px;align-items:center;font-family:ui-monospace,monospace;white-space:nowrap}
+    .tonic-badge .col-left{font-size:.65rem;color:#94a3b8}
+    .tonic-badge .col-right{font-size:.75rem;font-weight:700;color:#38bdf8}
+    .modal-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background-color:rgba(0,0,0,.75);display:flex;justify-content:center;align-items:center;z-index:10000;opacity:0;pointer-events:none;transition:opacity .2s ease}
+    .modal-overlay.open{opacity:1;pointer-events:auto}
+    .modal-card{background-color:#12141c;border:1px solid #1f2433;border-radius:16px;padding:16px;width:90%;max-width:440px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.9);display:flex;flex-direction:column;gap:10px}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #252b3d;padding-bottom:8px;margin-bottom:2px}
+    .modal-title{font-size:.9rem;font-weight:700;color:#fff;letter-spacing:.03em}
+    .modal-close-btn{background:none;border:none;color:#9ca3af;font-size:1rem;cursor:pointer;padding:2px 6px;border-radius:6px}
+    .modal-close-btn:hover{background-color:rgba(255,255,255,.1);color:#fff}
+    .top-panels{display:flex;flex-direction:column;gap:6px;margin-bottom:6px;flex-shrink:0}
+    .controls-card{background-color:#181b26;border-radius:12px;padding:6px 10px;display:flex;flex-direction:column;justify-content:center;gap:4px;border:1px solid #252b3d}
+    .control-group{display:flex;align-items:center;justify-content:space-between;gap:3px;flex-wrap:wrap}
+    .control-label{font-size:.62rem;font-weight:700;color:#9ca3af;letter-spacing:.03em}
+    .segmented-btn-group{display:flex;background-color:#0d0f17;border-radius:8px;padding:2px;border:1px solid #232838;flex-wrap:wrap;gap:2px}
+    .segmented-btn{background:none;border:none;color:#9ca3af;padding:3px 4px;font-size:.59rem;font-weight:600;border-radius:3px;cursor:pointer;transition:all .15s ease;white-space:nowrap}
+    .segmented-btn.active{background-color:#2563eb;color:#fff}
+    .gain-slider{accent-color:#38bdf8;height:4px;background:#0d0f17;border-radius:2px;outline:none}
+    .freq-input,.select-input{background-color:#0d0f17;border:1px solid #232838;color:#38bdf8;font-family:monospace;font-size:.6rem;font-weight:700;padding:3px 4px;border-radius:6px;outline:none}
+    .freq-input{width:54px;text-align:right}
+    .telemetry-card{background-color:#181b26;border-radius:12px;padding:6px 10px;display:grid;grid-template-columns:1fr 1fr;gap:4px 6px;align-items:center;border:1px solid #252b3d}
+    .telemetry-card .control-group{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.06);padding-top:0;margin-top:0}
+    .tel-item{display:flex;flex-direction:column;min-width:0;overflow:hidden}
+    .tel-label{font-size:.65rem;font-weight:700;color:#6b7280;letter-spacing:.04em;white-space:nowrap}
+    .tel-value{font-family:ui-monospace,monospace;font-size:.7rem;font-weight:600;color:#f3f4f6;line-height:1.2;display:flex;flex-direction:column;justify-content:center;min-height:3.1em}
+    .tel-value .line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+    .tel-value.highlight{color:#38bdf8}
+    .stage-card{background-color:#181b26;border-radius:14px;padding:10px 8px;margin-bottom:8px;border:1px solid #252b3d;flex-grow:1;display:flex;align-items:center;min-height:0}
+    .tines-container{position:relative;height:320px;max-height:100%;display:flex;justify-content:space-between;align-items:flex-start;padding-top:8px;width:100%}
+    .bridge-bar{position:absolute;top:0;left:0;right:0;height:10px;background:linear-gradient(180deg,#4a2e1b 0%,#2a180e 100%);border-radius:5px;box-shadow:0 2px 6px rgba(0,0,0,.6);z-index:1}
+    .tine-wrapper{flex:1;display:flex;flex-direction:column;align-items:center;z-index:2;margin:0 1px;min-width:0;height:100%;justify-content:flex-start}
+    .tine{width:100%;max-width:44px;min-width:16px;background:linear-gradient(180deg,#4b5263 0%,#2b2f3a 100%);border-radius:0 0 8px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:6px 2px;transition:height .2s ease,background .08s ease,transform .08s ease;box-shadow:0 4px 10px rgba(0,0,0,.5);user-select:none;overflow:hidden}
+    .tine-wrapper.is-tonic .tine{background:linear-gradient(180deg,#3b82f6 0%,#1d4ed8 100%)}
+    .tine-wrapper.active .tine{background:linear-gradient(180deg,#60a5fa 0%,#2563eb 100%)!important;box-shadow:0 0 16px rgba(59,130,246,.9)!important;transform:translateY(4px)}
+    .tine-idx{font-size:.68rem;font-weight:800;color:#facc15;margin-bottom:2px}
+    .tine-name{font-size:.52rem;font-weight:700;color:#fff;text-align:center;line-height:1.1;word-break:break-word;max-width:100%}
+    .tine-ratio-text{font-size:.6rem;font-weight:700;color:#9ca3af;margin-top:4px;text-align:center;white-space:nowrap}
+    .tine-cents-text{font-size:.52rem;color:#6b7280;white-space:nowrap}
+    .tine-key-shortcut{font-size:.5rem;color:#38bdf8;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.25);padding:1px 4px;border-radius:3px;margin-top:2px;white-space:nowrap;font-family:monospace}
+    .presets-section{display:flex;align-items:center;justify-content:space-between;width:100%;gap:3px;flex-shrink:0;background-color:#181b26;border:1px solid #252b3d;border-radius:12px;padding:5px 8px}
+    .presets-left{display:flex;align-items:center;gap:6px;flex:1;min-width:0;flex-wrap:wrap}
+    .presets-grid{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+    .preset-btn{background-color:#0d0f17;border:1px solid #2e3545;color:#e5e7eb;padding:3px 5px;border-radius:10px;font-size:.65rem;font-weight:500;cursor:pointer;transition:all .15s ease;white-space:nowrap}
+    .preset-btn:hover{background-color:#262b38;border-color:#4b5563}
+    .preset-btn.active{background-color:rgba(37,99,235,.25);border-color:#3b82f6;color:#60a5fa}
+    .chord-bpm-card{display:flex;flex-direction:column;align-items:flex-end;gap:3px;background-color:#0d0f17;border:1px solid #232838;padding:3px 5px;border-radius:10px;flex-shrink:0}
+    @media(orientation:landscape) or (min-width:768px){.app-card{max-width:1020px;padding:8px 14px;max-height:100vh}.header{margin-bottom:4px}.top-panels{display:grid;grid-template-columns:1.1fr .9fr;gap:6px;margin-bottom:4px}.controls-card,.telemetry-card{margin-bottom:0;height:100%;padding:4px 8px;gap:3px}.stage-card{padding:4px;margin-bottom:4px}.tines-container{height:250px}.chord-bpm-card{flex-direction:row;align-items:center;gap:2px}}
+    @media(orientation:landscape) and (max-height:580px){body{padding:0}.app-card{padding:4px 10px;border-radius:0;border:none;height:100vh;max-height:100vh;justify-content:space-between}.header{margin-bottom:3px}.title-group h1{font-size:.88rem}.title-group p{font-size:.58rem}.top-panels{margin-bottom:3px;gap:4px}.controls-card,.telemetry-card{padding:3px 6px;gap:2px}.stage-card{padding:3px;margin-bottom:3px}.tines-container{height:190px}.tine-name{font-size:.46rem}.tine-ratio-text{font-size:.52rem;margin-top:1px}.tine-cents-text{font-size:.46rem}.tine-key-shortcut{font-size:.44rem;margin-top:1px}.presets-section{gap:3px}.preset-btn{padding:2px 6px;font-size:.58rem}}
   </style>
 </head>
 <body>
@@ -609,41 +86,32 @@
         <p id="appSubtitle">Portrait: 8-Key / Landscape: 13-Key</p>
       </div>
       <div class="header-actions">
-        <button class="rec-btn" id="btnRecord">
-          <span class="rec-dot"></span><span id="txtRecord">REC</span>
-        </button>
-        <button class="download-btn" id="btnDownload">
-          <span id="txtDownload">💾</span>
-        </button>
-        <button class="segmented-btn" id="btnLandscapeKeyToggle" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; padding: 4px 8px; border-radius: 10px; font-size: 0.68rem; font-weight: 700; cursor: pointer; display: none;">Change to 17-key</button>
+        <button class="rec-btn" id="btnRecord"><span class="rec-dot"></span><span id="txtRecord">REC</span></button>
+        <button class="download-btn" id="btnDownload"><span id="txtDownload">💾</span></button>
+        <button class="segmented-btn" id="btnLandscapeKeyToggle" style="background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);color:#38bdf8;padding:4px 8px;border-radius:10px;font-size:.68rem;font-weight:700;cursor:pointer;display:none;">Change to 17-key</button>
         <span class="mode-badge" id="badgeKeyMode">Portrait: 8-Key</span>
-        <button class="fullscreen-btn" id="btnFullscreen">
-          <span>⛶</span><span id="txtFullscreen">Full</span>
-        </button>
+        <button class="fullscreen-btn" id="btnFullscreen"><span>⛶</span><span id="txtFullscreen">Full</span></button>
         <div class="tonic-badge">
           <div class="col-left"><span>(1/1):</span></div>
           <div class="col-right"><span id="badgeTonicFreq">417.6</span><span>Hz</span></div>
         </div>
-        <button class="fullscreen-btn" id="btnOpenSettings" title="Audio & Recording Settings" style="padding: 4px 8px;">⚙️</button>
+        <button class="fullscreen-btn" id="btnOpenSettings" title="Audio & Recording Settings" style="padding:4px 8px;">⚙️</button>
       </div>
     </div>
 
-    <!-- Audio & Recording Settings Modal -->
     <div class="modal-overlay" id="settingsModal">
       <div class="modal-card">
         <div class="modal-header">
           <span class="modal-title">Audio & Recording Settings</span>
           <button class="modal-close-btn" id="btnCloseModal">✕</button>
         </div>
-
         <div class="control-group">
           <span class="control-label">RANDOM NOISE for Texture</span>
           <div class="segmented-btn-group" id="randomNoiseToggle">
-            <button class="segmented-btn active" data-noise="on">ON (Enabled)</button>
-            <button class="segmented-btn" data-noise="off">OFF (Muted)</button>
+            <button class="segmented-btn active" data-noise="on">ON</button>
+            <button class="segmented-btn" data-noise="off">OFF</button>
           </div>
         </div>
-
         <div class="control-group">
           <span class="control-label">TINE NOISE FILTER</span>
           <div class="segmented-btn-group" id="noiseFilterToggle">
@@ -651,33 +119,29 @@
             <button class="segmented-btn" data-filter="off">OFF (Fast Processing)</button>
           </div>
         </div>
-
         <div class="control-group">
-          <span class="control-label">HARMONIC EFFECT (OSC 2)</span>
+          <span class="control-label">HARMONIC EFFECT</span>
           <div class="segmented-btn-group" id="harmonicEffectToggle">
-            <button class="segmented-btn active" data-harmonic="on">ON (Enabled)</button>
-            <button class="segmented-btn" data-harmonic="off">OFF (Bypass)</button>
+            <button class="segmented-btn active" data-harmonic="on">ON</button>
+            <button class="segmented-btn" data-harmonic="off">OFF</button>
           </div>
         </div>
-
         <div class="control-group">
           <span class="control-label">COMPRESSOR ROUTING</span>
           <div class="segmented-btn-group" id="compressorRoutingToggle">
-            <button class="segmented-btn active" data-compressor="on">ON (Compressed)</button>
+            <button class="segmented-btn active" data-compressor="on">ON</button>
             <button class="segmented-btn" data-compressor="off">BYPASS (Direct)</button>
           </div>
         </div>
-
         <div class="control-group">
           <span class="control-label">REC FORMAT</span>
-          <select id="selectRecFormat" class="select-input" style="width: 100%;">
+          <select id="selectRecFormat" class="select-input" style="width:100%;">
             <option value="32float-48k" selected>32-bit Float / 48 kHz (Recommended)</option>
             <option value="32float-96k">32-bit Float / 96 kHz</option>
             <option value="16pcm-48k">16-bit PCM / 48 kHz</option>
             <option value="16pcm-96k">16-bit PCM / 96 kHz</option>
           </select>
         </div>
-
         <div class="control-group">
           <span class="control-label">REC ENGINE</span>
           <div class="segmented-btn-group" id="recEngineToggle">
@@ -689,32 +153,29 @@
     </div>
 
     <div class="top-panels">
-      <!-- Controls Panel -->
       <div class="controls-card">
         <div class="control-group">
           <span class="control-label">SCALE SYSTEM</span>
           <div class="segmented-btn-group" id="scaleToggle">
             <button class="segmented-btn active" data-scale="souljazz">7-Limit JI Soul Jazz Blues</button>
             <button class="segmented-btn" data-scale="harmonics">23-Limit Natural Harmonics</button>
-            <button class="segmented-btn" data-scale="chinesetuning">Chinese 3-Limit JI  Dao</button>
+            <button class="segmented-btn" data-scale="chinesetuning">Chinese 3-Limit JI Dao</button>
             <button class="segmented-btn" data-scale="pythagorean">Pythagorean 3-Limit JI</button>
             <button class="segmented-btn" data-scale="archytas">Archytas's 7-Limit JI</button>
             <button class="segmented-btn" data-scale="classic5limit">Classic 5-Limit JI</button>
             <button class="segmented-btn" data-scale="nearlytet19">Nearly TET 19-limit JI</button>
           </div>
         </div>
-
         <div class="control-group">
           <span class="control-label">MASTER GAIN</span>
-          <div style="display: flex; align-items: center; gap: 8px; padding: 3px;">
-            <input type="range" id="inputMasterGain" class="gain-slider" min="0.01" max="0.25" step="0.01" value="0.05" style="width: 145px; cursor: pointer;">
-            <span id="txtMasterGain" style="font-size: 0.6rem; color: #38bdf8; font-family: monospace; font-weight: 700; min-width: 80px; text-align: right;">0.05 (-26dB)</span>
+          <div style="display:flex;align-items:center;gap:8px;padding:3px;">
+            <input type="range" id="inputMasterGain" class="gain-slider" min="0.01" max="0.25" step="0.01" value="0.05" style="width:145px;cursor:pointer;">
+            <span id="txtMasterGain" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:80px;text-align:right;">0.05 (-26dB)</span>
           </div>
         </div>
-
         <div class="control-group">
           <span class="control-label">BASE TONIC (1/1)</span>
-          <div style="display: flex; gap: 6px; align-items: center;">
+          <div style="display:flex;gap:6px;align-items:center;">
             <div class="segmented-btn-group" id="tonicPresetBtns">
               <button class="segmented-btn active" data-freq="417.6">417.6</button>
               <button class="segmented-btn" data-freq="432">432</button>
@@ -722,12 +183,11 @@
               <button class="segmented-btn" data-freq="512">512</button>
             </div>
             <input type="number" id="inputCustomFreq" class="freq-input" value="417.6" step="0.1" min="100" max="2000">
-            <span style="font-size:0.65rem; color:#6b7280;">Hz</span>
+            <span style="font-size:.65rem;color:#6b7280;">Hz</span>
           </div>
         </div>
       </div>
 
-      <!-- Telemetry Card -->
       <div class="telemetry-card">
         <div class="tel-item">
           <span class="tel-label">LAST PLUCKED</span>
@@ -745,18 +205,18 @@
         </div>
 
         <div class="control-group">
-          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
             <span class="control-label">Tonic Ratio Multiplier</span>
-            <div style="display: flex; align-items: center; gap: 3px; font-size: 0.55rem;">
-              <input type="number" id="inputTonicNum" class="freq-input" value="1" min="1" max="99" style="width: 36px; text-align: center;">
-              <span style="color: #6b7280;">/</span>
-              <input type="number" id="inputTonicDen" class="freq-input" value="1" min="1" max="99" style="width: 36px; text-align: center;">
+            <div style="display:flex;align-items:center;gap:3px;font-size:.55rem;">
+              <input type="number" id="inputTonicNum" class="freq-input" value="1" min="1" max="99" style="width:36px;text-align:center;">
+              <span style="color:#6b7280;">/</span>
+              <input type="number" id="inputTonicDen" class="freq-input" value="1" min="1" max="99" style="width:36px;text-align:center;">
             </div>
-            <div style="display: flex; align-items: center; gap: 3px; font-size: 0.65rem; font-weight: 700;">
-              <span style="color: #9ca3af; margin-left: 10px; margin-right: 3px;">Octave:</span>
-              <button class="segmented-btn" id="btnOctaveMinus" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 5px 8px; color: #9ca3af; cursor: pointer;">-</button>
-              <span id="txtTonicOctave" style="color: #38bdf8; font-family: monospace; font-weight: 700; min-width: 14px; text-align: center;">0</span>
-              <button class="segmented-btn" id="btnOctavePlus" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 5px 8px; color: #9ca3af; cursor: pointer;">+</button>
+            <div style="display:flex;align-items:center;gap:3px;font-size:.65rem;font-weight:700;">
+              <span style="color:#9ca3af;margin-left:10px;margin-right:3px;">Octave:</span>
+              <button class="segmented-btn" id="btnOctaveMinus" style="background-color:#0d0f17;border:1px solid #232838;border-radius:4px;padding:5px 8px;color:#9ca3af;cursor:pointer;">-</button>
+              <span id="txtTonicOctave" style="color:#38bdf8;font-family:monospace;font-weight:700;min-width:14px;text-align:center;">0</span>
+              <button class="segmented-btn" id="btnOctavePlus" style="background-color:#0d0f17;border:1px solid #232838;border-radius:4px;padding:5px 8px;color:#9ca3af;cursor:pointer;">+</button>
             </div>
           </div>
           <div class="segmented-btn-group" id="tonicRatioBtns">
@@ -774,302 +234,316 @@
             <button class="segmented-btn" data-num="15" data-den="8">15/8</button>
           </div>
         </div>
-
       </div>
     </div>
 
     <div class="stage-card">
-      <div class="tines-container" id="tinesWrapper">
-        <div class="bridge-bar"></div>
-      </div>
+      <div class="tines-container" id="tinesWrapper"><div class="bridge-bar"></div></div>
     </div>
 
     <div class="presets-section">
-      <div class="presets-left">
-      <div class="presets-grid" id="presetButtons"></div>
-      </div>
+      <div class="presets-left"><div class="presets-grid" id="presetButtons"></div></div>
       <div class="chord-bpm-card">
-        <div style="display: flex; align-items: center; gap: 2px;">
-          <span style="font-size: 0.55rem; color: #9ca3af; font-weight: 600;">Chord BPM:</span>
-          <button class="segmented-btn" id="btnChordBpmMinus" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 1px 5px; color: #9ca3af; cursor: pointer;">-</button>
-          <input type="number" id="inputChordBpm" class="freq-input" value="87" min="1" max="500" style="width: 24px; text-align: center; font-size: 0.55rem;">
-          <button class="segmented-btn" id="btnChordBpmPlus" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 1px 5px; color: #9ca3af; cursor: pointer;">+</button>
+        <div style="display:flex;align-items:center;gap:2px;">
+          <span style="font-size:.55rem;color:#9ca3af;font-weight:600;">BPM:</span>
+          <button class="segmented-btn" id="btnChordBpmMinus" style="background-color:#0d0f17;border:1px solid #232838;border-radius:4px;padding:1px 5px;color:#9ca3af;cursor:pointer;">-</button>
+          <input type="number" id="inputChordBpm" class="freq-input" value="87" min="1" max="500" style="width:24px;text-align:center;font-size:.55rem;">
+          <button class="segmented-btn" id="btnChordBpmPlus" style="background-color:#0d0f17;border:1px solid #232838;border-radius:4px;padding:1px 5px;color:#9ca3af;cursor:pointer;">+</button>
         </div>
-        <div style="display: flex; align-items: center; gap: 2px;">
-          <button class="segmented-btn" id="btnChordLoopToggle" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 2px 6px; color: #9ca3af; cursor: pointer; font-size: 0.55rem;">Loop: OFF</button>
-          <button class="segmented-btn" id="btnChordStop" style="background-color: #0d0f17; border: 1px solid #232838; border-radius: 4px; padding: 2px 6px; color: #ef4444; cursor: pointer; font-size: 0.55rem;">Stop</button>
+        <div style="display:flex;align-items:center;gap:2px;">
+          <button class="segmented-btn" id="btnChordLoopToggle" style="background-color:#0d0f17;border:1px solid #232838;border-radius:4px;padding:2px 6px;color:#9ca3af;cursor:pointer;font-size:.55rem;">Loop: OFF</button>
+          <button class="segmented-btn" id="btnChordStop" style="background-color:#0d0f17;border:1px solid #232838;border-radius:4px;padding:2px 6px;color:#ef4444;cursor:pointer;font-size:.55rem;">Stop</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const numToCircle = {
-      1: '①', 2: '②', 3: '③', 4: '④',
-      5: '⑤', 6: '⑥', 7: '⑦', 8: '⑧',
-      9: '⑨', 10: '⑩', 11: '⑪', 12: '⑫', 13: '⑬',
-      14: '⑭', 15: '⑮', 16: '⑯', 17: '⑰'
-    };
+    const numToCircle={1:'①',2:'②',3:'③',4:'④',5:'⑤',6:'⑥',7:'⑦',8:'⑧',9:'⑨',10:'⑩',11:'⑪',12:'⑫',13:'⑬',14:'⑭',15:'⑮',16:'⑯',17:'⑰'};
+    const scalesData={
+      'souljazz':{
+        title:'7-Limit Soul Jazz Blues',
+        keys8:[
+          {id:8,num:2,den:1,name:'Octave',cents:1200.00},
+          {id:6,num:14,den:9,name:'Septimal Minor 6th',cents:764.92},
+          {id:4,num:7,den:5,name:'Septimal Tritone',cents:582.51},
+          {id:2,num:10,den:9,name:'Minor Whole Tone',cents:182.40},
+          {id:1,num:1,den:1,name:'Tonic',cents:0.00},
+          {id:3,num:4,den:3,name:'Perfect 4th',cents:498.04},
+          {id:5,num:3,den:2,name:'Perfect 5th',cents:701.96},
+          {id:7,num:7,den:4,name:'Harmonic Minor 7th',cents:968.83}
+        ],
+        keys13:[
+          {num:1,den:1,name:'Tonic',cents:0.00},
+          {num:21,den:20,name:'Septimal Semitone',cents:84.47},
+          {num:10,den:9,name:'Minor Whole Tone',cents:182.40},
+          {num:7,den:6,name:'Septimal Minor 3rd',cents:315.64},
+          {num:5,den:4,name:'Just Major 3rd',cents:386.31},
+          {num:4,den:3,name:'Perfect 4th',cents:498.04},
+          {num:7,den:5,name:'Septimal Tritone',cents:582.51},
+          {num:3,den:2,name:'Perfect 5th',cents:701.96},
+          {num:14,den:9,name:'Septimal Minor 6th',cents:764.92},
+          {num:5,den:3,name:'Major 6th',cents:884.36},
+          {num:7,den:4,name:'Harmonic Minor 7th',cents:968.83},
+          {num:15,den:8,name:'Classic Major 7th',cents:1088.27},
+          {num:2,den:1,name:'Octave',cents:1200.00}
+        ],
+        chords8:[
+          {id:'i7',label:'I7 Blues',slotIndices:[4,2,6,7]},
+          {id:'iv',label:'IV Subminor',slotIndices:[5,3,4,1]},
+          {id:'ii',label:'II Minor',slotIndices:[3,5,6,0]},
+          {id:'bv',label:'♭V Septimal',slotIndices:[2,7,4,1]}
+        ],
+        chords13:[
+          {id:'i7',label:'I7 Blues',pitchIndices:[0,6,7,10]},
+          {id:'iv',label:'IV Subminor',pitchIndices:[5,2,0,8]},
+          {id:'ii',label:'II Minor',pitchIndices:[2,5,7,12]},
+          {id:'bv',label:'♭V Septimal',pitchIndices:[6,10,0,8]},
+          {id:'blues',label:' Minor Blues',pitchIndices:[0,2,3,5,7,5,3,2,0,2,3,5,7,5,3,2,5,7,8,10,12,10,8,7,5,7,8,10,12,10,8,5,2,3,5,7,5,3,2,3,0,3,2,5,7,null,null,null]},
+          {id:'blues_2',label:' Major Blues',pitchIndices:[0,2,4,5,7,5,4,2,0,2,4,5,7,5,4,2,5,7,9,10,12,10,9,7,5,7,9,10,12,10,9,5,2,4,5,7,5,4,2,4,0,4,2,5,7,null,null,null]}
+        ]
+      },
+      'harmonics':{
+        title:'23-Limit Natural Harmonics',
+        keys8:[
+          {id:8,num:2,den:1,name:'32nd Harmonic',cents:1200.00},
+          {id:6,num:13,den:8,name:'26th Harmonic',cents:840.53},
+          {id:4,num:23,den:16,name:'23rd Harmonic',cents:628.27},
+          {id:2,num:17,den:16,name:'17th Harmonic',cents:104.96},
+          {id:1,num:1,den:1,name:'16th Harmonic',cents:0.00},
+          {id:3,num:11,den:8,name:'22nd Harmonic',cents:551.32},
+          {id:5,num:3,den:2,name:'24th Harmonic',cents:701.96},
+          {id:7,num:7,den:4,name:'28th Harmonic',cents:968.83}
+        ],
+        keys13:[
+          {num:1,den:1,name:'16th Harmonic',cents:0.00},
+          {num:17,den:16,name:'17th Harmonic',cents:104.96},
+          {num:9,den:8,name:'18th Harmonic',cents:203.91},
+          {num:19,den:16,name:'19th Harmonic',cents:297.51},
+          {num:5,den:4,name:'20th Harmonic',cents:386.31},
+          {num:11,den:8,name:'22nd Harmonic',cents:551.32},
+          {num:23,den:16,name:'23rd Harmonic',cents:628.27},
+          {num:3,den:2,name:'24th Harmonic',cents:701.96},
+          {num:13,den:8,name:'26th Harmonic',cents:840.53},
+          {num:27,den:16,name:'27th Harmonic',cents:905.87},
+          {num:7,den:4,name:'28th Harmonic',cents:968.83},
+          {num:15,den:8,name:'30th Harmonic',cents:1088.27},
+          {num:2,den:1,name:'32nd Harmonic',cents:1200.00}
+        ],
+        keys17:[
+          {num:1,den:1,name:'16th Harmonic',cents:0.00},
+          {num:17,den:16,name:'17th Harmonic',cents:104.96},
+          {num:9,den:8,name:'18th Harmonic',cents:203.91},
+          {num:19,den:16,name:'19th Harmonic',cents:297.51},
+          {num:5,den:4,name:'20th Harmonic',cents:386.31},
+          {num:11,den:8,name:'22nd Harmonic',cents:551.32},
+          {num:23,den:16,name:'23rd Harmonic',cents:628.27},
+          {num:3,den:2,name:'24th Harmonic',cents:701.96},
+          {num:13,den:8,name:'26th Harmonic',cents:840.53},
+          {num:27,den:16,name:'27th Harmonic',cents:905.87},
+          {num:7,den:4,name:'28th Harmonic',cents:968.83},
+          {num:15,den:8,name:'30th Harmonic',cents:1088.27},
+          {num:2,den:1,name:'32nd Harmonic',cents:1200.00},
+          {num:17,den:8,name:'34th Harmonic',cents:1305},
+          {num:9,den:4,name:'36th Harmonic',cents:1404},
+          {num:19,den:8,name:'38th Harmonic',cents:1498},
+          {num:5,den:2,name:'40th Harmonic',cents:1586}
+        ],
+        chords8:[
+          {id:'harmonics',label:'Harmonic 7th',slotIndices:[4,5,6,7]},
+          {id:'undecimal',label:'Undecimal IV',slotIndices:[3,5,6,0]},
+          {id:'tridecimal',label:'Tridecimal 6th',slotIndices:[4,6,1,0]},
+          {id:'limit23',label:'23-Limit Tritone',slotIndices:[4,2,6,7]}
+        ],
+        chords13:[
+          {id:'harmonics',label:'Harmonic 7th',pitchIndices:[0,5,7,10]},
+          {id:'undecimal',label:'Undecimal IV',pitchIndices:[1,5,7,12]},
+          {id:'tridecimal',label:'Tridecimal 6th',pitchIndices:[0,7,8,12]},
+          {id:'limit23',label:'23-Limit Tritone',pitchIndices:[0,6,7,10]}
+        ]
+      },
+      'chinesetuning':{
+        title:'Chinese 3-Limit JI',
+        keys8:[
+          {num:2187,den:1024,name:'大呂 (mlat ra)',cents:1313.69},
+          {num:27,den:16,name:'南呂 (mlum ra)',cents:905.87},
+          {num:729,den:512,name:'蕤賓 (nui pin)',cents:611.73},
+          {num:9,den:8,name:'太簇 (thhat tshuk)',cents:203.91},
+          {num:1,den:1,name:'黃鐘 (gwang tong)',cents:0.00},
+          {num:81,den:64,name:'姑洗 (ku sin)',cents:407.82},
+          {num:3,den:2,name:'林鐘 (ram tong)',cents:701.96},
+          {num:243,den:128,name:'應鐘 (eng tong)',cents:1109.78}
+        ],
+        keys13:[
+          {num:1,den:1,name:'黃鐘 (gwang tong)',cents:0.00},
+          {num:531441,den:524288,name:'執始 (trəp sə)',cents:23.46},
+          {num:2187,den:2048,name:'大呂 (mlat ra)',cents:113.69},
+          {num:9,den:8,name:'太簇 (thhat tshuk)',cents:203.91},
+          {num:19683,den:16384,name:'夾鐘 (kap tong)',cents:318.16},
+          {num:81,den:64,name:'姑洗 (ku sin)',cents:407.82},
+          {num:177147,den:131072,name:'仲呂 (t-rung ra)',cents:522.04},
+          {num:729,den:512,name:'蕤賓 (nui pin)',cents:611.73},
+          {num:3,den:2,name:'林鐘 (ram tong)',cents:701.96},
+          {num:6561,den:4096,name:'夷則 (li tok)',cents:792.18},
+          {num:27,den:16,name:'南呂 (mlum ra)',cents:905.87},
+          {num:59049,den:32768,name:'無射 (ma dak)',cents:1022.12},
+          {num:243,den:128,name:'應鐘 (eng tong)',cents:1109.78}
+        ],
+        chords8:[
+          {id:'cn8_1',label:'Major Triad I',slotIndices:[4,5,6]},
+          {id:'cn8_2',label:'Major Triad II',slotIndices:[3,2,1]},
+          {id:'cn8_3',label:'Spiral of 5ths (1/2 BPM)',slotIndices:[4,null,6,null,3,null,1,null,5,null,7,null,2,null,0,null]}
+        ],
+        chords13:[
+          {id:'cn13_1',label:'Tonic Trio',pitchIndices:[0,3,8,10]},
+          {id:'cn13_2',label:'Full 13 Spread',pitchIndices:[0,4,8,12]},
+          {id:'cn13_4',label:'7-tone Spiral of 5ths (1/2)',pitchIndices:[0,null,8,null,3,null,10,null,5,null,12,null,7]}
+        ],
+        chords17:[
+          {id:'cn13_1',label:'Tonic Trio',pitchIndices:[0,3,8,10]},
+          {id:'cn13_2',label:'Full 13 Spread',pitchIndices:[0,4,8,12]},
+          {id:'cn13_4',label:'7-tone Spiral of 5ths (1/2)',pitchIndices:[0,null,8,null,3,null,10,null,5,null,12,null,7]},
+          {id:'cn17_1',label:'8-tone Spiral of 5ths (1/2)',pitchIndices:[0,null,8,null,3,null,10,null,5,null,12,null,7,null,14,null]},
+          {id:'cn17_2',label:'10-tone Spiral of 5ths (1/2)',pitchIndices:[0,null,8,null,3,null,10,null,5,null,12,null,7,null,14,null,9,null,16,null]}
+        ]
+      },
+      'pythagorean':{
+        title:'Pythagorean 3-Limit JI',
+        keys8:[
+          {id:8,num:2,den:1,name:'Octave',cents:1200.00},
+          {id:6,num:27,den:16,name:'Pythagorean Major 6th',cents:905.87},
+          {id:4,num:4,den:3,name:'Perfect 4th',cents:498.04},
+          {id:2,num:9,den:8,name:'Major Whole Tone',cents:203.91},
+          {id:1,num:1,den:1,name:'Tonic',cents:0.00},
+          {id:3,num:81,den:64,name:'Pythagorean Major 3rd',cents:407.82},
+          {id:5,num:3,den:2,name:'Perfect 5th',cents:701.96},
+          {id:7,num:243,den:128,name:'Pythagorean Major 7th',cents:1109.78}
+        ],
+        keys13:[
+          {num:1,den:1,name:'Tonic',cents:0.00},
+          {num:256,den:243,name:'Pythagorean Minor 2nd',cents:90.22},
+          {num:9,den:8,name:'Major Whole Tone',cents:203.91},
+          {num:32,den:27,name:'Pythagorean Minor 3rd',cents:294.13},
+          {num:81,den:64,name:'Pythagorean Major 3rd',cents:407.82},
+          {num:4,den:3,name:'Perfect 4th',cents:498.04},
+          {num:729,den:512,name:'Pythagorean Dim. 5th',cents:611.73},
+          {num:3,den:2,name:'Perfect 5th',cents:701.96},
+          {num:128,den:81,name:'Pythagorean Minor 6th',cents:792.18},
+          {num:27,den:16,name:'Pythagorean Major 6th',cents:905.87},
+          {num:16,den:9,name:'Pythagorean Minor 7th',cents:996.09},
+          {num:243,den:128,name:'Pythagorean Major 7th',cents:1109.78},
+          {num:2,den:1,name:'Octave',cents:1200.00}
+        ],
+        chords8:[
+          {id:'p_triad',label:'Pythagorean Major',slotIndices:[4,5,6,0]},
+          {id:'p_fourth',label:'Quintal / Quartal',slotIndices:[4,2,6,0]},
+          {id:'p_maj7',label:'Pyth Major 7th',slotIndices:[4,5,6,7]},
+          {id:'p_fifth',label:'Open 5th Octave',slotIndices:[4,6,0,1]}
+        ],
+        chords13:[
+          {id:'p13_maj',label:'Major Triad',pitchIndices:[0,4,7,12]},
+          {id:'p13_min',label:'Minor Triad',pitchIndices:[0,3,7,12]},
+          {id:'p13_maj7',label:'Major 7th',pitchIndices:[0,4,7,11]},
+          {id:'p13_5th',label:'7-tone Spiral of 5ths',pitchIndices:[1,8,3,10,5,12,7]},
+          {id:'p17_5th',label:'8-tone Spiral of 5ths',pitchIndices:[1,8,3,10,5,12,7,14]}
+        ],
+        chords17:[
+          {id:'p13_maj',label:'Major Triad',pitchIndices:[0,4,7,12]},
+          {id:'p13_min',label:'Minor Triad',pitchIndices:[0,3,7,12]},
+          {id:'p13_maj7',label:'Major 7th',pitchIndices:[0,4,7,11]},
+          {id:'p13_5th',label:'7-tone Spiral of 5ths',pitchIndices:[1,8,3,10,5,12,7]},
+          {id:'p17_5th',label:'8-tone Spiral of 5ths',pitchIndices:[1,8,3,10,5,12,7,14]}
+        ]
+      },
+      'archytas':{
+        title:"Archytas's 7-Limit JI",
+        keys8:[
+          {id:8,num:12,den:7,name:'Septimal Major 6th',cents:968.83},
+          {id:6,num:3,den:2,name:'Perfect 5th',cents:701.96},
+          {id:4,num:7,den:6,name:'Septimal Minor 3rd',cents:266.87},
+          {id:2,num:28,den:27,name:'Septimal Miniscule 2nd',cents:62.96},
+          {id:1,num:1,den:1,name:'Tonic',cents:0.00},
+          {id:3,num:9,den:8,name:'Major Whole Tone',cents:203.91},
+          {id:5,num:4,den:3,name:'Perfect 4th',cents:498.04},
+          {id:7,num:14,den:9,name:'Septimal Minor 6th',cents:764.92}
+        ],
+        keys13:[
+          {num:1,den:1,name:'Tonic',cents:0.00},
+          {num:28,den:27,name:'Septimal Miniscule 2nd',cents:62.96},
+          {num:16,den:15,name:'Minor Diatonic Semitone',cents:111.73},
+          {num:9,den:8,name:'Major Whole Tone',cents:203.91},
+          {num:7,den:6,name:'Septimal Minor 3rd',cents:266.87},
+          {num:32,den:27,name:'Pythagorean Minor 3rd',cents:294.13},
+          {num:4,den:3,name:'Perfect 4th',cents:498.04},
+          {num:3,den:2,name:'Perfect 5th',cents:701.96},
+          {num:14,den:9,name:'Septimal Minor 6th',cents:764.92},
+          {num:8,den:5,name:'Just Minor 6th',cents:813.69},
+          {num:27,den:16,name:'Pythagorean Major 6th',cents:905.87},
+          {num:12,den:7,name:'Septimal Major 6th',cents:968.83},
+          {num:16,den:9,name:'Pythagorean Minor 7th',cents:996.09}
+        ],
+        keys17:[
+          {num:1,den:1,name:'Tonic',cents:0.00},
+          {num:28,den:27,name:'Septimal Miniscule 2nd',cents:62.96},
+          {num:16,den:15,name:'Minor Diatonic Semitone',cents:111.73},
+          {num:9,den:8,name:'Major Whole Tone',cents:203.91},
+          {num:7,den:6,name:'Septimal Minor 3rd',cents:266.87},
+          {num:32,den:27,name:'Pythagorean Minor 3rd',cents:294.13},
+          {num:4,den:3,name:'Perfect 4th',cents:498.04},
+          {num:3,den:2,name:'Perfect 5th',cents:701.96},
+          {num:14,den:9,name:'Septimal Minor 6th',cents:764.92},
+          {num:8,den:5,name:'Just Minor 6th',cents:813.69},
+          {num:27,den:16,name:'Pythagorean Major 6th',cents:905.87},
+          {num:12,den:7,name:'Septimal Major 6th',cents:968.83},
+          {num:16,den:9,name:'Pythagorean Minor 7th',cents:996.09},
+          {num:2,den:1,name:'Octave',cents:1200.00},
+          {num:56,den:27,name:'Septimal Miniscule 2nd',cents:1262.96},
+          {num:32,den:15,name:'Minor Diatonic Semitone',cents:1311.73},
+          {num:9,den:4,name:'Major Whole Tone',cents:1403.91}
+        ],
+        chords8:[
+          {id:'arch8_C',label:'Chromatikon',slotIndices:[4,3,5,6]},
+          {id:'arch8_D',label:'Diatonikon',slotIndices:[5,2,6,1]},
+          {id:'arch8_5th',label:'Septimal 5th',slotIndices:[4,2,1,7]},
+          {id:'arch8_cad',label:'Septimal Cadence',slotIndices:[4,2,1,0]}
+        ],
+        chords13:[
+          {id:'arch_1',label:'Enharmonion',pitchIndices:[0,1,2,6]},
+          {id:'arch_2',label:'Diatonikon I',pitchIndices:[0,1,5,6]},
+          {id:'arch_3',label:'Diatonikon II (root 9/8)',pitchIndices:[3,4,6,7]},
+          {id:'arch_4',label:'Chromatikon',pitchIndices:[0,1,3,6]},
+          {id:'arch_5',label:'Septimal Cadence',pitchIndices:[0,4,7,11]}
+        ]
+      },
+      'classic5limit':{
+        title:'Classic 5-Limit JI',
+        keys8:[
+          {id:8,num:2,den:1,name:'Octave',cents:1200.00},
+          {id:6,num:5,den:3,name:'Just Major 6th',cents:884.36},
+          {id:4,num:4,den:3,name:'Perfect 4th',cents:498.04},
+          {id:2,num:9,den:8,name:'Major Whole Tone',cents:203.91},
+          {id:1,num:1,den:1,name:'Tonic',cents:0.00},
+          {id:3,num:5,den:4,name:'Just Major 3rd',cents:386.31},
+          {id:5,num:3,den:2,name:'Perfect 5th',cents:701.96},
+          {id:7,num:15,den:8,name:'Classic Major 7th',cents:1088.27}
+        ],
+        keys13:[
+          {num:1,den:1,name:'Tonic',cents:0.00},
+          {num:16,den:15,name:'Minor Diatonic Semitone',cents:111.73},
+          {num:10,den:9,name:'Minor Whole Tone',cents:182.40},
+          {num:9,den:8,name:'Major Whole Tone',cents:203.91},
+          {num:6,den:5,name:'Just Minor 3rd',cents:315.64},
+          {num:5,den:4,name:'Just Major 3rd',cents:386.31},
+          {num:4,den:3,name:'Perfect 4th',cents:498.04},
+          {num:3,den:2,name:'Perfect 5th',cents:701.96},
+          {num:8,den:5,name:'Just Minor 6th',cents:813.69},
+          {num:5,den:3,name:'Just Major 6th',cents:884.36},
+          {num:9,den:5,name:'Just Minor 7th',cents:1017.60},
+          {num:15,den:8,name:'Classic Major 7th',cents:1088.27},
+          {num:2,den:1,name:'Octave',cents:1200.00}
+        ],
 
-    const scalesData = {
-      'souljazz': {
-        title: '7-Limit Soul Jazz Blues Tuning',
-        keys8: [
-          { id: 8, num: 2,  den: 1, name: 'Octave',              cents: 1200.00 },
-          { id: 6, num: 14, den: 9, name: 'Septimal Minor 6th',   cents: 764.92  },
-          { id: 4, num: 7,  den: 5, name: 'Septimal Tritone',   cents: 582.51  },
-          { id: 2, num: 10, den: 9, name: 'Minor Whole Tone',    cents: 182.40  },
-          { id: 1, num: 1,  den: 1, name: 'Tonic',               cents: 0.00    },
-          { id: 3, num: 4,  den: 3, name: 'Perfect 4th',         cents: 498.04  },
-          { id: 5, num: 3,  den: 2, name: 'Perfect 5th',         cents: 701.96  },
-          { id: 7, num: 7,  den: 4, name: 'Harmonic Minor 7th',  cents: 968.83  }
-        ],
-        keys13: [
-          { num: 1,  den: 1,  name: 'Tonic',               cents: 0.00    },
-          { num: 21, den: 20, name: 'Septimal Semitone',  cents: 84.47   },
-          { num: 10, den: 9,  name: 'Minor Whole Tone',   cents: 182.40  },
-          { num: 7,  den: 6,  name: 'Septimal Minor 3rd',  cents: 315.64  },
-          { num: 5,  den: 4,  name: 'Just Major 3rd',          cents: 386.31  },
-          { num: 4,  den: 3,  name: 'Perfect 4th',        cents: 498.04  },
-          { num: 7,  den: 5,  name: 'Septimal Tritone',   cents: 582.51  },
-          { num: 3,  den: 2,  name: 'Perfect 5th',        cents: 701.96  },
-          { num: 14, den: 9,  name: 'Septimal Minor 6th',  cents: 764.92  },
-          { num: 5,  den: 3,  name: 'Major 6th',          cents: 884.36  },
-          { num: 7,  den: 4,  name: 'Harmonic Minor 7th', cents: 968.83  },
-          { num: 15, den: 8,  name: 'Classic Major 7th',  cents: 1088.27 },
-          { num: 2,  den: 1,  name: 'Octave',             cents: 1200.00 }
-        ],
-        chords8: [
-          { id: 'i7', label: 'I7 Blues', slotIndices: [4, 2, 6, 7] },
-          { id: 'iv', label: 'IV Subminor', slotIndices: [5, 3, 4, 1] },
-          { id: 'ii', label: 'II Minor', slotIndices: [3, 5, 6, 0] },
-          { id: 'bv', label: '♭V Septimal', slotIndices: [2, 7, 4, 1] }
-        ],
-        chords13: [
-          { id: 'i7', label: 'I7 Blues', pitchIndices: [0, 6, 7, 10] },
-          { id: 'iv', label: 'IV Subminor', pitchIndices: [5, 2, 0, 8] },
-          { id: 'ii', label: 'II Minor', pitchIndices: [2, 5, 7, 12] },
-          { id: 'bv', label: '♭V Septimal', pitchIndices: [6, 10, 0, 8] },
-          { id: 'blues', label: ' Minor Blues', pitchIndices: [0, 2, 3, 5, 7, 5, 3, 2, 0, 2, 3, 5, 7, 5, 3, 2, 5, 7, 8, 10, 12, 10, 8, 7, 5, 7, 8, 10, 12, 10, 8, 5, 2, 3, 5, 7, 5, 3, 2, 3, 0, 3, 2, 5, 7, null, null, null] },
-          { id: 'major-blues', label: ' Major Blues', pitchIndices: [0, 2, 4, 5, 7, 5, 4, 2, 0, 2, 4, 5, 7, 5, 4, 2, 5, 7, 9, 10, 12, 10, 9, 7, 5, 7, 9, 10, 12, 10, 9, 5, 2, 4, 5, 7, 5, 4, 2, 4, 0, 4, 2, 5, 7, null, null, null] }
-        ]
-      },
-      'harmonics': {
-        title: '23-Limit Natural Harmonics',
-        keys8: [
-          { id: 8, num: 2,  den: 1,  name: '32nd Harmonic',         cents: 1200.00 },
-          { id: 6, num: 13, den: 8,  name: '26th Harmonic',         cents: 840.53  },
-          { id: 4, num: 23, den: 16, name: '23rd Harmonic',         cents: 628.27  },
-          { id: 2, num: 17, den: 16, name: '17th Harmonic',         cents: 104.96  },
-          { id: 1, num: 1,  den: 1,  name: '16th Harmonic',         cents: 0.00    },
-          { id: 3, num: 11, den: 8,  name: '22nd Harmonic',         cents: 551.32  },
-          { id: 5, num: 3,  den: 2,  name: '24th Harmonic',         cents: 701.96  },
-          { id: 7, num: 7,  den: 4,  name: '28th Harmonic',         cents: 968.83  }
-        ],
-        keys13: [
-          { num: 1,  den: 1,  name: '16th Harmonic', cents: 0.00    },
-          { num: 17, den: 16, name: '17th Harmonic', cents: 104.96  },
-          { num: 9,  den: 8,  name: '18th Harmonic', cents: 203.91  },
-          { num: 19, den: 16, name: '19th Harmonic', cents: 297.51  },
-          { num: 5,  den: 4,  name: '20th Harmonic', cents: 386.31  },
-          { num: 11, den: 8,  name: '22nd Harmonic', cents: 551.32  },
-          { num: 23, den: 16, name: '23rd Harmonic', cents: 628.27  },
-          { num: 3,  den: 2,  name: '24th Harmonic', cents: 701.96  },
-          { num: 13, den: 8,  name: '26th Harmonic', cents: 840.53  },
-          { num: 27, den: 16, name: '27th Harmonic', cents: 905.87  },
-          { num: 7,  den: 4,  name: '28th Harmonic', cents: 968.83  },
-          { num: 15, den: 8,  name: '30th Harmonic', cents: 1088.27 },
-          { num: 2,  den: 1,  name: '32nd Harmonic', cents: 1200.00 }
-        ],
         keys17: [
-          { num: 1,  den: 1,  name: '16th Harmonic', cents: 0.00    },
-          { num: 17, den: 16, name: '17th Harmonic', cents: 104.96  },
-          { num: 9,  den: 8,  name: '18th Harmonic', cents: 203.91  },
-          { num: 19, den: 16, name: '19th Harmonic', cents: 297.51  },
-          { num: 5,  den: 4,  name: '20th Harmonic', cents: 386.31  },
-          { num: 11, den: 8,  name: '22nd Harmonic', cents: 551.32  },
-          { num: 23, den: 16, name: '23rd Harmonic', cents: 628.27  },
-          { num: 3,  den: 2,  name: '24th Harmonic', cents: 701.96  },
-          { num: 13, den: 8,  name: '26th Harmonic', cents: 840.53  },
-          { num: 27, den: 16, name: '27th Harmonic', cents: 905.87  },
-          { num: 7,  den: 4,  name: '28th Harmonic', cents: 968.83  },
-          { num: 15, den: 8,  name: '30th Harmonic', cents: 1088.27 },
-          { num: 2,  den: 1,  name: '32nd Harmonic', cents: 1200.00 },
-          { num: 17, den: 8, name: '34th Harmonic', cents: 1305  },
-          { num: 9,  den: 4,  name: '36th Harmonic', cents: 1404  },
-          { num: 19, den: 8, name: '38th Harmonic', cents: 1498  },
-          { num: 5,  den: 2,  name: '40th Harmonic', cents: 1586  },
-        ],
-        chords8: [
-          { id: 'harmonics', label: 'Harmonic 7th', slotIndices: [4, 5, 6, 7] },
-          { id: 'undecimal', label: 'Undecimal IV', slotIndices: [3, 5, 6, 0] },
-          { id: 'tridecimal', label: 'Tridecimal 6th', slotIndices: [4, 6, 1, 0] },
-          { id: 'limit23', label: '23-Limit Tritone', slotIndices: [4, 2, 6, 7] }
-        ],
-        chords13: [
-          { id: 'harmonics', label: 'Harmonic 7th', pitchIndices: [0, 5, 7, 10] },
-          { id: 'undecimal', label: 'Undecimal IV', pitchIndices: [1, 5, 7, 12] },
-          { id: 'tridecimal', label: 'Tridecimal 6th', pitchIndices: [0, 7, 8, 12] },
-          { id: 'limit23', label: '23-Limit Tritone', pitchIndices: [0, 6, 7, 10] }
-        ]
-      },
-      'chinesetuning': {
-        title: 'Chinese 3-Limit Just Intonation',
-        keys8: [
-          { num: 2187, den: 1024, name: '大呂 (mlat ra)',   cents: 1313.69 },
-          { num: 27,   den: 16,   name: '南呂 (mlum ra)',    cents: 905.87 },
-          { num: 729,  den: 512,  name: '蕤賓 (nui pin)',    cents: 611.73 },
-          { num: 9,    den: 8,    name: '太簇 (thhat tshuk)', cents: 203.91 },
-          { num: 1,    den: 1,    name: '黃鐘 (gwang tong)', cents: 0.00 },
-          { num: 81,   den: 64,   name: '姑洗 (ku sin)',     cents: 407.82 },
-          { num: 3,    den: 2,    name: '林鐘 (ram tong)',   cents: 701.96 },
-          { num: 243,  den: 128,  name: '應鐘 (eng tong)',   cents: 1109.78 }
-        ],
-        keys13: [
-          { num: 1,  den: 1,   name: '黃鐘 (gwang tong)', cents: 0.00 },
-          { num: 531441, den: 524288, name: '執始 (trəp sə)', cents: 23.46 },
-          { num: 2187, den: 2048, name: '大呂 (mlat ra)', cents: 113.69 },
-          { num: 9,  den: 8,   name: '太簇 (thhat tshuk)', cents: 203.91 },
-          { num: 19683, den: 16384, name: '夾鐘 (kap tong)', cents: 318.16 },
-          { num: 81, den: 64,  name: '姑洗 (ku sin)', cents: 407.82 },
-          { num: 177147, den: 131072, name: '仲呂 (t-rung ra)', cents: 522.04 },
-          { num: 729, den: 512, name: '蕤賓 (nui pin)', cents: 611.73 },
-          { num: 3,  den: 2,   name: '林鐘 (ram tong)', cents: 701.96 },
-          { num: 6561, den: 4096, name: '夷則 (li tok)', cents: 792.18 },
-          { num: 27, den: 16,  name: '南呂 (mlum ra)', cents: 905.87 },
-          { num: 59049, den: 32768, name: '無射 (ma dak)', cents: 1022.12 },
-          { num: 243, den: 128, name: '應鐘 (eng tong)', cents: 1109.78 }
-        ],
-        chords8: [
-          { id: 'cn8_1', label: 'Major Triad I', slotIndices: [4, 5, 6] },
-          { id: 'cn8_2', label: 'Major Triad II', slotIndices: [3, 2, 1] },
-          { id: 'cn8_3', label: 'Spiral of 5ths', slotIndices: [4, null, 6,null, 3,null, 1, null, 5, null, 7, null, 2, null, 0, null] }
-        ],
-        chords13: [
-          { id: 'cn13_1', label: 'Tonic Trio', pitchIndices: [0, 3, 8, 10] },
-          { id: 'cn13_2', label: 'Full 13 Spread', pitchIndices: [0, 4, 8, 12] },
-          { id: 'cn13_3', label: 'Comma Clash', pitchIndices: [0, 1, 3, 8] },
-          { id: 'cn13_4', label: '7-tone Spiral of 5ths', pitchIndices: [0, null, 8, null, 3, null,10, null, 5, null, 12, null, 7] },
-          { id: 'cn17_1', label: '8-tone Spiral of 5ths', pitchIndices: [0, null, 8, null, 3, null,10, null, 5, null, 12, null, 7, null, 14, null] },
-          { id: 'cn17_2', label: '10-tone Spiral of 5ths', pitchIndices: [0, null, 8, null, 3, null,10, null, 5, null, 12, null, 7, null, 14, null, 9, null, 16, null] }
-        ]
-      },
-      'pythagorean': {
-        title: 'Pythagorean 3-Limit Just Intonation',
-        keys8: [
-          { id: 8, num: 2,   den: 1,   name: 'Octave',                cents: 1200.00 },
-          { id: 6, num: 27,  den: 16,  name: 'Pythagorean Major 6th', cents: 905.87  },
-          { id: 4, num: 4,   den: 3,   name: 'Perfect 4th',           cents: 498.04  },
-          { id: 2, num: 9,   den: 8,   name: 'Major Whole Tone',      cents: 203.91  },
-          { id: 1, num: 1,   den: 1,   name: 'Tonic',                 cents: 0.00    },
-          { id: 3, num: 81,  den: 64,  name: 'Pythagorean Major 3rd', cents: 407.82  },
-          { id: 5, num: 3,   den: 2,   name: 'Perfect 5th',           cents: 701.96  },
-          { id: 7, num: 243, den: 128, name: 'Pythagorean Major 7th', cents: 1109.78 }
-        ],
-        keys13: [
-          { num: 1,    den: 1,   name: 'Tonic',                 cents: 0.00    },
-          { num: 256,  den: 243, name: 'Pythagorean Minor 2nd', cents: 90.22   },
-          { num: 9,    den: 8,   name: 'Major Whole Tone',      cents: 203.91  },
-          { num: 32,   den: 27,  name: 'Pythagorean Minor 3rd', cents: 294.13  },
-          { num: 81,   den: 64,  name: 'Pythagorean Major 3rd', cents: 407.82  },
-          { num: 4,    den: 3,   name: 'Perfect 4th',           cents: 498.04  },
-          { num: 729,  den: 512, name: 'Pythagorean Dim. 5th',  cents: 611.73  },
-          { num: 3,    den: 2,   name: 'Perfect 5th',           cents: 701.96  },
-          { num: 128,  den: 81,  name: 'Pythagorean Minor 6th', cents: 792.18  },
-          { num: 27,   den: 16,  name: 'Pythagorean Major 6th', cents: 905.87  },
-          { num: 16,   den: 9,   name: 'Pythagorean Minor 7th', cents: 996.09  },
-          { num: 243,  den: 128, name: 'Pythagorean Major 7th', cents: 1109.78 },
-          { num: 2,    den: 1,   name: 'Octave',                cents: 1200.00 }
-        ],
-        chords8: [
-          { id: 'p_triad', label: 'Pythagorean Major', slotIndices: [4, 5, 6, 0] },
-          { id: 'p_fourth', label: 'Quintal / Quartal', slotIndices: [4, 2, 6, 0] },
-          { id: 'p_maj7', label: 'Pyth Major 7th', slotIndices: [4, 5, 6, 7] },
-          { id: 'p_fifth', label: 'Open 5th Octave', slotIndices: [4, 6, 0, 1] }
-        ],
-        chords13: [
-          { id: 'p13_maj', label: 'Major Triad', pitchIndices: [0, 4, 7, 12] },
-          { id: 'p13_min', label: 'Minor Triad', pitchIndices: [0, 3, 7, 12] },
-          { id: 'p13_maj7', label: 'Major 7th', pitchIndices: [0, 4, 7, 11] },
-            { id: 'p13_5th', label: '7-tone Spiral of 5ths', pitchIndices: [1, 8 ,3 ,10, 5, 12, 7] },
-            { id: 'p17_5th', label: '8-tone Spiral of 5ths', pitchIndices: [1, 8 ,3 ,10, 5, 12, 7, 14] },
-       { id: 'blues', label: ' Minor Blues', pitchIndices: [0, 2, 3, 5, 7, 5, 3, 2, 0, 2, 3, 5, 7, 5, 3, 2, 5, 7, 8, 10, 12, 10, 8, 7, 5, 7, 8, 10, 12, 10, 8, 5, 2, 3, 5, 7, 5, 3, 2, 3, 0, 3, 2, 5, 7, null, null, null] },
-          { id: 'major-blues', label: ' Major Blues', pitchIndices: [0, 2, 4, 5, 7, 5, 4, 2, 0, 2, 4, 5, 7, 5, 4, 2, 5, 7, 9, 10, 12, 10, 9, 7, 5, 7, 9, 10, 12, 10, 9, 5, 2, 4, 5, 7, 5, 4, 2, 4, 0, 4, 2, 5, 7, null, null, null] }
-        ]
-      },
-      'archytas': {
-        title: "Archytas's 7-Limit Tetrachords",
-        keys8: [
-          { id: 8, num: 12, den: 7,  name: 'Septimal Major 6th',     cents: 968.83 },
-          { id: 6, num: 3,  den: 2,  name: 'Perfect 5th',            cents: 701.96 },
-          { id: 4, num: 7,  den: 6,  name: 'Septimal Minor 3rd',     cents: 266.87 },
-          { id: 2, num: 28, den: 27, name: 'Septimal Miniscule 2nd', cents: 62.96  },
-          { id: 1, num: 1,  den: 1,  name: 'Tonic',                  cents: 0.00   },
-          { id: 3, num: 9,  den: 8,  name: 'Major Whole Tone',       cents: 203.91 },
-          { id: 5, num: 4,  den: 3,  name: 'Perfect 4th',            cents: 498.04 },
-          { id: 7, num: 14, den: 9,  name: 'Septimal Minor 6th',     cents: 764.92 }
-        ],
-        keys13: [
-          { num: 1,  den: 1,  name: 'Tonic',                  cents: 0.00   },
-          { num: 28, den: 27, name: 'Septimal Miniscule 2nd', cents: 62.96  },
-          { num: 16, den: 15, name: 'Minor Diatonic Semitone',cents: 111.73 },
-          { num: 9,  den: 8,  name: 'Major Whole Tone',       cents: 203.91 },
-          { num: 7,  den: 6,  name: 'Septimal Minor 3rd',     cents: 266.87 },
-          { num: 32, den: 27, name: 'Pythagorean Minor 3rd',  cents: 294.13 },
-          { num: 4,  den: 3,  name: 'Perfect 4th',            cents: 498.04 },
-          { num: 3,  den: 2,  name: 'Perfect 5th',            cents: 701.96 },
-          { num: 14, den: 9,  name: 'Septimal Minor 6th',     cents: 764.92 },
-          { num: 8,  den: 5,  name: 'Just Minor 6th',         cents: 813.69 },
-          { num: 27, den: 16, name: 'Pythagorean Major 6th',   cents: 905.87 },
-          { num: 12, den: 7,  name: 'Septimal Major 6th',     cents: 968.83 },
-          { num: 16, den: 9,  name: 'Pythagorean Minor 7th',  cents: 996.09 }
-        ],
-        keys17: [
-          { num: 1,  den: 1,  name: 'Tonic',                  cents: 0.00   },
-          { num: 28, den: 27, name: 'Septimal Miniscule 2nd', cents: 62.96  },
-          { num: 16, den: 15, name: 'Minor Diatonic Semitone',cents: 111.73 },
-          { num: 9,  den: 8,  name: 'Major Whole Tone',       cents: 203.91 },
-          { num: 7,  den: 6,  name: 'Septimal Minor 3rd',     cents: 266.87 },
-          { num: 32, den: 27, name: 'Pythagorean Minor 3rd',  cents: 294.13 },
-          { num: 4,  den: 3,  name: 'Perfect 4th',            cents: 498.04 },
-          { num: 3,  den: 2,  name: 'Perfect 5th',            cents: 701.96 },
-          { num: 14, den: 9,  name: 'Septimal Minor 6th',     cents: 764.92 },
-          { num: 8,  den: 5,  name: 'Just Minor 6th',         cents: 813.69 },
-          { num: 27, den: 16, name: 'Pythagorean Major 6th',   cents: 905.87 },
-          { num: 12, den: 7,  name: 'Septimal Major 6th',     cents: 968.83 },
-          { num: 16, den: 9,  name: 'Pythagorean Minor 7th',  cents: 996.09 },
-          { num: 2,  den: 1,  name: 'Octave',                 cents: 1200.00 },
-          { num: 56, den: 27, name: 'Septimal Miniscule 2nd (Octave)', cents: 1262.96 },
-          { num: 32, den: 15, name: 'Minor Diatonic Semitone (Octave)', cents: 1311.73 },
-          { num: 9,  den: 4,  name: 'Major Whole Tone (Octave)', cents: 1403.91 }
-        ],
-        chords8: [
-          { id: 'arch8_Chromatic', label: 'Chromatikon', slotIndices: [4, 3, 5, 6] },
-          { id: 'arch8_Diatonic', label: 'Diatonikon', slotIndices: [5, 2, 6, 1] },
-          { id: 'arch8_5th', label: 'Septimal 5th', slotIndices: [4, 2, 1, 7] },
-          { id: 'arch8_cad', label: 'Septimal Cadence', slotIndices: [4, 2, 1, 0] },
-        ],
-        chords13: [
-          { id: 'arch_tet1', label: 'Enharmonion', pitchIndices: [0, 1, 2, 6] },
-          { id: 'arch_tet2', label: 'Diatonikon I', pitchIndices: [0, 1, 5, 6] },
-          { id: 'arch_tet3', label: 'Diatonikon II (root 9/8)', pitchIndices: [3, 4, 6, 7] },
-          { id: 'arch_tet4', label: 'Chromatikon', pitchIndices: [0, 1, 3, 6] },
-          { id: 'arch_sept', label: 'Septimal Cadence', pitchIndices: [0, 4, 7, 11] }
-        ]
-      },
-      'classic5limit': {
-        title: '13-Tone Classic 5-Limit Just Intonation',
-        keys8: [
-          { id: 8, num: 2,  den: 1,  name: 'Octave',             cents: 1200.00 },
-          { id: 6, num: 5,  den: 3,  name: 'Just Major 6th',     cents: 884.36  },
-          { id: 4, num: 4,  den: 3,  name: 'Perfect 4th',        cents: 498.04  },
-          { id: 2, num: 9,  den: 8,  name: 'Major Whole Tone',   cents: 203.91  },
-          { id: 1, num: 1,  den: 1,  name: 'Tonic',     cents: 0.00    },
-          { id: 3, num: 5,  den: 4,  name: 'Just Major 3rd',     cents: 386.31  },
-          { id: 5, num: 3,  den: 2,  name: 'Perfect 5th',        cents: 701.96  },
-          { id: 7, num: 15, den: 8,  name: 'Classic Major 7th',  cents: 1088.27 }
-        ],
-        keys13: [
           { num: 1,  den: 1,  name: 'Tonic',                 cents: 0.00    },
           { num: 16, den: 15, name: 'Minor Diatonic Semitone',cents: 111.73  },
           { num: 10, den: 9,  name: 'Minor Whole Tone',       cents: 182.40  },
@@ -1077,12 +551,16 @@
           { num: 6,  den: 5,  name: 'Just Minor 3rd',         cents: 315.64  },
           { num: 5,  den: 4,  name: 'Just Major 3rd',         cents: 386.31  },
           { num: 4,  den: 3,  name: 'Perfect 4th',            cents: 498.04  },
+          { num: 45,  den: 32, name: '45/32 Tritone',         cents: 590.22  },
+          { num: 64,  den: 45, name: 'Diminish 5th',         cents: 609.78  },
           { num: 3,  den: 2,  name: 'Perfect 5th',            cents: 701.96  },
           { num: 8,  den: 5,  name: 'Just Minor 6th',         cents: 813.69  },
           { num: 5,  den: 3,  name: 'Just Major 6th',         cents: 884.36  },
+          { num: 16, den: 9,  name: 'Pythagorean Minor 7th',  cents: 996.09 },
           { num: 9,  den: 5,  name: 'Just Minor 7th',         cents: 1017.60 },
           { num: 15, den: 8,  name: 'Classic Major 7th',      cents: 1088.27 },
-          { num: 2,  den: 1,  name: 'Octave',                 cents: 1200.00 }
+          { num: 2,  den: 1,  name: 'Octave',                 cents: 1200.00 },
+          { num: 32, den: 15, name: 'Minor Diatonic Semitone (Octave)', cents: 1311.73 },
         ],
         chords8: [
           { id: 'c5_maj', label: 'Just Major Triad', slotIndices: [4, 5, 6, 0] },
@@ -1090,98 +568,76 @@
           { id: 'c5_sub', label: 'Subdominant IV', slotIndices: [2, 1, 4, 0] },
           { id: 'c5_dom', label: 'Dominant V7', slotIndices: [6, 7, 3, 2] }
         ],
-        chords13: [
-          { id: 'c5_maj', label: 'Just Major Triad', pitchIndices: [0, 5, 7, 12] },
-          { id: 'c5_min', label: 'Just Minor Triad', pitchIndices: [0, 4, 7, 12] },
-          { id: 'c5_maj7', label: 'Classic Major 7th', pitchIndices: [0, 5, 7, 11] },
-          { id: 'c5_min7', label: 'Just Minor 7th', pitchIndices: [0, 4, 7, 10] }
-        ]
+chords13: [
+  { id: 'c5_maj', label: 'Just Major Triad', pitchIndices: [0, 5, 7, 12] },
+  { id: 'c5_min', label: 'Just Minor Triad', pitchIndices: [0, 4, 7, 12] },
+  { id: 'c5_maj7', label: 'Classic Major 7th', pitchIndices: [0, 5, 7, 11] },
+  { id: 'c5_min7', label: 'Just Minor 7th', pitchIndices: [0, 4, 7, 10] }
+],
+chords17: [
+  { id: 'c5_maj', label: 'Just Major Triad', pitchIndices: [0, 5, 9, 15] },
+  { id: 'c5_min', label: 'Just Minor Triad', pitchIndices: [0, 4, 9, 15] },
+  { id: 'c5_maj7', label: 'Classic Major 7th', pitchIndices: [0, 5, 9, 14] },
+  { id: 'c5_min7', label: 'Just Minor 7th', pitchIndices: [0, 4, 9, 13] }
+]
+
       },
-      'nearlytet19': {
-        title: 'Nearly TET 19-limit Just Intonation',
-        keys8: [
-          { id: 8, num: 2,  den: 1,  name: 'Octave',                cents: 1200.00 },
-          { id: 6, num: 27, den: 16, name: 'Pythagorean Major 6th',   cents: 905.87  },
-          { id: 4, num: 4,  den: 3,  name: 'Perfect 4th',           cents: 498.04  },
-          { id: 2, num: 9,  den: 8,  name: 'Major Whole Tone',      cents: 203.91  },
-          { id: 1, num: 1,  den: 1,  name: 'Tonic',                 cents: 0.00    },
-          { id: 3, num: 63, den: 50, name: '63/50 Major 3rd',       cents: 400.10  },
-          { id: 5, num: 3,  den: 2,  name: 'Perfect 5th',           cents: 701.96  },
-          { id: 7, num: 15, den: 8,  name: 'Classic Major 7th',     cents: 1088.27 }
+      'nearlytet19':{
+        title:'Nearly TET 19-limit JI',
+        keys8:[
+          {id:8,num:2,den:1,name:'Octave',cents:1200.00},
+          {id:6,num:27,den:16,name:'Pythagorean Major 6th',cents:905.87},
+          {id:4,num:4,den:3,name:'Perfect 4th',cents:498.04},
+          {id:2,num:9,den:8,name:'Major Whole Tone',cents:203.91},
+          {id:1,num:1,den:1,name:'Tonic',cents:0.00},
+          {id:3,num:63,den:50,name:'63/50 Major 3rd',cents:400.10},
+          {id:5,num:3,den:2,name:'Perfect 5th',cents:701.96},
+          {id:7,num:15,den:8,name:'Classic Major 7th',cents:1088.27}
         ],
-        keys13: [
-          { num: 1,   den: 1,  name: 'Tonic',                 cents: 0.00    },
-          { num: 17,  den: 16, name: 'Septendecimal Semitone', cents: 104.96  },
-          { num: 9,   den: 8,  name: 'Major Whole Tone',      cents: 203.91  },
-          { num: 19,  den: 16, name: '19/16 Minor 3rd',       cents: 297.51  },
-          { num: 63,  den: 50, name: '63/50 Major 3rd',       cents: 400.10  },
-          { num: 4,   den: 3,  name: 'Perfect 4th',           cents: 498.04  },
-          { num: 45,  den: 32, name: '45/32 Tritone',         cents: 590.22  },
-          { num: 3,   den: 2,  name: 'Perfect 5th',           cents: 701.96  },
-          { num: 100, den: 63, name: '100/63 Minor 6th',      cents: 799.90  },
-          { num: 27,  den: 16, name: 'Pythagorean Major 6th', cents: 905.87  },
-          { num: 25,   den: 14,  name: '25/14 Minor 7th',    cents: 1003.80  },
-          { num: 15,  den: 8,  name: 'Classic Major 7th',     cents: 1088.27 },
-          { num: 2,   den: 1,  name: 'Octave',                cents: 1200.00 }
+        keys13:[
+          {num:1,den:1,name:'Tonic',cents:0.00},
+          {num:17,den:16,name:'Septendecimal Semitone',cents:104.96},
+          {num:9,den:8,name:'Major Whole Tone',cents:203.91},
+          {num:19,den:16,name:'19/16 Minor 3rd',cents:297.51},
+          {num:63,den:50,name:'63/50 Major 3rd',cents:400.10},
+          {num:4,den:3,name:'Perfect 4th',cents:498.04},
+          {num:45,den:32,name:'45/32 Tritone',cents:590.22},
+          {num:3,den:2,name:'Perfect 5th',cents:701.96},
+          {num:100,den:63,name:'100/63 Minor 6th',cents:799.90},
+          {num:27,den:16,name:'Pythagorean Major 6th',cents:905.87},
+          {num:25,den:14,name:'25/14 Minor 7th',cents:1003.80},
+          {num:15,den:8,name:'Classic Major 7th',cents:1088.27},
+          {num:2,den:1,name:'Octave',cents:1200.00}
         ],
-        chords8: [
-          { id: 'tet19_1', label: '63/50 Major Triad', slotIndices: [4, 5, 6, 0] },
-          { id: 'tet19_2', label: '63/50 Major 7th', slotIndices: [4, 5, 6, 7] },
-          { id: 'tet19_3', label: 'Subdominant IV', slotIndices: [2, 1, 4, 0] },
-          { id: 'tet19_4', label: 'Dominant V7', slotIndices: [6, 7, 3, 2] }
+        chords8:[
+          {id:'tet19_1',label:'63/50 Major Triad',slotIndices:[4,5,6,0]},
+          {id:'tet19_2',label:'63/50 Major 7th',slotIndices:[4,5,6,7]},
+          {id:'tet19_3',label:'Subdominant IV',slotIndices:[2,1,4,0]},
+          {id:'tet19_4',label:'Dominant V7',slotIndices:[6,7,3,2]}
         ],
-        chords13: [
-          { id: 'tet19_maj', label: '63/50 Major Triad', pitchIndices: [0, 4, 7, 12] },
-          { id: 'tet19_maj7', label: '63/50 Major 7th', pitchIndices: [0, 4, 7, 11] },
-          { id: 'tet19_min7', label: '19/16 Minor 7th', pitchIndices: [0, 3, 7, 10] },
-          { id: 'tet19_approx', label: 'Near 19-TET Sweep', pitchIndices: [0, 4, 8, 12] },
-          { id: 'blues', label: ' Minor Blues', pitchIndices: [0, 2, 3, 5, 7, 5, 3, 2, 0, 2, 3, 5, 7, 5, 3, 2, 5, 7, 8, 10, 12, 10, 8, 7, 5, 7, 8, 10, 12, 10, 8, 5, 2, 3, 5, 7, 5, 3, 2, 3, 0, 3, 2, 5, 7, null, null, null] },
-          { id: 'major-blues', label: ' Major Blues', pitchIndices: [0, 2, 4, 5, 7, 5, 4, 2, 0, 2, 4, 5, 7, 5, 4, 2, 5, 7, 9, 10, 12, 10, 9, 7, 5, 7, 9, 10, 12, 10, 9, 5, 2, 4, 5, 7, 5, 4, 2, 4, 0, 4, 2, 5, 7, null, null, null] }
+        chords13:[
+          {id:'tet19_M',label:'63/50 Major Triad',pitchIndices:[0,4,7,12]},
+          {id:'tet19_M7',label:'63/50 Major 7th',pitchIndices:[0,4,7,11]},
+          {id:'tet19_m7',label:'19/16 Minor 7th',pitchIndices:[0,3,7,10]},
+          {id:'tet19_approx',label:'Near 19-TET Sweep',pitchIndices:[0,4,8,12]}
         ]
       }
     };
 
-    const vSlot13 = [11, 9, 7, 5, 3, 1, 0, 2, 4, 6, 8, 10, 12];
-    const vSlot17 = [15, 13, 11, 9, 7, 5, 3, 1, 0, 2, 4, 6, 8, 10, 12, 14, 16];
-    const shortcuts8 = ['1', '2', '3', '4', '5', '6', '7', '8'];
-    const shortcuts13 = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'q'];
-    const shortcuts17 = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'q', 'w', 'e', 'r', 't'];
+    const vSlot13=[11,9,7,5,3,1,0,2,4,6,8,10,12];
+    const vSlot17=[15,13,11,9,7,5,3,1,0,2,4,6,8,10,12,14,16];
+    const shortcuts8=['1','2','3','4','5','6','7','8'];
+    const shortcuts13=['1','2','3','4','5','6','7','8','9','0','q','w','e'];
+    const shortcuts17=['1','2','3','4','5','6','7','8','9','0','q','w','e','r','t','y','u'];
 
-    let currentScaleKey = 'souljazz';
-    let baseTonicFreq = 417.6;
-    let tonicNum = 1;
-    let tonicDen = 1;
-    let tonicOctave = 0;
-    let currentTonicFreq = 417.6;
-    let masterGainValue = 0.05;
-    let is8KeyMode = true;
-    let landscapeKeyCount = 13;
-    let currentTines = [];
-    let audioCtx = null, compressor = null, hpf = null, masterGain = null;
-    let sharedNoiseBuffer = null;
-    let isNoiseFilterEnabled = true;
-    let isRandomNoiseEnabled = true;
-    let isHarmonicEffectEnabled = true;
-    let isCompressorRoutingEnabled = true;
-    let lastTine = null, currentTine = null;
+    let currentScaleKey='souljazz',baseTonicFreq=417.6,tonicNum=1,tonicDen=1,tonicOctave=0,currentTonicFreq=417.6,masterGainValue=0.05,is8KeyMode=true,landscapeKeyCount=13,currentTines=[];
+    let audioCtx=null,compressor=null,hpf=null,masterGain=null,sharedNoiseBuffer=null;
+    let isNoiseFilterEnabled=true,isRandomNoiseEnabled=true,isHarmonicEffectEnabled=true,isCompressorRoutingEnabled=true;
+    let lastTine=null,currentTine=null,recorderNode=null,selectedRecEngine='worklet',recordedBuffers=[],isRecording=false,recTimerInterval=null,lastRecordedBlobUrl=null,audioInitPromise=null;
+    const loadedWorkletContexts=new WeakSet();
+    let chordBpm=87,chordPlayTimer=null,isChordLooping=false,activeChordSequence=null,activeChordIndex=0;
 
-    let recorderNode = null;
-    let selectedRecEngine = 'worklet';
-    let recordedBuffers = [];
-    let isRecording = false;
-    let recTimerInterval = null;
-    let lastRecordedBlobUrl = null;
-    let audioInitPromise = null;
-
-    const loadedWorkletContexts = new WeakSet();
-
-    let chordBpm = 87;
-    let chordPlayTimer = null;
-    let isChordLooping = false;
-    let activeChordSequence = null;
-    let activeChordIndex = 0;
-
-const recorderWorkletCode = `
+    const recorderWorkletCode=`
 class RecorderProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
@@ -1189,7 +645,6 @@ class RecorderProcessor extends AudioWorkletProcessor {
     this.bufferSize = 4096;
     this.buffer = new Float32Array(this.bufferSize);
     this.bufferIndex = 0;
-
     this.port.onmessage = (e) => {
       if (e.data.command === 'START') {
         this.isRecording = true;
@@ -1204,10 +659,8 @@ class RecorderProcessor extends AudioWorkletProcessor {
       }
     };
   }
-
-  process(inputs, outputs, parameters) {
+  process(inputs) {
     if (!this.isRecording) return true;
-
     const input = inputs[0];
     if (input && input.length > 0 && input[0].length > 0) {
       const channel = input[0];
@@ -1226,904 +679,518 @@ class RecorderProcessor extends AudioWorkletProcessor {
 registerProcessor('recorder-processor', RecorderProcessor);
 `;
 
-    function parseRecFormat(val) {
-      const [type, sr] = val.split('-');
-      return {
-        bitDepth: type,
-        sampleRate: sr === '96k' ? 96000 : 48000
-      };
+    function parseRecFormat(val){
+      const [type,sr]=val.split('-');
+      return {bitDepth:type,sampleRate:sr==='96k'?96000:48000};
     }
 
-    function gcd(a, b) {
-      a = Math.abs(a); b = Math.abs(b);
-      while (b) { const t = b; b = a % b; a = t; }
+    function gcd(a,b){
+      a=Math.abs(a);b=Math.abs(b);
+      while(b){const t=b;b=a%b;a=t;}
       return a;
     }
 
-    function calcIntervalRatio(tineA, tineB) {
-      let num = tineB.num * tineA.den;
-      let den = tineB.den * tineA.num;
-      
-      const g = gcd(num, den);
-      num /= g;
-      den /= g;
-      
-      const ratioVal = num / den;
-      const cents = 1200 * Math.log2(ratioVal);
-      
-      return {
-        ratioStr: `${num}/${den}`,
-        cents: cents
-      };
+    function calcIntervalRatio(tineA,tineB){
+      let num=tineB.num*tineA.den,den=tineB.den*tineA.num;
+      const g=gcd(num,den);
+      num/=g;den/=g;
+      const ratioVal=num/den,cents=1200*Math.log2(ratioVal);
+      return {ratioStr:`${num}/${den}`,cents:cents};
     }
 
-    function detectKeyMode() {
-      const isPortrait = window.innerHeight > window.innerWidth;
-      const isNarrow = window.innerWidth < 680;
-      return isPortrait || isNarrow;
+    function detectKeyMode(){return window.innerHeight>window.innerWidth||window.innerWidth<680;}
+
+    function updateTonicFreq(){
+      let computed=baseTonicFreq*(tonicNum/tonicDen)*Math.pow(2,tonicOctave);
+      if(computed>4000)computed=4000;
+      if(computed<10)computed=10;
+      currentTonicFreq=computed;
     }
 
-    function updateTonicFreq() {
-      let computed = baseTonicFreq * (tonicNum / tonicDen) * Math.pow(2, tonicOctave);
-      if (computed > 4000) computed = 4000;
-      if (computed < 10) computed = 10;
-      currentTonicFreq = computed;
-    }
+    function rebuildTinesData(){
+      const scaleDef=scalesData[currentScaleKey];
+      if(!scaleDef)return;
+      is8KeyMode=detectKeyMode();
+      const isShortEnv=(window.innerHeight<580&&!is8KeyMode);
+      let baseMaxHeight,heightDiffScale;
+      if(isShortEnv){baseMaxHeight=190;heightDiffScale=57;}
+      else if(is8KeyMode){baseMaxHeight=280;heightDiffScale=85;}
+      else{baseMaxHeight=250;heightDiffScale=75;}
 
-    function rebuildTinesData() {
-      const scaleDef = scalesData[currentScaleKey];
-      if (!scaleDef) return;
-      is8KeyMode = detectKeyMode();
-
-      const isShortEnv = (window.innerHeight < 580 && !is8KeyMode);
-
-      let baseMaxHeight, heightDiffScale;
-
-      if (isShortEnv) {
-        baseMaxHeight = 190;
-        heightDiffScale = 57;
-      } else if (is8KeyMode) {
-        baseMaxHeight = 280;
-        heightDiffScale = 85;
-      } else {
-        baseMaxHeight = 250;
-        heightDiffScale = 75;
+      if(is8KeyMode){
+        const sortedPitches=[...scaleDef.keys8].sort((a,b)=>a.cents-b.cents);
+        currentTines=scaleDef.keys8.map((item,idx)=>{
+          const pitchRank=sortedPitches.findIndex(p=>p.cents===item.cents)+1;
+          const ratioVal=item.num/item.den;
+          let freq=currentTonicFreq*ratioVal;
+          if(freq>4000)freq=4000;
+          let height=Math.round(baseMaxHeight-(ratioVal-1)*heightDiffScale);
+          if(height<30)height=30;
+          return {...item,labelNum:numToCircle[pitchRank],slotIndex:idx,pitchIndex:pitchRank-1,ratioStr:`${item.num}/${item.den}`,freq,height,shortcut:shortcuts8[idx]};
+        });
+      }else if(landscapeKeyCount===13){
+        const sorted13=[...scaleDef.keys13].sort((a,b)=>a.cents-b.cents);
+        const pitchList=scaleDef.keys13.map(item=>{
+          const pitchRank=sorted13.findIndex(p=>p.cents===item.cents)+1;
+          const ratioVal=item.num/item.den;
+          let freq=currentTonicFreq*ratioVal;
+          if(freq>4000)freq=4000;
+          let height=Math.round(baseMaxHeight-(ratioVal-1)*heightDiffScale);
+          if(height<30)height=30;
+          return {...item,labelNum:numToCircle[pitchRank],pitchIndex:pitchRank-1,ratioStr:`${item.num}/${item.den}`,freq,height};
+        });
+        currentTines=vSlot13.map((pitchIdx,slotIdx)=>({...pitchList[pitchIdx],slotIndex:slotIdx,keyShortcut:shortcuts13[slotIdx]}));
+      }else{
+        let keys17Raw=scaleDef.keys17||[...scaleDef.keys13,...scaleDef.keys13.slice(1,5).map(item=>{
+          let newNum=item.num*2,newDen=item.den,g=gcd(newNum,newDen);
+          return {num:newNum/g,den:newDen/g,name:item.name,cents:item.cents+1200.00};
+        })];
+        const sorted17=[...keys17Raw].sort((a,b)=>a.cents-b.cents);
+        const pitchList=keys17Raw.map(item=>{
+          const pitchRank=sorted17.findIndex(p=>p.cents===item.cents&&p.num===item.num&&p.den===item.den)+1;
+          const ratioVal=item.num/item.den;
+          let freq=currentTonicFreq*ratioVal;
+          if(freq>4000)freq=4000;
+          let height=Math.round(baseMaxHeight-(ratioVal-1)*heightDiffScale);
+          if(height<30)height=30;
+          return {...item,labelNum:numToCircle[pitchRank]||pitchRank,pitchIndex:pitchRank-1,ratioStr:`${item.num}/${item.den}`,freq,height};
+        });
+        currentTines=vSlot17.map((pitchIdx,slotIdx)=>({...pitchList[pitchIdx],slotIndex:slotIdx,keyShortcut:shortcuts17[slotIdx]}));
       }
 
-      if (is8KeyMode) {
-        const sortedPitches = [...scaleDef.keys8].sort((a, b) => a.cents - b.cents);
-        
-        currentTines = scaleDef.keys8.map((item, idx) => {
-          const pitchRank = sortedPitches.findIndex(p => p.cents === item.cents) + 1;
-          const ratioVal = item.num / item.den;
-          let freq = currentTonicFreq * ratioVal;
-          if (freq > 4000) freq = 4000;
-          let height = Math.round(baseMaxHeight - (ratioVal - 1) * heightDiffScale);
-          if (height < 30) height = 30;
-          return {
-            ...item,
-            labelNum: numToCircle[pitchRank],
-            slotIndex: idx,
-            pitchIndex: pitchRank - 1,
-            ratioStr: `${item.num}/${item.den}`,
-            freq,
-            height,
-            shortcut: shortcuts8[idx]
-          };
-        });
-      } else if (landscapeKeyCount === 13) {
-        const sorted13 = [...scaleDef.keys13].sort((a, b) => a.cents - b.cents);
-        const pitchList = scaleDef.keys13.map((item) => {
-          const pitchRank = sorted13.findIndex(p => p.cents === item.cents) + 1;
-          const ratioVal = item.num / item.den;
-          let freq = currentTonicFreq * ratioVal;
-          if (freq > 4000) freq = 4000;
-          let height = Math.round(baseMaxHeight - (ratioVal - 1) * heightDiffScale);
-          if (height < 30) height = 30;
-          return { 
-            ...item, 
-            labelNum: numToCircle[pitchRank],
-            pitchIndex: pitchRank - 1, 
-            ratioStr: `${item.num}/${item.den}`, 
-            freq, 
-            height 
-          };
-        });
-
-        currentTines = vSlot13.map((pitchIdx, slotIdx) => {
-          return {
-            ...pitchList[pitchIdx],
-            slotIndex: slotIdx,
-            keyShortcut: shortcuts13[slotIdx]
-          };
-        });
-      } else {
-        let keys17Raw;
-        if (scaleDef.keys17) {
-          keys17Raw = scaleDef.keys17;
-        } else {
-          const extraKeys = scaleDef.keys13.slice(1, 5).map(item => {
-            let newNum = item.num * 2;
-            let newDen = item.den;
-            const g = gcd(newNum, newDen);
-            return {
-              num: newNum / g,
-              den: newDen / g,
-              name: item.name,
-              cents: item.cents + 1200.00
-            };
-          });
-          keys17Raw = [...scaleDef.keys13, ...extraKeys];
-        }
-
-        const sorted17 = [...keys17Raw].sort((a, b) => a.cents - b.cents);
-
-        const pitchList = keys17Raw.map((item) => {
-          const pitchRank = sorted17.findIndex(p => p.cents === item.cents && p.num === item.num && p.den === item.den) + 1;
-          const ratioVal = item.num / item.den;
-          let freq = currentTonicFreq * ratioVal;
-          if (freq > 4000) freq = 4000;
-          let height = Math.round(baseMaxHeight - (ratioVal - 1) * heightDiffScale);
-          if (height < 30) height = 30;
-          return {
-            ...item,
-            labelNum: numToCircle[pitchRank] || pitchRank,
-            pitchIndex: pitchRank - 1,
-            ratioStr: `${item.num}/${item.den}`,
-            freq,
-            height
-          };
-        });
-
-        currentTines = vSlot17.map((pitchIdx, slotIdx) => {
-          return {
-            ...pitchList[pitchIdx],
-            slotIndex: slotIdx,
-            keyShortcut: shortcuts17[slotIdx]
-          };
-        });
-      }
-
-      if (!currentTine || !currentTines.some(t => t.num === currentTine.num && t.den === currentTine.den)) {
-        currentTine = currentTines.find(t => t.num === 1 && t.den === 1) || currentTines[4] || currentTines[0];
-        lastTine = currentTine;
+      if(!currentTine||!currentTines.some(t=>t.num===currentTine.num&&t.den===currentTine.den)){
+        currentTine=currentTines.find(t=>t.num===1&&t.den===1)||currentTines[4]||currentTines[0];
+        lastTine=currentTine;
       }
     }
 
-    async function setupRecorderNode(ctx) {
-      if (recorderNode) {
-        try { recorderNode.disconnect(); } catch (e) {}
-        recorderNode = null;
-      }
-
-      if (selectedRecEngine === 'worklet') {
-        try {
-          if (!loadedWorkletContexts.has(ctx)) {
-            const dataUrl = 'data:text/javascript;charset=utf-8,' + encodeURIComponent(recorderWorkletCode);
+    async function setupRecorderNode(ctx){
+      if(recorderNode){try{recorderNode.disconnect();}catch(e){}recorderNode=null;}
+      if(selectedRecEngine==='worklet'){
+        try{
+          if(!loadedWorkletContexts.has(ctx)){
+            const dataUrl='data:text/javascript;charset=utf-8,'+encodeURIComponent(recorderWorkletCode);
             await ctx.audioWorklet.addModule(dataUrl);
             loadedWorkletContexts.add(ctx);
           }
-
-          recorderNode = new AudioWorkletNode(ctx, 'recorder-processor');
-          recorderNode.port.onmessage = (e) => {
-            if (isRecording) {
-              recordedBuffers.push(new Float32Array(e.data));
-            }
-          };
-
-          const muteGain = ctx.createGain();
-          muteGain.gain.setValueAtTime(0, ctx.currentTime);
-
-          masterGain.connect(recorderNode);
-          recorderNode.connect(muteGain);
-          muteGain.connect(ctx.destination);
-        } catch (err) {
-          console.error('AudioWorklet setup failed:', err);
-        }
-      } else {
-        const scriptNode = ctx.createScriptProcessor(4096, 1, 1);
-        scriptNode.onaudioprocess = (e) => {
-          if (isRecording) {
-            const inputData = e.inputBuffer.getChannelData(0);
-            recordedBuffers.push(new Float32Array(inputData));
-          }
-        };
-        const muteGain = ctx.createGain();
-        muteGain.gain.setValueAtTime(0, ctx.currentTime);
-
-        masterGain.connect(scriptNode);
-        scriptNode.connect(muteGain);
-        muteGain.connect(ctx.destination);
-        recorderNode = scriptNode;
+          recorderNode=new AudioWorkletNode(ctx,'recorder-processor');
+          recorderNode.port.onmessage=(e)=>{if(isRecording)recordedBuffers.push(new Float32Array(e.data));};
+          const muteGain=ctx.createGain();muteGain.gain.setValueAtTime(0,ctx.currentTime);
+          masterGain.connect(recorderNode);recorderNode.connect(muteGain);muteGain.connect(ctx.destination);
+        }catch(err){console.error('AudioWorklet setup failed:',err);}
+      }else{
+        const scriptNode=ctx.createScriptProcessor(4096,1,1);
+        scriptNode.onaudioprocess=(e)=>{if(isRecording)recordedBuffers.push(new Float32Array(e.inputBuffer.getChannelData(0)));};
+        const muteGain=ctx.createGain();muteGain.gain.setValueAtTime(0,ctx.currentTime);
+        masterGain.connect(scriptNode);scriptNode.connect(muteGain);muteGain.connect(ctx.destination);
+        recorderNode=scriptNode;
       }
     }
 
-    async function initAudio() {
-      const selectFormatVal = document.getElementById('selectRecFormat').value;
-      const { sampleRate: targetSampleRate } = parseRecFormat(selectFormatVal);
-
-      if (audioCtx && audioCtx.sampleRate !== targetSampleRate) {
-        await audioCtx.close();
-        audioCtx = null;
-        recorderNode = null;
+    async function initAudio(){
+      const {sampleRate:targetSampleRate}=parseRecFormat(document.getElementById('selectRecFormat').value);
+      if(audioCtx&&audioCtx.sampleRate!==targetSampleRate){
+        await audioCtx.close();audioCtx=null;recorderNode=null;
       }
+      if(!audioCtx){
+        const AudioContextClass=window.AudioContext||window.webkitAudioContext;
+        audioCtx=new AudioContextClass({sampleRate:targetSampleRate});
+        hpf=audioCtx.createBiquadFilter();hpf.type='highpass';hpf.frequency.setValueAtTime(120,audioCtx.currentTime);
+        compressor=audioCtx.createDynamicsCompressor();compressor.threshold.setValueAtTime(-12.0,audioCtx.currentTime);
+        compressor.knee.setValueAtTime(10,audioCtx.currentTime);compressor.ratio.setValueAtTime(6,audioCtx.currentTime);
+        masterGain=audioCtx.createGain();masterGain.gain.setValueAtTime(masterGainValue,audioCtx.currentTime);
+        compressor.connect(hpf);hpf.connect(masterGain);masterGain.connect(audioCtx.destination);
 
-      if (!audioCtx) {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        audioCtx = new AudioContextClass({ sampleRate: targetSampleRate });
+        const bufferSize=Math.floor(audioCtx.sampleRate*0.05);
+        sharedNoiseBuffer=audioCtx.createBuffer(1,bufferSize,audioCtx.sampleRate);
+        const data=sharedNoiseBuffer.getChannelData(0);
+        for(let i=0;i<bufferSize;i++)data[i]=Math.random()*2-1;
+        audioInitPromise=setupRecorderNode(audioCtx);
+      }else if(!recorderNode){audioInitPromise=setupRecorderNode(audioCtx);}
 
-        hpf = audioCtx.createBiquadFilter();
-        hpf.type = 'highpass';
-        hpf.frequency.setValueAtTime(120, audioCtx.currentTime);
-
-        compressor = audioCtx.createDynamicsCompressor();
-        compressor.threshold.setValueAtTime(-12.0, audioCtx.currentTime);
-        compressor.knee.setValueAtTime(10, audioCtx.currentTime);
-        compressor.ratio.setValueAtTime(6, audioCtx.currentTime);
-
-        masterGain = audioCtx.createGain();
-        masterGain.gain.setValueAtTime(masterGainValue, audioCtx.currentTime);
-
-        compressor.connect(hpf);
-        hpf.connect(masterGain);
-        masterGain.connect(audioCtx.destination);
-
-        const bufferSize = Math.floor(audioCtx.sampleRate * 0.05);
-        sharedNoiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const data = sharedNoiseBuffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-          data[i] = Math.random() * 2 - 1;
-        }
-
-        audioInitPromise = setupRecorderNode(audioCtx);
-      } else if (!recorderNode) {
-        audioInitPromise = setupRecorderNode(audioCtx);
-      }
-
-      if (audioCtx.state === 'suspended') {
-        await audioCtx.resume();
-      }
-
-      if (audioInitPromise) {
-        await audioInitPromise;
-      }
+      if(audioCtx.state==='suspended')await audioCtx.resume();
+      if(audioInitPromise)await audioInitPromise;
     }
 
-    async function playTone(freq) {
-      await initAudio();
-      if (!audioCtx) return;
-      const now = audioCtx.currentTime;
-      
-      const routingTarget = isCompressorRoutingEnabled ? compressor : hpf;
+    async function playTone(freq){
+      await initAudio();if(!audioCtx)return;
+      const now=audioCtx.currentTime,routingTarget=isCompressorRoutingEnabled?compressor:hpf;
 
-      const osc1 = audioCtx.createOscillator(), gain1 = audioCtx.createGain();
-      osc1.type = 'sine'; osc1.frequency.setValueAtTime(freq, now);
-      gain1.gain.setValueAtTime(0.5, now); gain1.gain.exponentialRampToValueAtTime(0.0001, now + 2.5);
-      osc1.connect(gain1);
-      gain1.connect(routingTarget);
-      osc1.start(now); 
-      osc1.stop(now + 2.6);
+      const osc1=audioCtx.createOscillator(),gain1=audioCtx.createGain();
+      osc1.type='sine';osc1.frequency.setValueAtTime(freq,now);
+      gain1.gain.setValueAtTime(0.5,now);gain1.gain.exponentialRampToValueAtTime(0.0001,now+2.5);
+      osc1.connect(gain1);gain1.connect(routingTarget);
+      osc1.start(now);osc1.stop(now+2.6);
 
-      if (isHarmonicEffectEnabled) {
-        const osc2 = audioCtx.createOscillator(), gain2 = audioCtx.createGain();
-        osc2.type = 'sine'; osc2.frequency.setValueAtTime(freq * 2.756, now);
-        gain2.gain.setValueAtTime(0.18, now); gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
-        osc2.connect(gain2);
-        gain2.connect(routingTarget);
-        osc2.start(now); 
-        osc2.stop(now + 0.3);
+      if(isHarmonicEffectEnabled){
+        const osc2=audioCtx.createOscillator(),gain2=audioCtx.createGain();
+        osc2.type='sine';osc2.frequency.setValueAtTime(freq*2.756,now);
+        gain2.gain.setValueAtTime(0.18,now);gain2.gain.exponentialRampToValueAtTime(0.0001,now+0.28);
+        osc2.connect(gain2);gain2.connect(routingTarget);
+        osc2.start(now);osc2.stop(now+0.3);
       }
 
-      if (isRandomNoiseEnabled && sharedNoiseBuffer) {
-        const noise = audioCtx.createBufferSource();
-        noise.buffer = sharedNoiseBuffer;
-
-        const noiseGain = audioCtx.createGain();
-        noiseGain.gain.setValueAtTime(0.10, now);
-        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.015);
-
-        if (isNoiseFilterEnabled) {
-          const filter = audioCtx.createBiquadFilter();
-          filter.type = 'bandpass';
-          filter.frequency.setValueAtTime(1400, now);
-          noise.connect(filter);
-          filter.connect(noiseGain);
-        } else {
-          noise.connect(noiseGain);
-        }
-        
+      if(isRandomNoiseEnabled&&sharedNoiseBuffer){
+        const noise=audioCtx.createBufferSource();noise.buffer=sharedNoiseBuffer;
+        const noiseGain=audioCtx.createGain();
+        noiseGain.gain.setValueAtTime(0.10,now);noiseGain.gain.exponentialRampToValueAtTime(0.001,now+0.015);
+        if(isNoiseFilterEnabled){
+          const filter=audioCtx.createBiquadFilter();
+          filter.type='bandpass';filter.frequency.setValueAtTime(1400,now);
+          noise.connect(filter);filter.connect(noiseGain);
+        }else{noise.connect(noiseGain);}
         noiseGain.connect(routingTarget);
-        noise.start(now); 
-        noise.stop(now + 0.015);
+        noise.start(now);noise.stop(now+0.015);
       }
     }
 
-    const tinesWrapper = document.getElementById('tinesWrapper');
-    const presetButtons = document.getElementById('presetButtons');
-    const valLastPlucked = document.getElementById('valLastPlucked');
-    const valInterval = document.getElementById('valInterval');
+    const tinesWrapper=document.getElementById('tinesWrapper'),presetButtons=document.getElementById('presetButtons');
+    const valLastPlucked=document.getElementById('valLastPlucked'),valInterval=document.getElementById('valInterval');
+    const inputChordBpm=document.getElementById('inputChordBpm'),btnChordBpmMinus=document.getElementById('btnChordBpmMinus'),btnChordBpmPlus=document.getElementById('btnChordBpmPlus');
+    const btnChordLoopToggle=document.getElementById('btnChordLoopToggle'),btnChordStop=document.getElementById('btnChordStop');
+    const txtTonicOctave=document.getElementById('txtTonicOctave'),btnOctaveMinus=document.getElementById('btnOctaveMinus'),btnOctavePlus=document.getElementById('btnOctavePlus');
+    const btnLandscapeKeyToggle=document.getElementById('btnLandscapeKeyToggle'),settingsModal=document.getElementById('settingsModal');
+    const btnOpenSettings=document.getElementById('btnOpenSettings'),btnCloseModal=document.getElementById('btnCloseModal');
 
-    const inputChordBpm = document.getElementById('inputChordBpm');
-    const btnChordBpmMinus = document.getElementById('btnChordBpmMinus');
-    const btnChordBpmPlus = document.getElementById('btnChordBpmPlus');
-    const btnChordLoopToggle = document.getElementById('btnChordLoopToggle');
-    const btnChordStop = document.getElementById('btnChordStop');
+    btnOpenSettings.addEventListener('click',()=>settingsModal.classList.add('open'));
+    btnCloseModal.addEventListener('click',()=>settingsModal.classList.remove('open'));
+    settingsModal.addEventListener('click',(e)=>{if(e.target===settingsModal)settingsModal.classList.remove('open');});
 
-    const txtTonicOctave = document.getElementById('txtTonicOctave');
-    const btnOctaveMinus = document.getElementById('btnOctaveMinus');
-    const btnOctavePlus = document.getElementById('btnOctavePlus');
-    const btnLandscapeKeyToggle = document.getElementById('btnLandscapeKeyToggle');
+    function updateOctaveUI(){if(txtTonicOctave)txtTonicOctave.textContent=(tonicOctave>0?'+':'')+tonicOctave;}
+    btnOctaveMinus.addEventListener('click',()=>{tonicOctave-=1;updateOctaveUI();renderApp();});
+    btnOctavePlus.addEventListener('click',()=>{tonicOctave+=1;updateOctaveUI();renderApp();});
 
-    const settingsModal = document.getElementById('settingsModal');
-    const btnOpenSettings = document.getElementById('btnOpenSettings');
-    const btnCloseModal = document.getElementById('btnCloseModal');
-
-    btnOpenSettings.addEventListener('click', () => {
-      settingsModal.classList.add('open');
-    });
-    btnCloseModal.addEventListener('click', () => {
-      settingsModal.classList.remove('open');
-    });
-    settingsModal.addEventListener('click', (e) => {
-      if (e.target === settingsModal) {
-        settingsModal.classList.remove('open');
-      }
-    });
-
-    function updateOctaveUI() {
-      if (txtTonicOctave) {
-        txtTonicOctave.textContent = (tonicOctave > 0 ? '+' : '') + tonicOctave;
-      }
-    }
-
-    btnOctaveMinus.addEventListener('click', () => {
-      tonicOctave -= 1;
-      updateOctaveUI();
+    btnLandscapeKeyToggle.addEventListener('click',()=>{
+      landscapeKeyCount=landscapeKeyCount===13?17:13;
+      btnLandscapeKeyToggle.textContent=landscapeKeyCount===13?'Change to 17-key':'Change to 13-key';
       renderApp();
     });
 
-    btnOctavePlus.addEventListener('click', () => {
-      tonicOctave += 1;
-      updateOctaveUI();
-      renderApp();
-    });
-
-    btnLandscapeKeyToggle.addEventListener('click', () => {
-      landscapeKeyCount = landscapeKeyCount === 13 ? 17 : 13;
-      btnLandscapeKeyToggle.textContent = landscapeKeyCount === 13 ? 'Change to 17-key' : 'Change to 13-key';
-      renderApp();
-    });
-
-    function triggerTine(tineObj) {
+    function triggerTine(tineObj){
       playTone(tineObj.freq);
-      if (currentTine.slotIndex !== tineObj.slotIndex) {
-        lastTine = currentTine;
-        currentTine = tineObj;
-      }
-      
-      valLastPlucked.innerHTML = `
-        <span class="line">${tineObj.labelNum} ${tineObj.name}</span>
-        <span class="line">(${tineObj.ratioStr} • ${tineObj.freq.toFixed(2)} Hz)</span>
-      `;
-      
-      const interval = calcIntervalRatio(lastTine, currentTine);
-      const diffCents = Math.abs(interval.cents).toFixed(1);
-      
-      valInterval.innerHTML = `
-        <span class="line">${lastTine.labelNum} → ${currentTine.labelNum}</span>
-        <span class="line">(${interval.ratioStr} • ${diffCents}¢ diff)</span>
-      `;
-
-      const el = document.querySelector(`.tine-wrapper[data-slot-index="${tineObj.slotIndex}"]`);
-      if (el) { el.classList.add('active'); setTimeout(() => el.classList.remove('active'), 150); }
+      if(currentTine.slotIndex!==tineObj.slotIndex){lastTine=currentTine;currentTine=tineObj;}
+      valLastPlucked.innerHTML=`<span class="line">${tineObj.labelNum} ${tineObj.name}</span><span class="line">(${tineObj.ratioStr} • ${tineObj.freq.toFixed(2)} Hz)</span>`;
+      const interval=calcIntervalRatio(lastTine,currentTine);
+      valInterval.innerHTML=`<span class="line">${lastTine.labelNum} → ${currentTine.labelNum}</span><span class="line">(${interval.ratioStr} • ${Math.abs(interval.cents).toFixed(1)}¢ diff)</span>`;
+      const el=document.querySelector(`.tine-wrapper[data-slot-index="${tineObj.slotIndex}"]`);
+      if(el){el.classList.add('active');setTimeout(()=>el.classList.remove('active'),150);}
     }
 
-    inputChordBpm.addEventListener('input', (e) => {
-      const val = parseFloat(e.target.value);
-      if (val >= 1 && val <= 500) {
-        chordBpm = val;
-        if (chordPlayTimer) {
-          startChordPlayback(activeChordSequence, true);
-        }
-      }
+    inputChordBpm.addEventListener('input',(e)=>{
+      const val=parseFloat(e.target.value);
+      if(val>=1&&val<=500){chordBpm=val;if(chordPlayTimer)startChordPlayback(activeChordSequence,true);}
+    });
+    btnChordBpmMinus.addEventListener('click',()=>{
+      let val=parseFloat(inputChordBpm.value)-1;if(isNaN(val))val=87;if(val<1)val=1;
+      chordBpm=val;inputChordBpm.value=chordBpm;if(chordPlayTimer)startChordPlayback(activeChordSequence,true);
+    });
+    btnChordBpmPlus.addEventListener('click',()=>{
+      let val=parseFloat(inputChordBpm.value)+1;if(isNaN(val))val=87;if(val>500)val=500;
+      chordBpm=val;inputChordBpm.value=chordBpm;if(chordPlayTimer)startChordPlayback(activeChordSequence,true);
     });
 
-    btnChordBpmMinus.addEventListener('click', () => {
-      let val = parseFloat(inputChordBpm.value) - 1;
-      if (isNaN(val)) val = 87;
-      if (val < 1) val = 1;
-      chordBpm = val;
-      inputChordBpm.value = chordBpm;
-      if (chordPlayTimer) {
-        startChordPlayback(activeChordSequence, true);
-      }
+    btnChordLoopToggle.addEventListener('click',()=>{
+      isChordLooping=!isChordLooping;
+      btnChordLoopToggle.className=`segmented-btn ${isChordLooping?'active':''}`;
+      btnChordLoopToggle.textContent=isChordLooping?'Loop: ON':'Loop: OFF';
+      btnChordLoopToggle.style.backgroundColor=isChordLooping?'#2563eb':'#0d0f17';
+      btnChordLoopToggle.style.color=isChordLooping?'#ffffff':'#9ca3af';
+      btnChordLoopToggle.style.border=isChordLooping?'none':'1px solid #232838';
     });
+    btnChordStop.addEventListener('click',stopChordPlayback);
 
-    btnChordBpmPlus.addEventListener('click', () => {
-      let val = parseFloat(inputChordBpm.value) + 1;
-      if (isNaN(val)) val = 87;
-      if (val > 500) val = 500;
-      chordBpm = val;
-      inputChordBpm.value = chordBpm;
-      if (chordPlayTimer) {
-        startChordPlayback(activeChordSequence, true);
-      }
-    });
+    function stopChordPlayback(){if(chordPlayTimer){clearInterval(chordPlayTimer);chordPlayTimer=null;}activeChordSequence=null;activeChordIndex=0;}
 
-    btnChordLoopToggle.addEventListener('click', () => {
-      isChordLooping = !isChordLooping;
-      btnChordLoopToggle.className = `segmented-btn ${isChordLooping ? 'active' : ''}`;
-      btnChordLoopToggle.textContent = isChordLooping ? 'Loop: ON' : 'Loop: OFF';
-      if (isChordLooping) {
-        btnChordLoopToggle.style.backgroundColor = '#2563eb';
-        btnChordLoopToggle.style.color = '#ffffff';
-        btnChordLoopToggle.style.border = 'none';
-      } else {
-        btnChordLoopToggle.style.backgroundColor = '#0d0f17';
-        btnChordLoopToggle.style.color = '#9ca3af';
-        btnChordLoopToggle.style.border = '1px solid #232838';
-      }
-    });
-
-    btnChordStop.addEventListener('click', () => {
+    function startChordPlayback(chordObj,resetIndex=true){
       stopChordPlayback();
-    });
+      activeChordSequence=chordObj;
+      if(resetIndex)activeChordIndex=0;
+      const items=is8KeyMode?chordObj.slotIndices:chordObj.pitchIndices;
+      if(!items||items.length===0)return;
 
-    function stopChordPlayback() {
-      if (chordPlayTimer) {
-        clearInterval(chordPlayTimer);
-        chordPlayTimer = null;
-      }
-      activeChordSequence = null;
-      activeChordIndex = 0;
-    }
-
-    function startChordPlayback(chordObj, resetIndex = true) {
-      stopChordPlayback();
-      activeChordSequence = chordObj;
-      if (resetIndex) activeChordIndex = 0;
-
-      const items = is8KeyMode ? chordObj.slotIndices : chordObj.pitchIndices;
-      if (!items || items.length === 0) return;
-
-      const intervalMs = (60 / chordBpm) * 1000;
-
-      function playStep() {
-        if (activeChordIndex >= items.length) {
-          if (isChordLooping) {
-            activeChordIndex = 0;
-          } else {
-            stopChordPlayback();
-            return;
-          }
+      function playStep(){
+        if(activeChordIndex>=items.length){
+          if(isChordLooping)activeChordIndex=0;
+          else{stopChordPlayback();return;}
         }
-        const targetInd = items[activeChordIndex];
-        if (targetInd !== null && targetInd !== undefined) {
-          const targetTine = is8KeyMode ? currentTines[targetInd] : currentTines.find(t => t.pitchIndex === targetInd);
-          if (targetTine) {
-            triggerTine(targetTine);
-          }
+        const targetInd=items[activeChordIndex];
+        if(targetInd!==null&&targetInd!==undefined){
+          const targetTine=is8KeyMode?currentTines[targetInd]:currentTines.find(t=>t.pitchIndex===targetInd);
+          if(targetTine)triggerTine(targetTine);
         }
         activeChordIndex++;
       }
-
       playStep();
-      chordPlayTimer = setInterval(playStep, intervalMs);
+      chordPlayTimer=setInterval(playStep,(60/chordBpm)*1000);
     }
 
-    function renderApp() {
-      updateTonicFreq();
-      rebuildTinesData();
-      updateOctaveUI();
-      
-      const scaleDef = scalesData[currentScaleKey];
-      
-      if (is8KeyMode) {
-        document.getElementById('badgeKeyMode').textContent = '8-Key';
-        document.getElementById('appSubtitle').textContent = 'Portrait: 8-Key / Landscape: 13 or 17-Key';
-        btnLandscapeKeyToggle.style.display = 'none';
-      } else {
-        document.getElementById('badgeKeyMode').textContent = `${landscapeKeyCount}-Key`;
-        document.getElementById('appSubtitle').textContent = `Portrait: 8-Key / Landscape: ${landscapeKeyCount}-Key`;
-        btnLandscapeKeyToggle.style.display = 'inline-flex';
-        btnLandscapeKeyToggle.textContent = landscapeKeyCount === 13 ? 'Change to 17-key' : 'Change to 13-key';
+    function renderApp(){
+      updateTonicFreq();rebuildTinesData();updateOctaveUI();
+      const scaleDef=scalesData[currentScaleKey];
+      if(is8KeyMode){
+        document.getElementById('badgeKeyMode').textContent='8-Key';
+        document.getElementById('appSubtitle').textContent='Portrait: 8-Key / Landscape: 13 or 17-Key';
+        btnLandscapeKeyToggle.style.display='none';
+      }else{
+        document.getElementById('badgeKeyMode').textContent=`${landscapeKeyCount}-Key`;
+        document.getElementById('appSubtitle').textContent=`Portrait: 8-Key / Landscape: ${landscapeKeyCount}-Key`;
+        btnLandscapeKeyToggle.style.display='inline-flex';
+        btnLandscapeKeyToggle.textContent=landscapeKeyCount===13?'Change to 17-key':'Change to 13-key';
       }
+      document.getElementById('badgeTonicFreq').textContent=currentTonicFreq.toFixed(1);
 
-      document.getElementById('badgeTonicFreq').textContent = currentTonicFreq.toFixed(1);
-
-      tinesWrapper.innerHTML = '<div class="bridge-bar"></div>';
-      currentTines.forEach(tine => {
-        const wrapper = document.createElement('div');
-        wrapper.className = `tine-wrapper ${tine.num === 1 && tine.den === 1 ? 'is-tonic' : ''}`;
-        wrapper.dataset.slotIndex = tine.slotIndex;
-        wrapper.innerHTML = `
-          <div class="tine" style="height: ${tine.height}px;">
+      tinesWrapper.innerHTML='<div class="bridge-bar"></div>';
+      currentTines.forEach(tine=>{
+        const wrapper=document.createElement('div');
+        wrapper.className=`tine-wrapper ${tine.num===1&&tine.den===1?'is-tonic':''}`;
+        wrapper.dataset.slotIndex=tine.slotIndex;
+        wrapper.innerHTML=`
+          <div class="tine" style="height:${tine.height}px;">
             <span class="tine-idx">${tine.labelNum}</span>
             <span class="tine-name">${tine.name}</span>
           </div>
           <span class="tine-ratio-text">${tine.ratioStr}</span>
           <span class="tine-cents-text">${tine.cents.toFixed(0)}¢</span>
-          <span class="tine-key-shortcut" title="PC Keyboard Shortcut">${tine.shortcut || tine.keyShortcut}</span>
+          <span class="tine-key-shortcut" title="PC Keyboard Shortcut">${tine.shortcut||tine.keyShortcut}</span>
         `;
-        const onPluck = (e) => { e.preventDefault(); triggerTine(tine); };
-        wrapper.addEventListener('mousedown', onPluck);
-        wrapper.addEventListener('touchstart', onPluck);
+        const onPluck=(e)=>{e.preventDefault();triggerTine(tine);};
+        wrapper.addEventListener('mousedown',onPluck);wrapper.addEventListener('touchstart',onPluck);
         tinesWrapper.appendChild(wrapper);
       });
 
-      presetButtons.innerHTML = '';
-
-      const activeChords = is8KeyMode ? scaleDef.chords8 : scaleDef.chords13.filter(c => {
-        const hasExceeded = c.pitchIndices && c.pitchIndices.some(idx => idx !== null && idx >= 13);
-        if (hasExceeded) {
-          return !is8KeyMode && landscapeKeyCount === 17;
-        }
-        return true;
-      });
-      activeChords.forEach((c, idx) => {
-        const btn = document.createElement('button');
-        btn.className = `preset-btn ${idx === 0 ? 'active' : ''}`;
-        btn.textContent = c.label;
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      presetButtons.innerHTML='';
+const activeChords = is8KeyMode
+  ? scaleDef.chords8
+  : (landscapeKeyCount === 17 && scaleDef.chords17)
+    ? scaleDef.chords17
+    : scaleDef.chords13.filter(c => !(c.pitchIndices && c.pitchIndices.some(idx => idx !== null && idx >= 13)));
+      activeChords.forEach((c,idx)=>{
+        const btn=document.createElement('button');
+        btn.className=`preset-btn ${idx===0?'active':''}`;
+        btn.textContent=c.label;
+        btn.addEventListener('click',()=>{
+          document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
           btn.classList.add('active');
-          startChordPlayback(c, true);
+          startChordPlayback(c,true);
         });
         presetButtons.appendChild(btn);
       });
     }
 
-    function encodeWAV(samples, sampleRate, bitDepthType) {
-      const isFloat = (bitDepthType === '32float');
-      const bytesPerSample = isFloat ? 4 : 2;
-      const formatTag = isFloat ? 3 : 1;
-      const bitsPerSample = isFloat ? 32 : 16;
+    function encodeWAV(samples,sampleRate,bitDepthType){
+      const isFloat=(bitDepthType==='32float'),bytesPerSample=isFloat?4:2,formatTag=isFloat?3:1,bitsPerSample=isFloat?32:16;
+      const buffer=new ArrayBuffer(44+samples.length*bytesPerSample),view=new DataView(buffer);
+      function writeString(offset,string){for(let i=0;i<string.length;i++)view.setUint8(offset+i,string.charCodeAt(i));}
+      writeString(0,'RIFF');view.setUint32(4,36+samples.length*bytesPerSample,true);writeString(8,'WAVE');writeString(12,'fmt ');
+      view.setUint32(16,16,true);view.setUint16(20,formatTag,true);view.setUint16(22,1,true);
+      view.setUint32(24,sampleRate,true);view.setUint32(28,sampleRate*bytesPerSample,true);
+      view.setUint16(32,bytesPerSample,true);view.setUint16(34,bitsPerSample,true);
+      writeString(36,'data');view.setUint32(40,samples.length*bytesPerSample,true);
 
-      const buffer = new ArrayBuffer(44 + samples.length * bytesPerSample);
-      const view = new DataView(buffer);
-
-      function writeString(offset, string) {
-        for (let i = 0; i < string.length; i++) {
-          view.setUint8(offset + i, string.charCodeAt(i));
+      let offset=44;
+      if(isFloat){
+        for(let i=0;i<samples.length;i++,offset+=4)view.setFloat32(offset,samples[i],true);
+      }else{
+        for(let i=0;i<samples.length;i++,offset+=2){
+          let s=Math.max(-1,Math.min(1,samples[i]));
+          view.setInt16(offset,s<0?s*0x8000:s*0x7FFF,true);
         }
       }
-
-      writeString(0, 'RIFF');
-      view.setUint32(4, 36 + samples.length * bytesPerSample, true);
-      writeString(8, 'WAVE');
-      writeString(12, 'fmt ');
-      view.setUint32(16, 16, true);
-      view.setUint16(20, formatTag, true);
-      view.setUint16(22, 1, true);
-      view.setUint32(24, sampleRate, true);
-      view.setUint32(28, sampleRate * bytesPerSample, true);
-      view.setUint32(32, bytesPerSample, true);
-      view.setUint32(34, bitsPerSample, true);
-      writeString(36, 'data');
-      view.setUint32(40, samples.length * bytesPerSample, true);
-
-      let offset = 44;
-      if (isFloat) {
-        for (let i = 0; i < samples.length; i++, offset += 4) {
-          view.setFloat32(offset, samples[i], true);
-        }
-      } else {
-        for (let i = 0; i < samples.length; i++, offset += 2) {
-          let s = Math.max(-1, Math.min(1, samples[i]));
-          s = s < 0 ? s * 0x8000 : s * 0x7FFF;
-          view.setInt16(offset, s, true);
-        }
-      }
-
-      return new Blob([buffer], { type: 'audio/wav' });
+      return new Blob([buffer],{type:'audio/wav'});
     }
 
-    const btnRecord = document.getElementById('btnRecord');
-    const txtRecord = document.getElementById('txtRecord');
-    const btnDownload = document.getElementById('btnDownload');
-    const txtDownload = document.getElementById('txtDownload');
-    const selectRecFormat = document.getElementById('selectRecFormat');
+    const btnRecord=document.getElementById('btnRecord'),txtRecord=document.getElementById('txtRecord');
+    const btnDownload=document.getElementById('btnDownload'),txtDownload=document.getElementById('txtDownload');
+    const selectRecFormat=document.getElementById('selectRecFormat');
 
-    function formatTime(seconds) {
-      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-      const s = (seconds % 60).toString().padStart(2, '0');
+    function formatTime(seconds){
+      const m=Math.floor(seconds/60).toString().padStart(2,'0'),s=(seconds%60).toString().padStart(2,'0');
       return `${m}:${s}`;
     }
 
-    async function startRecording() {
-      await initAudio();
-      recordedBuffers = [];
-      isRecording = true;
-
-      if (selectedRecEngine === 'worklet' && recorderNode && recorderNode.port) {
-        recorderNode.port.postMessage({ command: 'START' });
-      }
-
-      btnRecord.classList.add('recording');
-      btnDownload.style.display = 'none';
-
-      let seconds = 0;
-      txtRecord.textContent = `00:00`;
-      recTimerInterval = setInterval(() => {
-        seconds++;
-        txtRecord.textContent = formatTime(seconds);
-      }, 1000);
+    async function startRecording(){
+      await initAudio();recordedBuffers=[];isRecording=true;
+      if(selectedRecEngine==='worklet'&&recorderNode?.port)recorderNode.port.postMessage({command:'START'});
+      btnRecord.classList.add('recording');btnDownload.style.display='none';
+      let seconds=0;txtRecord.textContent='00:00';
+      recTimerInterval=setInterval(()=>{seconds++;txtRecord.textContent=formatTime(seconds);},1000);
     }
 
-    function stopRecording() {
-      if (isRecording) {
-        isRecording = false;
+    function stopRecording(){
+      if(isRecording){
+        isRecording=false;
+        if(selectedRecEngine==='worklet'&&recorderNode?.port)recorderNode.port.postMessage({command:'STOP'});
+        btnRecord.classList.remove('recording');txtRecord.textContent='REC';clearInterval(recTimerInterval);
 
-        if (selectedRecEngine === 'worklet' && recorderNode && recorderNode.port) {
-          recorderNode.port.postMessage({ command: 'STOP' });
+        let totalLength=recordedBuffers.reduce((acc,b)=>acc+b.length,0);
+        const mergedSamples=new Float32Array(totalLength);
+        let offset=0;
+        for(let i=0;i<recordedBuffers.length;i++){
+          mergedSamples.set(recordedBuffers[i],offset);
+          offset+=recordedBuffers[i].length;
         }
-
-        btnRecord.classList.remove('recording');
-        txtRecord.textContent = 'REC';
-        clearInterval(recTimerInterval);
-
-        let totalLength = 0;
-        for (let i = 0; i < recordedBuffers.length; i++) {
-          totalLength += recordedBuffers[i].length;
-        }
-        const mergedSamples = new Float32Array(totalLength);
-        let offset = 0;
-        for (let i = 0; i < recordedBuffers.length; i++) {
-          mergedSamples.set(recordedBuffers[i], offset);
-          offset += recordedBuffers[i].length;
-        }
-
-        const formatConfig = parseRecFormat(selectRecFormat.value);
-        const wavBlob = encodeWAV(mergedSamples, audioCtx.sampleRate, formatConfig.bitDepth);
-
-        if (lastRecordedBlobUrl) URL.revokeObjectURL(lastRecordedBlobUrl);
-        lastRecordedBlobUrl = URL.createObjectURL(wavBlob);
-
-        txtDownload.textContent = `💾`;
-        btnDownload.style.display = 'inline-flex';
+        const formatConfig=parseRecFormat(selectRecFormat.value);
+        const wavBlob=encodeWAV(mergedSamples,audioCtx.sampleRate,formatConfig.bitDepth);
+        if(lastRecordedBlobUrl)URL.revokeObjectURL(lastRecordedBlobUrl);
+        lastRecordedBlobUrl=URL.createObjectURL(wavBlob);
+        txtDownload.textContent='💾';btnDownload.style.display='inline-flex';
       }
     }
 
-    btnRecord.addEventListener('click', async () => {
-      if (isRecording) {
-        stopRecording();
-      } else {
-        await startRecording();
-      }
+    btnRecord.addEventListener('click',async()=>{if(isRecording)stopRecording();else await startRecording();});
+    btnDownload.addEventListener('click',()=>{
+      if(!lastRecordedBlobUrl)return;
+      const formatConfig=parseRecFormat(selectRecFormat.value),a=document.createElement('a');
+      a.style.display='none';a.href=lastRecordedBlobUrl;
+      const dateStr=new Date().toISOString().slice(0,19).replace(/[:-]/g,'').replace('T','_');
+      a.download=`kalimba_${formatConfig.bitDepth}_${formatConfig.sampleRate/1000}k_${dateStr}.wav`;
+      document.body.appendChild(a);a.click();
+      setTimeout(()=>document.body.removeChild(a),100);
     });
 
-    btnDownload.addEventListener('click', () => {
-      if (!lastRecordedBlobUrl) return;
-      const formatConfig = parseRecFormat(selectRecFormat.value);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = lastRecordedBlobUrl;
-      const now = new Date();
-      const dateStr = now.toISOString().slice(0, 19).replace(/[:-]/g, '').replace('T', '_');
-      a.download = `kalimba_${formatConfig.bitDepth}_${formatConfig.sampleRate / 1000}k_${dateStr}.wav`;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => {
-        document.body.removeChild(a);
-      }, 100);
+    selectRecFormat.addEventListener('change',async()=>{if(!isRecording&&audioCtx)await initAudio();});
+    document.getElementById('recEngineToggle').addEventListener('click',async(e)=>{
+      const btn=e.target.closest('.segmented-btn');if(!btn)return;
+      document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');selectedRecEngine=btn.dataset.engine;
+      if(audioCtx&&!isRecording)await setupRecorderNode(audioCtx);
     });
 
-    selectRecFormat.addEventListener('change', async () => {
-      if (!isRecording && audioCtx) {
-        await initAudio();
-      }
-    });
-
-    document.getElementById('recEngineToggle').addEventListener('click', async (e) => {
-      const btn = e.target.closest('.segmented-btn'); if (!btn) return;
-      document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedRecEngine = btn.dataset.engine;
-      if (audioCtx && !isRecording) {
-        await setupRecorderNode(audioCtx);
-      }
-    });
-
-    const btnFullscreen = document.getElementById('btnFullscreen');
-    const txtFullscreen = document.getElementById('txtFullscreen');
-
-    function toggleFullscreen() {
-      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-        const docEl = document.documentElement;
-        if (docEl.requestFullscreen) {
-          docEl.requestFullscreen();
-        } else if (docEl.webkitRequestFullscreen) {
-          docEl.webkitRequestFullscreen();
-        }
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen();
-        }
+    const btnFullscreen=document.getElementById('btnFullscreen'),txtFullscreen=document.getElementById('txtFullscreen');
+    function toggleFullscreen(){
+      if(!document.fullscreenElement&&!document.webkitFullscreenElement){
+        const docEl=document.documentElement;
+        if(docEl.requestFullscreen)docEl.requestFullscreen();
+        else if(docEl.webkitRequestFullscreen)docEl.webkitRequestFullscreen();
+      }else{
+        if(document.exitFullscreen)document.exitFullscreen();
+        else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
       }
     }
-
-    function updateFullscreenButton() {
-      const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
-      txtFullscreen.textContent = isFS ? 'Off' : 'Full';
-      setTimeout(renderApp, 100);
+    function updateFullscreenButton(){
+      txtFullscreen.textContent=(document.fullscreenElement||document.webkitFullscreenElement)?'Off':'Full';
+      setTimeout(renderApp,100);
     }
+    document.addEventListener('fullscreenchange',updateFullscreenButton);
+    document.addEventListener('webkitfullscreenchange',updateFullscreenButton);
+    btnFullscreen.addEventListener('click',toggleFullscreen);
+    window.addEventListener('resize',renderApp);
 
-    document.addEventListener('fullscreenchange', updateFullscreenButton);
-    document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
-    btnFullscreen.addEventListener('click', toggleFullscreen);
-
-    window.addEventListener('resize', () => {
-      renderApp();
+    document.getElementById('scaleToggle').addEventListener('click',(e)=>{
+      const btn=e.target.closest('.segmented-btn');if(!btn)return;
+      document.querySelectorAll('#scaleToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');currentScaleKey=btn.dataset.scale;renderApp();
     });
 
-    document.getElementById('scaleToggle').addEventListener('click', (e) => {
-      const btn = e.target.closest('.segmented-btn'); if (!btn) return;
-      document.querySelectorAll('#scaleToggle .segmented-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentScaleKey = btn.dataset.scale;
-      renderApp();
+    const inputMasterGain=document.getElementById('inputMasterGain'),txtMasterGain=document.getElementById('txtMasterGain');
+    inputMasterGain.addEventListener('input',(e)=>{
+      const val=parseFloat(e.target.value);masterGainValue=val;
+      const db=(20*Math.log10(val)).toFixed(1);
+      txtMasterGain.textContent=`${val.toFixed(2)} (${db.endsWith('.0')?db.slice(0,-2):db}dB)`;
+      if(masterGain&&audioCtx)masterGain.gain.setValueAtTime(masterGainValue,audioCtx.currentTime);
     });
 
-    // MASTER GAIN イベントリスナー
-    const inputMasterGain = document.getElementById('inputMasterGain');
-    const txtMasterGain = document.getElementById('txtMasterGain');
-    inputMasterGain.addEventListener('input', (e) => {
-      const val = parseFloat(e.target.value);
-      masterGainValue = val;
-      const db = (20 * Math.log10(val)).toFixed(1);
-      const dbStr = db.endsWith('.0') ? db.slice(0, -2) : db;
-      txtMasterGain.textContent = `${val.toFixed(2)} (${dbStr}dB)`;
-      if (masterGain && audioCtx) {
-        masterGain.gain.setValueAtTime(masterGainValue, audioCtx.currentTime);
-      }
+    document.getElementById('randomNoiseToggle').addEventListener('click',(e)=>{
+      const btn=e.target.closest('.segmented-btn');if(!btn)return;
+      document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');isRandomNoiseEnabled=(btn.dataset.noise==='on');
+    });
+    document.getElementById('noiseFilterToggle').addEventListener('click',(e)=>{
+      const btn=e.target.closest('.segmented-btn');if(!btn)return;
+      document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');isNoiseFilterEnabled=(btn.dataset.filter==='on');
+    });
+    document.getElementById('harmonicEffectToggle').addEventListener('click',(e)=>{
+      const btn=e.target.closest('.segmented-btn');if(!btn)return;
+      document.querySelectorAll('#harmonicEffectToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');isHarmonicEffectEnabled=(btn.dataset.harmonic==='on');
+    });
+    document.getElementById('compressorRoutingToggle').addEventListener('click',(e)=>{
+      const btn=e.target.closest('.segmented-btn');if(!btn)return;
+      document.querySelectorAll('#compressorRoutingToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');isCompressorRoutingEnabled=(btn.dataset.compressor==='on');
     });
 
-    document.getElementById('randomNoiseToggle').addEventListener('click', (e) => {
-      const btn = e.target.closest('.segmented-btn'); if (!btn) return;
-      document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      isRandomNoiseEnabled = (btn.dataset.noise === 'on');
+    document.getElementById('tonicPresetBtns').addEventListener('click',(e)=>{
+      const btn=e.target.closest('.segmented-btn');if(!btn)return;
+      document.querySelectorAll('#tonicPresetBtns .segmented-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');baseTonicFreq=parseFloat(btn.dataset.freq);
+      document.getElementById('inputCustomFreq').value=baseTonicFreq;renderApp();
     });
-
-    document.getElementById('noiseFilterToggle').addEventListener('click', (e) => {
-      const btn = e.target.closest('.segmented-btn'); if (!btn) return;
-      document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      isNoiseFilterEnabled = (btn.dataset.filter === 'on');
-    });
-
-    document.getElementById('harmonicEffectToggle').addEventListener('click', (e) => {
-      const btn = e.target.closest('.segmented-btn'); if (!btn) return;
-      document.querySelectorAll('#harmonicEffectToggle .segmented-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      isHarmonicEffectEnabled = (btn.dataset.harmonic === 'on');
-    });
-
-    document.getElementById('compressorRoutingToggle').addEventListener('click', (e) => {
-      const btn = e.target.closest('.segmented-btn'); if (!btn) return;
-      document.querySelectorAll('#compressorRoutingToggle .segmented-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      isCompressorRoutingEnabled = (btn.dataset.compressor === 'on');
-    });
-
-    document.getElementById('tonicPresetBtns').addEventListener('click', (e) => {
-      const btn = e.target.closest('.segmented-btn'); if (!btn) return;
-      document.querySelectorAll('#tonicPresetBtns .segmented-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      baseTonicFreq = parseFloat(btn.dataset.freq);
-      document.getElementById('inputCustomFreq').value = baseTonicFreq;
-      renderApp();
-    });
-
-    document.getElementById('inputCustomFreq').addEventListener('input', (e) => {
-      const val = parseFloat(e.target.value);
-      if (val && val >= 100 && val <= 2000) {
-        baseTonicFreq = val;
-        document.querySelectorAll('#tonicPresetBtns .segmented-btn').forEach(b => {
-          b.classList.toggle('active', parseFloat(b.dataset.freq) === baseTonicFreq);
-        });
+    document.getElementById('inputCustomFreq').addEventListener('input',(e)=>{
+      const val=parseFloat(e.target.value);
+      if(val&&val>=100&&val<=2000){
+        baseTonicFreq=val;
+        document.querySelectorAll('#tonicPresetBtns .segmented-btn').forEach(b=>b.classList.toggle('active',parseFloat(b.dataset.freq)===baseTonicFreq));
         renderApp();
       }
     });
 
-    const inputTonicNum = document.getElementById('inputTonicNum');
-    const inputTonicDen = document.getElementById('inputTonicDen');
-
-    document.getElementById('tonicRatioBtns').addEventListener('click', (e) => {
-      const btn = e.target.closest('.segmented-btn'); if (!btn) return;
-      document.querySelectorAll('#tonicRatioBtns .segmented-btn').forEach(b => b.classList.remove('active'));
+    const inputTonicNum=document.getElementById('inputTonicNum'),inputTonicDen=document.getElementById('inputTonicDen');
+    document.getElementById('tonicRatioBtns').addEventListener('click',(e)=>{
+      const btn=e.target.closest('.segmented-btn');if(!btn)return;
+      document.querySelectorAll('#tonicRatioBtns .segmented-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
-      tonicNum = parseInt(btn.dataset.num, 10);
-      tonicDen = parseInt(btn.dataset.den, 10);
-      inputTonicNum.value = tonicNum;
-      inputTonicDen.value = tonicDen;
-      renderApp();
+      tonicNum=parseInt(btn.dataset.num,10);tonicDen=parseInt(btn.dataset.den,10);
+      inputTonicNum.value=tonicNum;inputTonicDen.value=tonicDen;renderApp();
     });
 
-    function handleCustomRatioInput() {
-      const n = parseInt(inputTonicNum.value, 10);
-      const d = parseInt(inputTonicDen.value, 10);
-      if (n > 0 && d > 0) {
-        tonicNum = n;
-        tonicDen = d;
-        document.querySelectorAll('#tonicRatioBtns .segmented-btn').forEach(b => {
-          const match = parseInt(b.dataset.num, 10) === tonicNum && parseInt(b.dataset.den, 10) === tonicDen;
-          b.classList.toggle('active', match);
+    function handleCustomRatioInput(){
+      const n=parseInt(inputTonicNum.value,10),d=parseInt(inputTonicDen.value,10);
+      if(n>0&&d>0){
+        tonicNum=n;tonicDen=d;
+        document.querySelectorAll('#tonicRatioBtns .segmented-btn').forEach(b=>{
+          b.classList.toggle('active',parseInt(b.dataset.num,10)===tonicNum&&parseInt(b.dataset.den,10)===tonicDen);
         });
         renderApp();
       }
     }
+    inputTonicNum.addEventListener('input',handleCustomRatioInput);
+    inputTonicDen.addEventListener('input',handleCustomRatioInput);
 
-    inputTonicNum.addEventListener('input', handleCustomRatioInput);
-    inputTonicDen.addEventListener('input', handleCustomRatioInput);
-
-    window.addEventListener('keydown', (e) => {
-      const pressedKey = e.key.toLowerCase();
-      const match = currentTines.find(t => (t.shortcut || t.keyShortcut) === pressedKey);
-      if (match) triggerTine(match);
-    });
+window.addEventListener('keydown', (e) => {
+  if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+  const pressedKey = e.key.toLowerCase();
+  const match = currentTines.find(t => (t.shortcut || t.keyShortcut) === pressedKey);
+  if (match) triggerTine(match);
+});
 
     renderApp();
 
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((registration) => {
-        console.log('Service Worker registered successfully:', registration.scope);
+    if('serviceWorker' in navigator){
+      window.addEventListener('load',()=>{
+        navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then((registration)=>{
+          function trackInstalling(worker){
+            worker.addEventListener('statechange',()=>{
+              if(worker.state==='installed'&&navigator.serviceWorker.controller)showUpdateNotification(registration);
+            });
+          }
+          if(registration.waiting)showUpdateNotification(registration);
+          if(registration.installing)trackInstalling(registration.installing);
+          registration.addEventListener('updatefound',()=>trackInstalling(registration.installing));
+        }).catch((err)=>console.log('Service Worker registration failed:',err));
 
-        function trackInstalling(worker) {
-          worker.addEventListener('statechange', () => {
-            if (worker.state === 'installed') {
-              if (navigator.serviceWorker.controller) {
-                showUpdateNotification(registration);
-              }
-            }
-          });
-        }
-
-        if (registration.waiting) {
-          showUpdateNotification(registration);
-        }
-
-        if (registration.installing) {
-          trackInstalling(registration.installing);
-        }
-
-        registration.addEventListener('updatefound', () => {
-          trackInstalling(registration.installing);
+        let refreshing=false;
+        navigator.serviceWorker.addEventListener('controllerchange',()=>{
+          if(!refreshing){refreshing=true;window.location.reload();}
         });
-      }).catch((err) => {
-        console.log('Service Worker registration failed:', err);
       });
-
-      let refreshing = false;
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!refreshing) {
-          refreshing = true;
-          window.location.reload();
-        }
-      });
-    });
-  }
-
-  function showUpdateNotification(registration) {
-    const notification = document.getElementById('updateNotification');
-    if (notification) {
-      notification.style.display = 'flex';
-      const btnUpdateReload = document.getElementById('btnUpdateReload');
-      btnUpdateReload.onclick = () => {
-        if (registration.waiting) {
-          registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-        }
-      };
     }
-  }
+
+    function showUpdateNotification(registration){
+      const notification=document.getElementById('updateNotification');
+      if(notification){
+        notification.style.display='flex';
+        document.getElementById('btnUpdateReload').onclick=()=>{
+          if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});
+        };
+      }
+    }
   </script>
   
-  <div id="updateNotification" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #181b26; border: 1px solid #3b82f6; color: white; padding: 12px 20px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 10000; align-items: center; gap: 14px; font-size: 0.8rem; font-weight: 600;">
-    <span>✨ New Version Update</span>
-    <button id="btnUpdateReload" style="background: #2563eb; color: white; border: none; padding: 6px 14px; border-radius: 8px; font-weight: 700; cursor: pointer;">Now Update</button>
+  <div id="updateNotification" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#181b26;border:1px solid #3b82f6;color:#fff;padding:12px 20px;border-radius:14px;box-shadow:0 10px 25px rgba(0,0,0,.8);z-index:10000;align-items:center;gap:14px;font-size:.8rem;font-weight:600;">
+    <span>✨ New Version</span>
+    <button id="btnUpdateReload" style="background:#2563eb;color:#fff;border:none;padding:6px 14px;border-radius:8px;font-weight:700;cursor:pointer;">Now Update</button>
   </div>
 </body>
 </html>
