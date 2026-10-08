@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -143,7 +143,6 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
         </div>
       </div>
 
-      <!-- ENV (ADSR) CONTROL -->
       <div class="control-group">
         <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
           <span class="control-label">ENV</span>
@@ -225,16 +224,15 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
       <div id="fftView" style="grid-column:1/-1;display:flex;flex-direction:column;gap:2px;">
         <div style="position:relative;width:100%;height:70px;">
           <canvas id="fftCanvas" style="width:100%;height:100%;background-color:#0d0f17;border-radius:6px;border:1px solid #232838;display:block;"></canvas>
-          <div style="position:absolute;top:3px;left:6px;right:6px;display:flex;justify-content:space-between;align-items:center;pointer-events:none;z-index:2;">
-            <span id="fftPeakText" style="font-size:.58rem;font-weight:700;color:#facc15;font-family:ui-monospace,monospace;background:rgba(13,15,23,0.75);padding:1px 5px;border-radius:4px;border:1px solid rgba(250,204,21,0.25);">Peak: -- Hz</span>
-            <div class="segmented-btn-group display-mode-group" style="pointer-events:auto;background:rgba(13,15,23,0.85);">
-              <button class="segmented-btn" data-display="telemetry">INFO</button>
-              <button class="segmented-btn active" data-display="fft">FFT Analyzer</button>
-            </div>
-          </div>
+<div style="position:absolute;top:3px;left:6px;right:6px;display:flex;justify-content:flex-end;align-items:center;pointer-events:none;z-index:2;">
+  <div class="segmented-btn-group display-mode-group" style="pointer-events:auto;background:rgba(13,15,23,0.85);">
+    <button class="segmented-btn" data-display="telemetry">INFO</button>
+    <button class="segmented-btn active" data-display="fft">FFT Analyzer</button>
+  </div>
+</div>
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:.52rem;color:#6b7280;font-family:monospace;padding:0 2px;">
-          <span>20Hz</span><span>1kHz</span><span>5kHz</span><span>20kHz</span>
+        <div id="fftScaleLabels" style="display:flex;justify-content:space-between;font-size:.52rem;color:#6b7280;font-family:monospace;padding:0 2px;">
+          <span>0Hz</span><span>--</span><span>--</span><span>--</span><span>--</span>
         </div>
       </div>
 
@@ -685,6 +683,29 @@ function parseRecFormat(val) {
   return { bitDepth: type, sampleRate: sr === '192k' ? 192000 : (sr === '96k' ? 96000 : 48000) };
 }
 
+function updateFFTScaleLabels() {
+  const format = parseRecFormat(document.getElementById('selectRecFormat').value);
+  const sr = (audioCtx && audioCtx.sampleRate) ? audioCtx.sampleRate : format.sampleRate;
+  const nyquist = sr / 2;
+  const ratios = [0, 0.25, 0.5, 0.75, 1.0];
+  const container = document.getElementById('fftScaleLabels');
+  if (!container) return;
+
+  const labels = ratios.map((r, i) => {
+    if (i === 0) return '0Hz';
+    const freq = nyquist * Math.pow(r, 2.2);
+    if (freq >= 1000) {
+      const khz = freq / 1000;
+      return (khz >= 10 && khz % 1 < 0.05 ? khz.toFixed(0) : khz.toFixed(1)) + 'kHz';
+    }
+    return Math.round(freq) + 'Hz';
+  });
+
+  Array.from(container.children).forEach((el, idx) => {
+    if (labels[idx]) el.textContent = labels[idx];
+  });
+}
+
 async function initAudio() {
   const { sampleRate: targetSampleRate } = parseRecFormat(document.getElementById('selectRecFormat').value);
   if (audioCtx && audioCtx.sampleRate !== targetSampleRate) {
@@ -710,15 +731,16 @@ async function initAudio() {
     masterGain.gain.setValueAtTime(parseFloat(document.getElementById('inputMasterGain').value), audioCtx.currentTime);
 
     analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 1024;
+    analyser.fftSize = 16384;
     analyser.smoothingTimeConstant = 0.8;
-    analyser.minDecibels = -115;
-    analyser.maxDecibels = -10;
+    analyser.minDecibels = -200;
+    analyser.maxDecibels = -30;
 
     masterGain.connect(analyser);
     fftDataArray = new Uint8Array(analyser.frequencyBinCount);
     updateAudioRouting();
     masterGain.connect(audioCtx.destination);
+    updateFFTScaleLabels();
 
     const bufSize = Math.floor(audioCtx.sampleRate * 0.05);
     sharedNoiseBuffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
@@ -835,14 +857,6 @@ function drawFFT() {
   }
   ctx.stroke();
 
-  const peakElem = document.getElementById('fftPeakText');
-  if (peakElem) {
-    if (maxVal > 20 && audioCtx) {
-      peakElem.textContent = `Peak: ${(maxFreqIdx * audioCtx.sampleRate / analyser.fftSize).toFixed(1)} Hz`;
-    } else {
-      peakElem.textContent = 'Peak: -- Hz';
-    }
-  }
   ctx.restore();
 }
 
@@ -860,7 +874,6 @@ async function playTone(freq, isLongPress = false) {
   const sustainLevel = Math.min(1.0, Math.max(0.0, parseFloat(t.sustainLevel) || 0.0));
   const releaseTime = Math.max(0.001, parseFloat(t.releaseTime) || 0.012);
 
-  // 長押し時のDecay拡大率を制限
   if (isLongPress) baseDecay *= 1.2;
 
   const maxAllowedFreq = Math.min(20000, audioCtx.sampleRate * 0.45);
@@ -870,7 +883,6 @@ async function playTone(freq, isLongPress = false) {
     const tAttackEnd = now + attackTime;
     const tDecayEnd = tAttackEnd + dDur;
 
-    // 長押し時のみ適度なHold時間を付与（通常タップ時は0sで即Releaseへ切り替え）
     let holdDuration = 0;
     if (sustainLevel > 0 && isLongPress) {
       holdDuration = Math.min(1.0, dDur * 0.4);
@@ -1605,6 +1617,10 @@ document.addEventListener('DOMContentLoaded', () => {
     activePreset.timbre.noiseCutoff = val;
   });
 
+  document.getElementById('selectRecFormat').addEventListener('change', () => {
+    updateFFTScaleLabels();
+  });
+
   document.querySelectorAll('#presetSlotsGroup .segmented-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       activeSlotIndex = parseInt(btn.dataset.slot);
@@ -1814,6 +1830,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   renderApp();
+  updateFFTScaleLabels();
   if (currentDisplayMode === 'fft') {
     drawFFT();
   }
