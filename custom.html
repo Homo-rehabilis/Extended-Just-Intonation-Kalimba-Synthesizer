@@ -1,0 +1,1860 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Extended JI Custom Synthesizer</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:12px;overflow-x:hidden;overflow-y:auto}
+.app-card{background-color:#12141c;border:1px solid #1f2433;border-radius:20px;padding:16px;width:100%;max-width:540px;box-shadow:0 20px 50px rgba(0,0,0,0.9);transition:max-width .3s ease,padding .3s ease;display:flex;flex-direction:column;position:relative}
+.app-card:fullscreen,.app-card:-webkit-full-screen{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:10px 16px!important;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden!important}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;flex-shrink:0}
+.title-group h1{font-size:1rem;font-weight:700;color:#fff;line-height:1.2}
+.title-group p{font-size:.7rem;color:#8b92a5;margin-top:1px}
+.header-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.btn{background-color:#1e293b;border:1px solid #334155;color:#e2e8f0;padding:4px 8px;border-radius:10px;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s ease;display:inline-flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
+.btn:hover{background-color:#334155;color:#fff}
+.btn-primary{background-color:#2563eb;border-color:#3b82f6;color:#fff}
+.btn-primary:hover{background-color:#1d4ed8}
+.rec-btn{background-color:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#ef4444;padding:4px 10px;border-radius:10px;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s ease;white-space:nowrap}
+.rec-btn:hover{background-color:rgba(239,68,68,.3);border-color:#ef4444}
+.rec-btn.recording{background-color:#ef4444;color:#fff;border-color:#f87171}
+.rec-dot{width:8px;height:8px;background-color:#ef4444;border-radius:50%;display:inline-block}
+.rec-btn.recording .rec-dot{background-color:#fff;animation:pulse-dot 1s infinite}
+@keyframes pulse-dot{0%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.8)}100%{opacity:1;transform:scale(1)}}
+.download-btn{background-color:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:#4ade80;padding:4px 10px;border-radius:10px;font-size:.72rem;font-weight:600;cursor:pointer;display:none;align-items:center;gap:4px;transition:all .15s ease;white-space:nowrap}
+.download-btn:hover{background-color:rgba(34,197,94,.3);border-color:#4ade80}
+.mode-badge{background:rgba(234,179,8,.15);border:1px solid rgba(234,179,8,.4);color:#facc15;padding:4px 8px;border-radius:10px;font-size:.68rem;font-weight:700;white-space:nowrap}
+.fullscreen-btn{background-color:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);color:#38bdf8;padding:4px 10px;border-radius:10px;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .15s ease;white-space:nowrap}
+.fullscreen-btn:hover{background-color:rgba(56,189,248,.3);border-color:#38bdf8}
+.tonic-badge{background:rgba(30,41,59,.7);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:4px 8px;display:flex;gap:4px;align-items:center;font-family:ui-monospace,monospace;white-space:nowrap}
+.tonic-badge .col-left{font-size:.65rem;color:#94a3b8}
+.tonic-badge .col-right{font-size:.75rem;font-weight:700;color:#38bdf8}
+.top-panels{display:flex;flex-direction:column;gap:6px;margin-bottom:6px;flex-shrink:0}
+.controls-card{background-color:#181b26;border-radius:12px;padding:6px 10px;display:flex;flex-direction:column;justify-content:center;gap:4px;border:1px solid #252b3d}
+.telemetry-card{background-color:#181b26;border-radius:12px;padding:6px 10px;display:grid;grid-template-columns:1fr 1fr;gap:4px 6px;align-items:center;border:1px solid #252b3d}
+.telemetry-card .control-group-full{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.06);padding-top:4px;margin-top:2px}
+.control-group{display:flex;align-items:center;justify-content:space-between;gap:3px;flex-wrap:wrap}
+.control-label{font-size:.62rem;font-weight:700;color:#9ca3af;letter-spacing:.03em}
+.segmented-btn-group{display:flex;background-color:#0d0f17;border-radius:8px;padding:2px;border:1px solid #232838;flex-wrap:wrap;gap:2px}
+.segmented-btn{background:none;border:none;color:#9ca3af;padding:3px 4px;font-size:.59rem;font-weight:600;border-radius:3px;cursor:pointer;transition:all .15s ease;white-space:nowrap}
+.segmented-btn:hover{color:#fff}
+.segmented-btn.active{background-color:#2563eb;color:#fff}
+.gain-slider{accent-color:#38bdf8;height:4px;background:#0d0f17;border-radius:2px;outline:none}
+.freq-input,.select-input{background-color:#0d0f17;border:1px solid #232838;color:#38bdf8;font-family:monospace;font-size:.6rem;font-weight:700;padding:3px 4px;border-radius:6px;outline:none}
+.freq-input{width:54px;text-align:right}
+.tel-item{display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.tel-label{font-size:.65rem;font-weight:700;color:#6b7280;letter-spacing:.04em;white-space:nowrap}
+.tel-value{font-family:ui-monospace,monospace;font-size:.7rem;font-weight:600;color:#f3f4f6;line-height:1.2;display:flex;flex-direction:column;justify-content:center;min-height:3.1em}
+.tel-value .line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.tel-value.highlight{color:#38bdf8}
+.stage-card{background-color:#181b26;border-radius:14px;padding:10px 8px;margin-bottom:8px;border:1px solid #252b3d;flex-grow:1;display:flex;align-items:center;min-height:140px}
+.tines-container{position:relative;height:320px;max-height:100%;display:flex;justify-content:space-between;align-items:flex-start;padding-top:8px;width:100%}
+.bridge-bar{position:absolute;top:0;left:0;right:0;height:10px;background:linear-gradient(180deg,#4a2e1b 0%,#2a180e 100%);border-radius:5px;box-shadow:0 2px 6px rgba(0,0,0,.6);z-index:1}
+.tine-wrapper{flex:1;display:flex;flex-direction:column;align-items:center;z-index:2;margin:0 1px;min-width:0;height:100%;justify-content:flex-start}
+.tine{width:100%;max-width:44px;min-width:16px;background:linear-gradient(180deg,#4b5263 0%,#2b2f3a 100%);border-radius:0 0 8px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:6px 2px;transition:height .2s ease,background .08s ease,transform .08s ease;box-shadow:0 4px 10px rgba(0,0,0,.5);user-select:none;overflow:hidden}
+.tine-wrapper.is-tonic .tine{background:linear-gradient(180deg,#3b82f6 0%,#1d4ed8 100%)}
+.tine-wrapper.active .tine{background:linear-gradient(180deg,#60a5fa 0%,#2563eb 100%)!important;box-shadow:0 0 16px rgba(59,130,246,.9)!important;transform:translateY(4px)}
+.tine-idx{font-size:.68rem;font-weight:800;color:#facc15;margin-bottom:2px}
+.tine-name{font-size:.52rem;font-weight:700;color:#fff;text-align:center;line-height:1.1;word-break:break-word;max-width:100%}
+.tine-ratio-text{font-size:.6rem;font-weight:700;color:#9ca3af;margin-top:4px;text-align:center;white-space:nowrap}
+.tine-cents-text{font-size:.52rem;color:#6b7280;white-space:nowrap}
+.tine-key-shortcut{font-size:.5rem;color:#38bdf8;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.25);padding:1px 4px;border-radius:3px;margin-top:2px;white-space:nowrap;font-family:monospace}
+.presets-section{display:flex;align-items:center;justify-content:space-between;width:100%;gap:6px;flex-shrink:0;background-color:#181b26;border:1px solid #252b3d;border-radius:12px;padding:5px 8px;flex-wrap:nowrap}
+.presets-left{display:flex;align-items:center;gap:6px;flex:1;min-width:0;flex-wrap:wrap}
+.presets-grid{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.chord-bpm-card{display:flex;flex-direction:column;align-items:flex-end;gap:3px;background-color:#0d0f17;border:1px solid #232838;padding:3px 6px;border-radius:10px;flex-shrink:0}
+.modal-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background-color:rgba(0,0,0,.75);display:flex;justify-content:center;align-items:center;z-index:10000;opacity:0;pointer-events:none;transition:opacity .2s ease;padding:12px}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal-card{background-color:#12141c;border:1px solid #1f2433;border-radius:16px;padding:16px;width:90%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.9);display:flex;flex-direction:column;gap:10px}
+.modal-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #252b3d;padding-bottom:8px;margin-bottom:2px}
+.modal-title{font-size:.9rem;font-weight:700;color:#fff;letter-spacing:.03em}
+.tab-bar{display:flex;gap:4px;border-bottom:1px solid #252b3d;padding-bottom:4px;flex-wrap:wrap}
+.tab-btn{background:none;border:none;color:#9ca3af;padding:4px 8px;font-size:.65rem;font-weight:700;border-radius:4px;cursor:pointer}
+.tab-btn.active{background-color:#2563eb;color:#fff}
+.tab-content{display:none;flex-direction:column;gap:8px}
+.tab-content.active{display:flex}
+.keys-editor-table{width:100%;border-collapse:collapse;font-size:.65rem}
+.keys-editor-table th,.keys-editor-table td{padding:4px;text-align:center;border-bottom:1px solid #1f2433}
+.keys-editor-table th{color:#9ca3af;font-weight:600}
+.keys-editor-table input{width:100%;text-align:center}
+@media(orientation:landscape) or (min-width:768px){
+.app-card{max-width:1020px;padding:8px 14px;max-height:100vh}
+.header{margin-bottom:4px}
+.top-panels{display:grid;grid-template-columns:1.1fr .9fr;gap:6px;margin-bottom:4px}
+.controls-card,.telemetry-card{margin-bottom:0;height:100%;padding:4px 8px;gap:3px}
+.stage-card{padding:4px;margin-bottom:4px}
+.tines-container{height:250px}
+}
+@media(orientation:landscape){
+.title-group h1{font-size:.85rem}
+.title-group p{font-size:.65rem}
+.chord-bpm-card{flex-direction:row;align-items:center;gap:6px}
+}
+@media(orientation:landscape) and (max-height:580px){
+.header{margin-bottom:2px}
+.tines-container{height:190px}
+}
+</style>
+</head>
+<body>
+<div class="app-card" id="appCard">
+  <div class="header">
+    <div class="title-group">
+      <h1 id="appTitle">Extended Just Intonation Custom Synthesizer β</h1>
+      <p id="appSubtitle">Set Your Preset & Customize in Real Time</p>
+    </div>
+    <div class="header-actions">
+      <button class="rec-btn" id="btnRecord"><span class="rec-dot"></span><span id="txtRecord">REC</span></button>
+      <button class="download-btn" id="btnDownload">💾 WAV</button>
+      <span class="mode-badge" id="badgeKeyMode">8-Key</span>
+      <button class="fullscreen-btn" id="btnFullscreen"><span>⛶</span><span id="txtFullscreen">Full</span></button>
+      <div class="tonic-badge">
+        <div class="col-right" id="badgeTonicFreq">512.0 Hz</div>
+      </div>
+      <a href="index.html" class="btn" style="text-decoration: none;">Switch to Std</a>
+    </div>
+  </div>
+
+  <div class="top-panels">
+    <div class="controls-card">
+      <div class="control-group">
+        <div class="segmented-btn-group" id="presetSlotsGroup">
+          <button class="segmented-btn active" data-slot="0">Preset 1</button>
+          <button class="segmented-btn" data-slot="1">Preset 2</button>
+          <button class="segmented-btn" data-slot="2">Preset 3</button>
+        </div>
+        <div style="display:flex;gap:3px;align-items:center;">
+          <button class="btn btn-primary" id="btnOpenEditor" style="padding:3px 6px;font-size:.59rem;border-radius:6px;">⚙ Edit</button>
+          <button class="btn" id="btnSavePreset" style="padding:3px 6px;font-size:.59rem;border-radius:6px;">💾 Save</button>
+          <button class="rec-btn" id="btnResetPreset" style="padding:3px 6px;font-size:.59rem;border-radius:6px;">🔄 Reset</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">MASTER GAIN</span>
+        <div style="display:flex;align-items:center;gap:8px;padding:2px;">
+          <input type="range" id="inputMasterGain" class="gain-slider" min="0.01" max="0.25" step="0.01" value="0.05" style="width:130px;cursor:pointer;">
+          <span id="txtMasterGain" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:70px;text-align:right;">0.05 (-26dB)</span>
+        </div>
+      </div>
+
+      <!-- ENV (ADSR) CONTROL -->
+      <div class="control-group">
+        <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
+          <span class="control-label">ENV</span>
+          <div class="segmented-btn-group" id="envParamSelectGroup">
+            <button class="segmented-btn" data-env="attack">A</button>
+            <button class="segmented-btn active" data-env="decay">D</button>
+            <button class="segmented-btn" data-env="sustain">S</button>
+            <button class="segmented-btn" data-env="release">R</button>
+          </div>
+          <button class="fullscreen-btn" id="btnOpenSettings" title="Audio & Recording Settings" style="padding:2px 6px;font-size:.6rem;margin-left:auto;">OPTION</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:2px;">
+          <input type="range" id="inputEnvParam" class="gain-slider" min="0.1" max="10.0" step="0.1" value="2.5" style="width:130px;cursor:pointer;">
+          <span id="txtEnvParamVal" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:45px;text-align:right;">2.5s</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">HARMONIC VOL</span>
+        <div style="display:flex;align-items:center;gap:8px;padding:2px;">
+          <input type="range" id="inputHarmonicGain" class="gain-slider" min="0.0" max="0.5" step="0.01" value="0.18" style="width:130px;cursor:pointer;">
+          <span id="txtHarmonicGainVal" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:40px;text-align:right;">0.18</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">HARMONICS</span>
+        <div class="segmented-btn-group" id="harmonicModeGroup">
+          <button class="segmented-btn" data-mode="sine">Sine</button>
+          <button class="segmented-btn active" data-mode="harm3">3Harms</button>
+          <button class="segmented-btn" data-mode="inharm">Inharm</button>
+          <button class="segmented-btn" data-mode="inharm2">Inharm2</button>
+          <button class="segmented-btn" data-mode="syrinx">Syrinx</button>
+          <button class="segmented-btn" data-mode="cricket">Cricket</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">BASE TONIC (1/1)</span>
+        <div style="display:flex;gap:3px;align-items:center;">
+          <div class="segmented-btn-group" id="tonicPresetBtns">
+            <button class="segmented-btn" data-freq="417.6">417.6</button>
+            <button class="segmented-btn" data-freq="432">432</button>
+            <button class="segmented-btn" data-freq="440">440</button>
+            <button class="segmented-btn" data-freq="512">512</button>
+            <button class="segmented-btn" data-freq="3569.48">3569.48</button>
+          </div>
+          <input type="number" id="inputCustomFreq" class="freq-input" value="512" step="0.01" min="100" max="6000">
+          <span style="font-size:.65rem;color:#6b7280;">Hz</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="telemetry-card">
+      <div id="telemetryView" style="grid-column:1/-1;display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <span class="control-label">DISPLAY MODE</span>
+          <div class="segmented-btn-group display-mode-group">
+            <button class="segmented-btn" data-display="telemetry">INFO</button>
+            <button class="segmented-btn active" data-display="fft">FFT Analyzer</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 6px;">
+          <div class="tel-item">
+            <span class="tel-label">LAST PLUCKED</span>
+            <div class="tel-value" id="valLastPlucked">
+              <span class="line">-</span>
+            </div>
+          </div>
+          <div class="tel-item">
+            <span class="tel-label">INTER-NOTE RATIO</span>
+            <div class="tel-value highlight" id="valInterval">
+              <span class="line">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="fftView" style="grid-column:1/-1;display:flex;flex-direction:column;gap:2px;">
+        <div style="position:relative;width:100%;height:70px;">
+          <canvas id="fftCanvas" style="width:100%;height:100%;background-color:#0d0f17;border-radius:6px;border:1px solid #232838;display:block;"></canvas>
+          <div style="position:absolute;top:3px;left:6px;right:6px;display:flex;justify-content:space-between;align-items:center;pointer-events:none;z-index:2;">
+            <span id="fftPeakText" style="font-size:.58rem;font-weight:700;color:#facc15;font-family:ui-monospace,monospace;background:rgba(13,15,23,0.75);padding:1px 5px;border-radius:4px;border:1px solid rgba(250,204,21,0.25);">Peak: -- Hz</span>
+            <div class="segmented-btn-group display-mode-group" style="pointer-events:auto;background:rgba(13,15,23,0.85);">
+              <button class="segmented-btn" data-display="telemetry">INFO</button>
+              <button class="segmented-btn active" data-display="fft">FFT Analyzer</button>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.52rem;color:#6b7280;font-family:monospace;padding:0 2px;">
+          <span>20Hz</span><span>1kHz</span><span>5kHz</span><span>20kHz</span>
+        </div>
+      </div>
+
+      <div class="control-group-full">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;margin-bottom:3px;">
+          <span class="control-label">Ratio Multiplier:</span>
+          <div style="display:flex;align-items:center;gap:3px;font-size:.55rem;">
+            <input type="number" id="inputTonicNum" class="freq-input" value="1" min="1" max="99" style="width:34px;text-align:center;">
+            <span style="color:#6b7280;">/</span>
+            <input type="number" id="inputTonicDen" class="freq-input" value="1" min="1" max="99" style="width:34px;text-align:center;">
+            <button class="btn btn-primary" id="btnSetRatio" style="padding:2px 6px;font-size:.6rem;">Set</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:3px;font-size:.65rem;font-weight:700;">
+            <span style="color:#9ca3af;">Octave:</span>
+            <button class="segmented-btn" id="btnOctaveMinus" style="background-color:#0d0f17;border:1px solid #232838;padding:2px 6px;">-</button>
+            <span id="txtTonicOctave" style="color:#38bdf8;font-family:monospace;font-weight:700;min-width:14px;text-align:center;">0</span>
+            <button class="segmented-btn" id="btnOctavePlus" style="background-color:#0d0f17;border:1px solid #232838;padding:2px 6px;">+</button>
+          </div>
+        </div>
+        <div class="segmented-btn-group" id="tonicRatioBtns"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage-card">
+    <div class="tines-container" id="tinesWrapper">
+      <div class="bridge-bar"></div>
+    </div>
+  </div>
+
+  <div class="presets-section">
+    <div class="presets-left">
+      <div class="presets-grid" id="chordButtonsContainer"></div>
+    </div>
+    <div class="chord-bpm-card">
+      <div style="display:flex;align-items:center;gap:4px;">
+        <span style="font-size:.55rem;color:#9ca3af;font-weight:600;">BPM:</span>
+        <button class="segmented-btn" id="btnChordBpmMinus">-</button>
+        <input type="number" id="inputChordBpm" class="freq-input" value="90" min="1" max="500" step="1" style="width:28px;text-align:center;font-size:.55rem;">
+        <button class="segmented-btn" id="btnChordBpmPlus">+</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:3px;">
+        <button class="segmented-btn" id="btnChordLoopToggle">Loop: OFF</button>
+        <button class="segmented-btn" id="btnChordStop" style="color:#ef4444;">Stop</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="modal-title">🔊 Audio Settings</span>
+        <button class="btn" id="btnCloseSettings">✕</button>
+      </div>
+      <div style="font-size:.72rem;font-weight:700;color:#38bdf8;border-bottom:1px solid #252b3d;padding-bottom:4px;margin-top:6px;">
+        🎵 Timbre
+      </div>
+      <div class="control-group">
+        <span class="control-label">LONG PRESS MODE</span>
+        <div class="segmented-btn-group" id="longPressToggle">
+          <button class="segmented-btn active" data-longpress="long">Long Tone</button>
+          <button class="segmented-btn" data-longpress="repeat">Rapid Fire</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="control-label">RANDOM NOISE for Texture</span>
+        <div class="segmented-btn-group" id="randomNoiseToggle">
+          <button class="segmented-btn" data-noise="on">ON</button>
+          <button class="segmented-btn active" data-noise="off">OFF</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="control-label">Random Noise Vol:</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input type="range" id="inputNoiseGain" class="gain-slider" min="0.0" max="0.3" step="0.01" value="0.10" style="width:120px;">
+          <span id="txtNoiseGainVal" style="font-family:monospace;font-size:.65rem;color:#38bdf8;min-width:32px;text-align:right;">0.10</span>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="control-label">TINE NOISE FILTER</span>
+        <div class="segmented-btn-group" id="noiseFilterToggle">
+          <button class="segmented-btn" data-filter="on">ON (Highly Simulated)</button>
+          <button class="segmented-btn active" data-filter="off">OFF (Fast Processing)</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="control-label">Noise Filter Frequency (Hz):</span>
+        <input type="number" id="inputNoiseCutoff" class="freq-input" value="1400" step="50">
+      </div>
+      <div class="control-group">
+        <span class="control-label">COMPRESSOR ROUTING</span>
+        <div class="segmented-btn-group" id="compressorRoutingToggle">
+          <button class="segmented-btn active" data-compressor="on">ON</button>
+          <button class="segmented-btn" data-compressor="off">OFF (BYPASS)</button>
+        </div>
+      </div>
+
+      <div style="font-size:.72rem;font-weight:700;color:#38bdf8;border-bottom:1px solid #252b3d;padding-bottom:4px;margin-top:6px;">
+        🎛 Recording Options
+      </div>
+      <div class="control-group">
+        <span class="control-label">REC FORMAT</span>
+        <select id="selectRecFormat" class="select-input" style="width:160px;">
+          <option value="32float-192k" selected>32-bit Float / 192 kHz</option>
+          <option value="16pcm-192k">16-bit PCM / 192 kHz</option>
+          <option value="32float-96k">32-bit Float / 96 kHz</option>
+          <option value="16pcm-96k">16-bit PCM / 96 kHz</option>
+          <option value="32float-48k">32-bit Float / 48 kHz</option>
+          <option value="16pcm-48k">16-bit PCM / 48 kHz</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <span class="control-label">REC ENGINE</span>
+        <div class="segmented-btn-group" id="recEngineToggle">
+          <button class="segmented-btn active" data-engine="worklet">AudioWorklet</button>
+          <button class="segmented-btn" data-engine="script">ScriptProcessor</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="editorModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="modal-title">⚙️ Scale & Chord Editor</span>
+        <button class="btn" id="btnCloseEditor">✕ Close</button>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="tab-scale">Scale Keys (8 & 17)</button>
+        <button class="tab-btn" data-tab="tab-chords">Custom Chords</button>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:6px;border-top:1px solid #252b3d;padding-top:6px;">
+        <button class="btn btn-primary" id="btnApplyEditor">Apply & Refresh Synthesizer</button>
+      </div>
+
+      <div class="tab-content active" id="tab-scale">
+        <div style="background-color:#181b26;padding:8px;border-radius:8px;border:1px solid #252b3d;display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;">
+          <span class="control-label" style="color:#38bdf8;">Scala File (.scl):</span>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+            <input type="file" id="inputSclFile" accept=".scl,.txt" style="display:none;">
+            <button class="btn" id="btnImportScl">📂 Import .scl</button>
+            <button class="btn btn-primary" id="btnExportScl">💾 Export .scl</button>
+          </div>
+        </div>
+        <div class="control-group" style="margin-top:4px;">
+          <span class="control-label">Layout to Edit:</span>
+          <div class="segmented-btn-group" id="editorKeyTabToggle">
+            <button class="segmented-btn active" data-keymode="8">8-Key Layout</button>
+            <button class="segmented-btn" data-keymode="17">17-Key Layout</button>
+          </div>
+        </div>
+        <div style="max-height:260px;overflow-y:auto;border:1px solid #1f2433;border-radius:6px;">
+          <table class="keys-editor-table">
+            <thead>
+              <tr>
+                <th>Key #</th>
+                <th>Name / Note</th>
+                <th>Ratio Num</th>
+                <th>Ratio Den</th>
+                <th>Cents</th>
+              </tr>
+            </thead>
+            <tbody id="keysTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tab-chords">
+        <div class="control-group">
+          <span class="control-label">Chord Target:</span>
+          <div class="segmented-btn-group" id="editorChordTabToggle">
+            <button class="segmented-btn active" data-chordmode="8">8-Key Chords</button>
+            <button class="segmented-btn" data-chordmode="17">17-Key Chords</button>
+          </div>
+        </div>
+        <p style="font-size:.65rem;color:#8b92a5;">Enter key indices (comma-separated, 0–16) to create a chord.</p>
+        <div id="chordInputsContainer" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const BUILTIN_SCALES = {
+  'cricket': {
+    title: '17-Limit Cricket JI',
+    keys8: [
+      { num: 1, den: 1, name: 'Tonic' },
+      { num: 49, den: 48, name: '49/48' },
+      { num: 68, den: 65, name: '68/65' },
+      { num: 17, den: 16, name: 'Septendecimal Semitone' },
+      { num: 16, den: 15, name: 'Minor Diatonic Semitone' },
+      { num: 13, den: 12, name: 'Tridecimal Semitone' },
+      { num: 12, den: 11, name: 'Undecimal Neutral 2nd' },
+      { num: 28, den: 25, name: '28/25' }
+    ],
+    keys17: [
+      { num: 1, den: 1, name: '1/1 Tonic' },
+      { num: 190, den: 187, name: '190/187' },
+      { num: 49, den: 48, name: '49/48' },
+      { num: 33, den: 32, name: '33/32' },
+      { num: 95, den: 91, name: '95/91' },
+      { num: 68, den: 65, name: '68/65' },
+      { num: 21, den: 20, name: '21/20' },
+      { num: 35, den: 33, name: '35/33' },
+      { num: 52, den: 49, name: '52/49' },
+      { num: 121, den: 114, name: '121/114' },
+      { num: 17, den: 16, name: '17/16' },
+      { num: 152, den: 143, name: '152/143' },
+      { num: 182, den: 171, name: '182/171' },
+      { num: 16, den: 15, name: '16/15' },
+      { num: 13, den: 12, name: '13/12' },
+      { num: 12, den: 11, name: '12/11' },
+      { num: 28, den: 25, name: '28/25' }
+    ],
+    chords8: [{ label: "Cricket Triad", indices: [0, 3, 6] }, { label: "Micro Cluster", indices: [1, 2, 3, 4] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }],
+    chords17: [{ label: "Cricket Sweep", indices: [14, 2, 11, 10, 7, 8, 13, 1, 9] }, { label: "Micro Cluster", indices: [1, 2, 3, 4, 5] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }]
+  },
+  'harmonics': {
+    title: '23-Limit Natural Harmonics',
+    keys8: [
+      { num: 1, den: 1, name: "16th Harmonic" },
+      { num: 17, den: 16, name: "17th H" },
+      { num: 11, den: 8, name: "22nd Harmonic" },
+      { num: 23, den: 16, name: "23rd H" },
+      { num: 3, den: 2, name: "24th Harmonic" },
+      { num: 13, den: 8, name: "26th H" },
+      { num: 7, den: 4, name: "28th Harmonic" },
+      { num: 2, den: 1, name: "32nd Harmonic" }
+    ],
+    keys17: [
+      { num: 1, den: 1, name: "16th Harmonic" },
+      { num: 17, den: 16, name: "17th H" },
+      { num: 9, den: 8, name: "18th Harmonic" },
+      { num: 19, den: 16, name: "19th H" },
+      { num: 5, den: 4, name: "20th Harmonic" },
+      { num: 11, den: 8, name: "22nd H" },
+      { num: 23, den: 16, name: "23rd Harmonic" },
+      { num: 3, den: 2, name: "24th Harmonic" },
+      { num: 13, den: 8, name: "26th Harmonic" },
+      { num: 27, den: 16, name: "27th Harmonic" },
+      { num: 7, den: 4, name: "28th Harmonic" },
+      { num: 15, den: 8, name: "30th H" },
+      { num: 2, den: 1, name: "32nd Harmonic" },
+      { num: 17, den: 8, name: "34th H" },
+      { num: 9, den: 4, name: "36th Harmonic" },
+      { num: 19, den: 8, name: "38th H" },
+      { num: 5, den: 2, name: "40th Harmonic" }
+    ],
+    chords8: [{ label: "Harmonic 7th", indices: [0, 2, 4, 6] }, { label: "Undecimal IV", indices: [2, 4, 5, 0] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }],
+    chords17: [{ label: "Harmonic Sweep", indices: [0, 2, 4, 7, 10, 12] }, { label: "High Arp", indices: [12, 13, 14, 15, 16] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }]
+  },
+  'nearlytet19':{
+    title:'Nearly TET 19-limit JI',
+    keys8:[
+      {num:1,den:1,name:'Tonic',cents:0.00},
+      {num:9,den:8,name:'Major Whole Tone',cents:203.91},
+      {num:63,den:50,name:'63/50 Major 3rd',cents:400.10},
+      {num:4,den:3,name:'Perfect 4th',cents:498.04},
+      {num:3,den:2,name:'Perfect 5th',cents:701.96},
+      {num:27,den:16,name:'Pythagorean Major 6th',cents:905.87},
+      {num:15,den:8,name:'Classic Major 7th',cents:1088.27},
+      {num:2,den:1,name:'Octave',cents:1200.00}
+    ],
+    keys17:[
+      {num:1,den:1,name:'Tonic',cents:0.00},
+      {num:17,den:16,name:'Septendecimal Semitone',cents:104.96},
+      {num:9,den:8,name:'Major Whole Tone',cents:203.91},
+      {num:19,den:16,name:'19/16 Minor 3rd',cents:297.51},
+      {num:63,den:50,name:'63/50 Major 3rd',cents:400.10},
+      {num:4,den:3,name:'Perfect 4th',cents:498.04},
+      {num:45,den:32,name:'45/32 Tritone',cents:590.22},
+      {num:3,den:2,name:'Perfect 5th',cents:701.96},
+      {num:100,den:63,name:'100/63 Minor 6th',cents:799.90},
+      {num:27,den:16,name:'Pythagorean Major 6th',cents:905.87},
+      {num:25,den:14,name:'25/14 Minor 7th',cents:1003.80},
+      {num:15,den:8,name:'Classic Major 7th',cents:1088.27},
+      {num:2,den:1,name:'Octave',cents:1200.00},
+      {num:17,den:8,name:'Septendecimal Semitone'},
+      {num:9,den:4,name:'Major Whole Tone'},
+      {num:19,den:8,name:'19/8 Minor 3rd'},
+      {num:63,den:25,name:'63/25 Major 3rd'}
+    ],
+    chords8:[
+      {label:'Major Triad',indices:[4,5,6,0]},
+      {label:'Major 7th',indices:[4,5,6,7]},
+      {label:'Subdominant IV',indices:[2,1,4,0]},
+      {label:'Dominant V7',indices:[6,7,3,2]}
+    ],
+    chords17:[
+      {label:'Major Triad',indices:[0,4,7,12]},
+      {label:'Major 7th',indices:[0,4,7,11]},
+      {label:'Minor 7th',indices:[0,3,7,10]},
+      {label:'Sweep',indices:[0,4,8,12]}
+    ]
+  }
+};
+
+const DEFAULT_12_RATIOS = [
+  { num: 1, den: 1 }, { num: 16, den: 15 }, { num: 9, den: 8 }, { num: 6, den: 5 },
+  { num: 5, den: 4 }, { num: 4, den: 3 }, { num: 7, den: 5 }, { num: 3, den: 2 },
+  { num: 8, den: 5 }, { num: 5, den: 3 }, { num: 7, den: 4 }, { num: 15, den: 8 }
+];
+
+const DEFAULT_PRESETS = [
+  {
+    title: "Preset 1: 23-limit Natural Harmonics",
+    baseTonicFreq: 512.0, tonicNum: 1, tonicDen: 1, tonicOctave: 0,
+    tonicRatios: JSON.parse(JSON.stringify(DEFAULT_12_RATIOS)),
+    timbre: { attackTime: 0.004, decayTime: 2.5, sustainLevel: 0.0, releaseTime: 0.012, harmonicMode: 'inharm', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400 },
+    ...JSON.parse(JSON.stringify(BUILTIN_SCALES.harmonics))
+  },
+  {
+    title: "Preset 2: Nearly TET 19-limit",
+    baseTonicFreq: 440.0, tonicNum: 1, tonicDen: 1, tonicOctave: 0,
+    tonicRatios: JSON.parse(JSON.stringify(DEFAULT_12_RATIOS)),
+    timbre: { attackTime: 0.004, decayTime: 2.5, sustainLevel: 0.0, releaseTime: 0.012, harmonicMode: 'inharm', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400 },
+    ...JSON.parse(JSON.stringify(BUILTIN_SCALES.nearlytet19))
+  },
+  {
+    title: "Preset 3: 17-limit Cricket",
+    baseTonicFreq: 3569.48, tonicNum: 1, tonicDen: 1, tonicOctave: 0,
+    tonicRatios: JSON.parse(JSON.stringify(DEFAULT_12_RATIOS)),
+    timbre: { attackTime: 0.004, decayTime: 2.5, sustainLevel: 0.0, releaseTime: 0.012, harmonicMode: 'cricket', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400 },
+    ...JSON.parse(JSON.stringify(BUILTIN_SCALES.cricket))
+  }
+];
+
+const vSlot8 = [7, 5, 3, 1, 0, 2, 4, 6];
+const vSlot17 = [15,13,11,9,7,5,3,1,0,2,4,6,8,10,12,14,16];
+const shortcuts8 = ['1','2','3','4','5','6','7','8'];
+const shortcuts17 = ['1','2','3','4','5','6','7','8','9','0','q','w','e','r','t','y','u'];
+
+let activeSlotIndex = 0, activeKeyMode = "8", selectedRatioIndex = 0;
+let longPressBehavior = 'long';
+let currentEnvParam = 'decay';
+const activeHoldTrackers = new Map();
+
+function loadPresetsWithMigration() {
+  try {
+    let loaded = JSON.parse(localStorage.getItem('kalimba_custom_master_presets'));
+    if (Array.isArray(loaded) && loaded.length === 3) {
+      loaded.forEach((p, idx) => {
+        if (p.Keys17 && !p.keys17) { p.keys17 = p.Keys17; delete p.Keys17; }
+        if (!p.keys17 || !Array.isArray(p.keys17)) p.keys17 = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].keys17));
+        if (!p.chords17 || !Array.isArray(p.chords17)) p.chords17 = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].chords17));
+        if (!p.chords8 || !Array.isArray(p.chords8)) p.chords8 = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].chords8));
+        if (!p.timbre) p.timbre = {};
+        if (p.timbre.attackTime === undefined) p.timbre.attackTime = 0.004;
+        if (p.timbre.decayTime === undefined) p.timbre.decayTime = 2.5;
+        if (p.timbre.sustainLevel === undefined) p.timbre.sustainLevel = 0.0;
+        if (p.timbre.releaseTime === undefined) p.timbre.releaseTime = 0.012;
+      });
+      return loaded;
+    }
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_PRESETS));
+}
+
+let presets = loadPresetsWithMigration(), activePreset = presets[activeSlotIndex];
+let audioCtx = null, masterGain = null, hpf = null, compressor = null, sharedNoiseBuffer = null;
+let analyser = null, fftDataArray = null, animationFrameId = null, currentDisplayMode = 'fft';
+let isNoiseFilterEnabled = false, isRandomNoiseEnabled = false, isCompressorRoutingEnabled = true;
+let computedTonicFreq = 512.0, activeTinesData = [], lastTine = null, currentTine = null;
+let recorderNode = null, selectedRecEngine = 'worklet', recordedBuffers = [], isRecording = false, recTimerInterval = null, lastRecordedBlobUrl = null;
+const loadedWorkletContexts = new WeakSet();
+let chordTimer = null, chordIndex = 0, isLooping = false, currentActiveChord = null;
+let editorTargetKeyMode = "8", editorTargetChordMode = "8";
+
+const recorderWorkletCode = `
+class RecorderProcessor extends AudioWorkletProcessor {
+  constructor() {
+    super();
+    this.isRecording = false;
+    this.bufferSize = 4096;
+    this.buffer = new Float32Array(this.bufferSize);
+    this.bufferIndex = 0;
+    this.port.onmessage = (e) => {
+      if (e.data.command === 'START') {
+        this.isRecording = true;
+        this.bufferIndex = 0;
+      } else if (e.data.command === 'STOP') {
+        this.isRecording = false;
+        if (this.bufferIndex > 0) {
+          const sendBuffer = this.buffer.slice(0, this.bufferIndex);
+          this.port.postMessage(sendBuffer.buffer, [sendBuffer.buffer]);
+          this.bufferIndex = 0;
+        }
+      }
+    };
+  }
+  process(inputs) {
+    if (!this.isRecording) return true;
+    const input = inputs[0];
+    if (input && input.length > 0 && input[0].length > 0) {
+      const channel = input[0];
+      for (let i = 0; i < channel.length; i++) {
+        this.buffer[this.bufferIndex++] = channel[i];
+        if (this.bufferIndex >= this.bufferSize) {
+          const copy = new Float32Array(this.buffer);
+          this.port.postMessage(copy.buffer, [copy.buffer]);
+          this.bufferIndex = 0;
+        }
+      }
+    }
+    return true;
+  }
+}
+registerProcessor('recorder-processor', RecorderProcessor);
+`;
+
+function gcd(a,b) { a=Math.abs(a); b=Math.abs(b); while(b){ const t=b; b=a%b; a=t; } return a; }
+function calcCents(num, den) { return (1200 * Math.log2(num / den)).toFixed(1); }
+function savePresetsToStorage() { localStorage.setItem('kalimba_custom_master_presets', JSON.stringify(presets)); }
+
+function calcIntervalRatio(tineA, tineB) {
+  if (!tineA || !tineB) return { ratioStr: "1/1", cents: 0.0 };
+  let num = tineB.num * tineA.den, den = tineB.den * tineA.num;
+  const g = gcd(num, den);
+  num /= g; den /= g;
+  return { ratioStr: `${num}/${den}`, cents: (1200 * Math.log2(num / den)).toFixed(1) };
+}
+
+function updateComputedTonic() {
+  const freq = activePreset.baseTonicFreq * (activePreset.tonicNum / activePreset.tonicDen) * Math.pow(2, activePreset.tonicOctave);
+  computedTonicFreq = Math.min(Math.max(freq, 20), 4000);
+  document.getElementById('badgeTonicFreq').textContent = `${computedTonicFreq.toFixed(1)} Hz`;
+}
+
+function checkOrientationAutoKeyMode() {
+  activeKeyMode = window.innerWidth > window.innerHeight ? "17" : "8";
+  renderApp();
+}
+
+function updateAudioRouting() {
+  if (!audioCtx || !hpf || !compressor || !masterGain) return;
+  try { hpf.disconnect(); compressor.disconnect(); } catch(e){}
+  if (isCompressorRoutingEnabled) {
+    hpf.connect(compressor);
+    compressor.connect(masterGain);
+  } else {
+    hpf.connect(masterGain);
+  }
+}
+
+function parseRecFormat(val) {
+  const [type, sr] = val.split('-');
+  return { bitDepth: type, sampleRate: sr === '192k' ? 192000 : (sr === '96k' ? 96000 : 48000) };
+}
+
+async function initAudio() {
+  const { sampleRate: targetSampleRate } = parseRecFormat(document.getElementById('selectRecFormat').value);
+  if (audioCtx && audioCtx.sampleRate !== targetSampleRate) {
+    await audioCtx.close();
+    audioCtx = null;
+    recorderNode = null;
+  }
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AudioContextClass({ sampleRate: targetSampleRate });
+    hpf = audioCtx.createBiquadFilter();
+    hpf.type = 'highpass';
+    hpf.frequency.setValueAtTime(120, audioCtx.currentTime);
+
+    compressor = audioCtx.createDynamicsCompressor();
+    compressor.threshold.setValueAtTime(-12.0, audioCtx.currentTime);
+    compressor.knee.setValueAtTime(6.0, audioCtx.currentTime);
+    compressor.ratio.setValueAtTime(8.0, audioCtx.currentTime);
+    compressor.attack.setValueAtTime(0.01, audioCtx.currentTime);
+    compressor.release.setValueAtTime(0.1, audioCtx.currentTime);
+
+    masterGain = audioCtx.createGain();
+    masterGain.gain.setValueAtTime(parseFloat(document.getElementById('inputMasterGain').value), audioCtx.currentTime);
+
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 1024;
+    analyser.smoothingTimeConstant = 0.8;
+    analyser.minDecibels = -115;
+    analyser.maxDecibels = -10;
+
+    masterGain.connect(analyser);
+    fftDataArray = new Uint8Array(analyser.frequencyBinCount);
+    updateAudioRouting();
+    masterGain.connect(audioCtx.destination);
+
+    const bufSize = Math.floor(audioCtx.sampleRate * 0.05);
+    sharedNoiseBuffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+    const data = sharedNoiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+
+    await setupRecorderNode(audioCtx);
+  }
+  if (audioCtx.state === 'suspended') await audioCtx.resume();
+}
+
+async function setupRecorderNode(ctx) {
+  if (recorderNode) {
+    try { recorderNode.disconnect(); } catch(e){}
+    recorderNode = null;
+  }
+  if (selectedRecEngine === 'worklet') {
+    try {
+      if (!loadedWorkletContexts.has(ctx)) {
+        const dataUrl = 'data:text/javascript;charset=utf-8,' + encodeURIComponent(recorderWorkletCode);
+        await ctx.audioWorklet.addModule(dataUrl);
+        loadedWorkletContexts.add(ctx);
+      }
+      recorderNode = new AudioWorkletNode(ctx, 'recorder-processor');
+      recorderNode.port.onmessage = (e) => { if (isRecording) recordedBuffers.push(new Float32Array(e.data)); };
+      const muteGain = ctx.createGain();
+      muteGain.gain.setValueAtTime(0, ctx.currentTime);
+      masterGain.connect(recorderNode);
+      recorderNode.connect(muteGain);
+      muteGain.connect(ctx.destination);
+    } catch(err) {}
+  }
+  if (!recorderNode) {
+    const scriptNode = ctx.createScriptProcessor(4096, 1, 1);
+    scriptNode.onaudioprocess = (e) => {
+      if (isRecording) recordedBuffers.push(new Float32Array(e.inputBuffer.getChannelData(0)));
+    };
+    const muteGain = ctx.createGain();
+    muteGain.gain.setValueAtTime(0, ctx.currentTime);
+    masterGain.connect(scriptNode);
+    scriptNode.connect(muteGain);
+    muteGain.connect(ctx.destination);
+    recorderNode = scriptNode;
+  }
+}
+
+function drawFFT() {
+  if (currentDisplayMode !== 'fft') return;
+  animationFrameId = requestAnimationFrame(drawFFT);
+  const canvas = document.getElementById('fftCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d'), dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect(), width = rect.width, height = rect.height;
+  if (!width || !height) return;
+
+  if (canvas.width !== Math.floor(width * dpr) || canvas.height !== Math.floor(height * dpr)) {
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+  }
+  ctx.save();
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, width, height);
+
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let y = 14; y < height; y += 14) {
+    ctx.moveTo(0, y); ctx.lineTo(width, y);
+  }
+  ctx.stroke();
+
+  if (!analyser || !fftDataArray) {
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, height - 2);
+    ctx.lineTo(width, height - 2);
+    ctx.stroke();
+    ctx.restore();
+    return;
+  }
+
+  analyser.getByteFrequencyData(fftDataArray);
+  const bufferLength = analyser.frequencyBinCount;
+  let maxVal = 0, maxFreqIdx = 0;
+
+  ctx.beginPath();
+  ctx.moveTo(0, height);
+  const gradient = ctx.createLinearGradient(0, height, 0, 0);
+  gradient.addColorStop(0, 'rgba(37, 99, 235, 0.12)');
+  gradient.addColorStop(0.6, 'rgba(56, 189, 248, 0.35)');
+  gradient.addColorStop(1, 'rgba(56, 189, 248, 0.75)');
+  ctx.fillStyle = gradient;
+
+  for (let i = 0; i < width; i++) {
+    const index = Math.min(Math.floor(Math.pow(i / width, 2.2) * bufferLength), bufferLength - 1);
+    const val = fftDataArray[index] || 0;
+    if (val > maxVal) { maxVal = val; maxFreqIdx = index; }
+    const y = height - (val / 255) * (height - 2);
+    if (i === 0) ctx.moveTo(i, y); else ctx.lineTo(i, y);
+  }
+  ctx.lineTo(width, height);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  for (let i = 0; i < width; i++) {
+    const index = Math.min(Math.floor(Math.pow(i / width, 2.2) * bufferLength), bufferLength - 1);
+    const val = fftDataArray[index] || 0;
+    const y = height - (val / 255) * (height - 2);
+    if (i === 0) ctx.moveTo(i, y); else ctx.lineTo(i, y);
+  }
+  ctx.stroke();
+
+  const peakElem = document.getElementById('fftPeakText');
+  if (peakElem) {
+    if (maxVal > 20 && audioCtx) {
+      peakElem.textContent = `Peak: ${(maxFreqIdx * audioCtx.sampleRate / analyser.fftSize).toFixed(1)} Hz`;
+    } else {
+      peakElem.textContent = 'Peak: -- Hz';
+    }
+  }
+  ctx.restore();
+}
+
+async function playTone(freq, isLongPress = false) {
+  await initAudio();
+  if (!audioCtx) return;
+
+  const now = audioCtx.currentTime;
+  const t = activePreset.timbre;
+  const dest = hpf;
+  const mode = t.harmonicMode || 'harm3';
+
+  const attackTime = Math.max(0.001, parseFloat(t.attackTime) || 0.004);
+  let baseDecay = Math.max(0.05, parseFloat(t.decayTime) || 2.5);
+  const sustainLevel = Math.min(1.0, Math.max(0.0, parseFloat(t.sustainLevel) || 0.0));
+  const releaseTime = Math.max(0.001, parseFloat(t.releaseTime) || 0.012);
+
+  // 長押し時のDecay拡大率を制限
+  if (isLongPress) baseDecay *= 1.2;
+
+  const maxAllowedFreq = Math.min(20000, audioCtx.sampleRate * 0.45);
+
+  function applyEnvelopeAndPlay(osc, gainNode, peakGain, decayDuration) {
+    const dDur = Math.max(0.01, decayDuration);
+    const tAttackEnd = now + attackTime;
+    const tDecayEnd = tAttackEnd + dDur;
+
+    // 長押し時のみ適度なHold時間を付与（通常タップ時は0sで即Releaseへ切り替え）
+    let holdDuration = 0;
+    if (sustainLevel > 0 && isLongPress) {
+      holdDuration = Math.min(1.0, dDur * 0.4);
+    }
+
+    const tSustainEnd = tDecayEnd + holdDuration;
+    const tReleaseEnd = tSustainEnd + releaseTime;
+
+    gainNode.gain.setValueAtTime(0.00001, now);
+    gainNode.gain.linearRampToValueAtTime(peakGain, tAttackEnd);
+
+    if (sustainLevel > 0) {
+      const susGain = Math.max(0.00001, peakGain * sustainLevel);
+      gainNode.gain.exponentialRampToValueAtTime(susGain, tDecayEnd);
+      if (holdDuration > 0) {
+        gainNode.gain.setValueAtTime(susGain, tSustainEnd);
+      }
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, tReleaseEnd);
+      gainNode.gain.linearRampToValueAtTime(0, tReleaseEnd + 0.002);
+    } else {
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, tDecayEnd);
+      gainNode.gain.linearRampToValueAtTime(0, tDecayEnd + releaseTime);
+    }
+
+    osc.connect(gainNode);
+    gainNode.connect(dest);
+    osc.start(now);
+    osc.stop(tReleaseEnd + 0.005);
+  }
+
+  if (freq < maxAllowedFreq) {
+    const osc1 = audioCtx.createOscillator();
+    const g1 = audioCtx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(freq, now);
+
+    if (mode === 'cricket') {
+      const amOsc = audioCtx.createOscillator();
+      const amGain = audioCtx.createGain();
+      amOsc.type = 'sine';
+      amOsc.frequency.setValueAtTime(45, now);
+      amGain.gain.setValueAtTime(0.35, now);
+
+      const carrierGain = audioCtx.createGain();
+      carrierGain.gain.setValueAtTime(0.65, now);
+
+      amOsc.connect(amGain);
+      amGain.connect(carrierGain.gain);
+      osc1.connect(carrierGain);
+
+      const tAttackEnd = now + attackTime;
+      const tDecayEnd = tAttackEnd + baseDecay;
+      let holdDuration = 0;
+      if (sustainLevel > 0 && isLongPress) {
+        holdDuration = Math.min(1.0, baseDecay * 0.4);
+      }
+      const tSustainEnd = tDecayEnd + holdDuration;
+      const tReleaseEnd = tSustainEnd + releaseTime;
+
+      g1.gain.setValueAtTime(0.00001, now);
+      g1.gain.linearRampToValueAtTime(0.5, tAttackEnd);
+
+      if (sustainLevel > 0) {
+        const susGain = Math.max(0.00001, 0.5 * sustainLevel);
+        g1.gain.exponentialRampToValueAtTime(susGain, tDecayEnd);
+        if (holdDuration > 0) {
+          g1.gain.setValueAtTime(susGain, tSustainEnd);
+        }
+        g1.gain.exponentialRampToValueAtTime(0.0001, tReleaseEnd);
+        g1.gain.linearRampToValueAtTime(0, tReleaseEnd + 0.002);
+      } else {
+        g1.gain.exponentialRampToValueAtTime(0.0001, tDecayEnd);
+        g1.gain.linearRampToValueAtTime(0, tDecayEnd + releaseTime);
+      }
+
+      carrierGain.connect(g1);
+      g1.connect(dest);
+
+      const stopTime = tReleaseEnd + 0.005;
+      osc1.start(now);
+      amOsc.start(now);
+      osc1.stop(stopTime);
+      amOsc.stop(stopTime);
+
+      if (parseFloat(t.harmonicGain) > 0) {
+        [
+          { ratio: 2.116, gainMult: 0.23, decayMult: 0.6 },
+          { ratio: 2.801, gainMult: 0.09, decayMult: 0.4 },
+          { ratio: 4.202, gainMult: 0.08, decayMult: 0.3 }
+        ].forEach(h => {
+          const hFreq = freq * h.ratio;
+          if (hFreq < maxAllowedFreq) {
+            const osc = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(hFreq, now);
+            const peakG = parseFloat(t.harmonicGain) * h.gainMult;
+            applyEnvelopeAndPlay(osc, g, peakG, baseDecay * h.decayMult);
+          }
+        });
+      }
+    } else {
+      applyEnvelopeAndPlay(osc1, g1, 0.5, baseDecay);
+
+      const hGain = parseFloat(t.harmonicGain) || 0;
+      if (hGain > 0) {
+        if (mode === 'harm3') {
+          [
+            { ratio: 2, gainMult: 0.6, decayMult: 0.6 },
+            { ratio: 3, gainMult: 0.3, decayMult: 0.4 }
+          ].forEach(h => {
+            const hFreq = freq * h.ratio;
+            if (hFreq < maxAllowedFreq) {
+              const osc = audioCtx.createOscillator();
+              const g = audioCtx.createGain();
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(hFreq, now);
+              const peakG = hGain * h.gainMult;
+              applyEnvelopeAndPlay(osc, g, peakG, baseDecay * h.decayMult);
+            }
+          });
+        } else if (mode === 'inharm' || mode === 'inharm2') {
+          const hParams = (mode === 'inharm2') ? [
+            { ratio: parseFloat(t.harmonicRatio || 2.756), gainMult: 0.75, decayMult: 0.35 },
+            { ratio: 5.404, gainMult: 0.35, decayMult: 0.20 }
+          ] : [
+            { ratio: 2.756, gainMult: 0.36, decayMult: 0.112 }
+          ];
+
+          hParams.forEach(h => {
+            const hFreq = freq * h.ratio;
+            if (hFreq < maxAllowedFreq) {
+              const osc = audioCtx.createOscillator();
+              const g = audioCtx.createGain();
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(hFreq, now);
+              applyEnvelopeAndPlay(osc, g, hGain * h.gainMult, baseDecay * h.decayMult);
+            }
+          });
+        } else if (mode === 'syrinx') {
+          const knownAmps = {
+            2: Math.pow(10, (-77 - (-12)) / 20),
+            3: Math.pow(10, (-32 - (-12)) / 20),
+            4: Math.pow(10, (-71 - (-12)) / 20),
+            5: Math.pow(10, (-47 - (-12)) / 20),
+            6: Math.pow(10, (-72 - (-12)) / 20),
+            7: Math.pow(10, (-49 - (-12)) / 20),
+            8: Math.pow(10, (-73 - (-12)) / 20),
+            9: Math.pow(10, (-57 - (-12)) / 20)
+          };
+
+          for (let h = 2; h <= 23; h++) {
+            const hFreq = freq * h;
+            if (hFreq >= maxAllowedFreq) break;
+            let ampRatio;
+            if (knownAmps[h] !== undefined) {
+              ampRatio = knownAmps[h];
+            } else if (h % 2 !== 0) {
+              ampRatio = knownAmps[9] * Math.pow(9 / h, 2.5);
+            } else {
+              ampRatio = 0.0008 * (8 / h);
+            }
+
+            const gVal = hGain * ampRatio * 1.0;
+            if (gVal < 0.0003) continue;
+
+            const decayMult = Math.max(0.1, 0.95 / Math.pow(h, 0.6));
+            const dur = baseDecay * decayMult;
+
+            const osc = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(hFreq, now);
+            applyEnvelopeAndPlay(osc, g, gVal, dur);
+          }
+        }
+      }
+    }
+
+    if (isRandomNoiseEnabled && t.noiseGain > 0 && sharedNoiseBuffer) {
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = sharedNoiseBuffer;
+      const ng = audioCtx.createGain();
+      const peakNoise = parseFloat(t.noiseGain) || 0.1;
+      ng.gain.setValueAtTime(0.00001, now);
+      ng.gain.linearRampToValueAtTime(peakNoise, now + 0.001);
+      ng.gain.exponentialRampToValueAtTime(0.0001, now + 0.015);
+      ng.gain.linearRampToValueAtTime(0, now + 0.018);
+
+      if (isNoiseFilterEnabled) {
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(parseFloat(t.noiseCutoff) || 1400, now);
+        noise.connect(filter);
+        filter.connect(ng);
+      } else {
+        noise.connect(ng);
+      }
+      ng.connect(dest);
+      noise.start(now);
+      noise.stop(now + 0.02);
+    }
+  }
+}
+
+async function toggleRecording() {
+  await initAudio();
+  const btnRec = document.getElementById('btnRecord'), txtRec = document.getElementById('txtRecord'), btnDl = document.getElementById('btnDownload');
+  if (!isRecording) {
+    recordedBuffers = [];
+    isRecording = true;
+    btnRec.classList.add('recording');
+    let sec = 0;
+    txtRec.textContent = `REC 0s`;
+    recTimerInterval = setInterval(() => { sec++; txtRec.textContent = `REC ${sec}s`; }, 1000);
+    btnDl.style.display = 'none';
+    if (selectedRecEngine === 'worklet' && recorderNode?.port) recorderNode.port.postMessage({ command: 'START' });
+  } else {
+    isRecording = false;
+    btnRec.classList.remove('recording');
+    clearInterval(recTimerInterval);
+    txtRec.textContent = 'REC';
+    if (selectedRecEngine === 'worklet' && recorderNode?.port) recorderNode.port.postMessage({ command: 'STOP' });
+    setTimeout(exportWAV, 150);
+  }
+}
+
+function exportWAV() {
+  if (!recordedBuffers.length) return;
+  let totalSamples = recordedBuffers.reduce((sum, b) => sum + b.length, 0);
+  const merged = new Float32Array(totalSamples);
+  let offset = 0;
+  for (const b of recordedBuffers) { merged.set(b, offset); offset += b.length; }
+
+  const format = parseRecFormat(document.getElementById('selectRecFormat').value);
+  const is32Float = format.bitDepth === '32float', sampleRate = audioCtx.sampleRate, numChannels = 1;
+  const bytesPerSample = is32Float ? 4 : 2, blockAlign = numChannels * bytesPerSample, byteRate = sampleRate * blockAlign;
+  const dataSize = merged.length * bytesPerSample;
+
+  const buffer = new ArrayBuffer(44 + dataSize), view = new DataView(buffer);
+  function writeString(v, off, str) { for (let i = 0; i < str.length; i++) v.setUint8(off + i, str.charCodeAt(i)); }
+
+  writeString(view, 0, 'RIFF');
+  view.setUint32(4, 36 + dataSize, true);
+  writeString(view, 8, 'WAVE');
+  writeString(view, 12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, is32Float ? 3 : 1, true);
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, byteRate, true);
+  view.setUint16(32, blockAlign, true);
+  view.setUint16(34, is32Float ? 32 : 16, true);
+  writeString(view, 36, 'data');
+  view.setUint32(40, dataSize, true);
+
+  let p = 44;
+  if (is32Float) {
+    for (let i = 0; i < merged.length; i++, p += 4) view.setFloat32(p, merged[i], true);
+  } else {
+    for (let i = 0; i < merged.length; i++, p += 2) {
+      const s = Math.max(-1, Math.min(1, merged[i]));
+      view.setInt16(p, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+    }
+  }
+
+  const blob = new Blob([buffer], { type: 'audio/wav' });
+  if (lastRecordedBlobUrl) URL.revokeObjectURL(lastRecordedBlobUrl);
+  lastRecordedBlobUrl = URL.createObjectURL(blob);
+
+  const btnDl = document.getElementById('btnDownload');
+  btnDl.style.display = 'inline-flex';
+  btnDl.onclick = () => {
+    const a = document.createElement('a');
+    a.href = lastRecordedBlobUrl;
+    a.download = `kalimba_custom_${Date.now()}.wav`;
+    a.click();
+  };
+}
+
+function triggerPluck(tine, wrapper, isLongPress = false) {
+  playTone(tine.freq, isLongPress);
+  lastTine = currentTine;
+  currentTine = tine;
+  document.getElementById('valLastPlucked').innerHTML = `<span class="line">#${tine.idx + 1} ${tine.name}</span><span class="line">(${tine.num}/${tine.den} • ${tine.freq.toFixed(1)}Hz)</span>`;
+  if (lastTine) {
+    const res = calcIntervalRatio(lastTine, currentTine);
+    document.getElementById('valInterval').innerHTML = `<span class="line">#${lastTine.idx + 1} → #${currentTine.idx + 1} (${res.ratioStr})</span><span class="line">(${res.cents}¢ diff)</span>`;
+  }
+  if (wrapper) {
+    wrapper.classList.add('active');
+    setTimeout(() => wrapper.classList.remove('active'), 150);
+  }
+}
+
+function startHold(keyId, tine, wrapper) {
+  if (activeHoldTrackers.has(keyId)) return;
+  const holdTimer = setTimeout(() => {
+    if (longPressBehavior === 'repeat') {
+      triggerPluck(tine, wrapper, false);
+      const repeatInterval = setInterval(() => { triggerPluck(tine, wrapper, false); }, 120);
+      activeHoldTrackers.set(keyId, { holdTimer: null, repeatInterval, tine, wrapper, triggeredLong: true });
+    } else if (longPressBehavior === 'long') {
+      triggerPluck(tine, wrapper, true);
+      activeHoldTrackers.set(keyId, { holdTimer: null, repeatInterval: null, tine, wrapper, triggeredLong: true });
+    }
+  }, 200);
+  activeHoldTrackers.set(keyId, { holdTimer, repeatInterval: null, tine, wrapper, triggeredLong: false });
+}
+
+function stopHold(keyId) {
+  const tracker = activeHoldTrackers.get(keyId);
+  if (tracker) {
+    if (tracker.holdTimer && !tracker.triggeredLong) {
+      clearTimeout(tracker.holdTimer);
+      triggerPluck(tracker.tine, tracker.wrapper, false);
+    }
+    if (tracker.repeatInterval) clearInterval(tracker.repeatInterval);
+    activeHoldTrackers.delete(keyId);
+  }
+}
+
+function openSettingsModal() {
+  const t = activePreset.timbre || { decayTime: 2.5, harmonicMode: 'harm3', harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400 };
+  if (!t.harmonicMode) t.harmonicMode = 'harm3';
+  document.querySelectorAll('#longPressToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.longpress === longPressBehavior));
+  document.getElementById('inputNoiseGain').value = t.noiseGain !== undefined ? t.noiseGain : 0.10;
+  document.getElementById('txtNoiseGainVal').textContent = (t.noiseGain !== undefined ? t.noiseGain : 0.10).toString();
+  document.getElementById('inputNoiseCutoff').value = t.noiseCutoff !== undefined ? t.noiseCutoff : 1400;
+  document.getElementById('settingsModal').classList.add('open');
+}
+
+function updateEnvSliderUI() {
+  const t = activePreset.timbre || {};
+  const slider = document.getElementById('inputEnvParam');
+  const txt = document.getElementById('txtEnvParamVal');
+
+  document.querySelectorAll('#envParamSelectGroup .segmented-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.env === currentEnvParam);
+  });
+
+  if (currentEnvParam === 'attack') {
+    slider.min = "0.001"; slider.max = "1.000"; slider.step = "0.001";
+    const val = t.attackTime !== undefined ? parseFloat(t.attackTime) : 0.004;
+    slider.value = val;
+    txt.textContent = val < 0.1 ? Math.round(val * 1000) + 'ms' : val.toFixed(3) + 's';
+  } else if (currentEnvParam === 'decay') {
+    slider.min = "0.1"; slider.max = "10.0"; slider.step = "0.1";
+    const val = t.decayTime !== undefined ? parseFloat(t.decayTime) : 2.5;
+    slider.value = val;
+    txt.textContent = val.toFixed(1) + 's';
+  } else if (currentEnvParam === 'sustain') {
+    slider.min = "0.00"; slider.max = "1.00"; slider.step = "0.01";
+    const val = t.sustainLevel !== undefined ? parseFloat(t.sustainLevel) : 0.0;
+    slider.value = val;
+    txt.textContent = Math.round(val * 100) + '%';
+  } else if (currentEnvParam === 'release') {
+    slider.min = "0.001"; slider.max = "2.000"; slider.step = "0.001";
+    const val = t.releaseTime !== undefined ? parseFloat(t.releaseTime) : 0.012;
+    slider.value = val;
+    txt.textContent = val < 0.1 ? Math.round(val * 1000) + 'ms' : val.toFixed(3) + 's';
+  }
+}
+
+function renderApp() {
+  activePreset = presets[activeSlotIndex];
+  updateComputedTonic();
+
+  document.getElementById('inputCustomFreq').value = activePreset.baseTonicFreq;
+  document.getElementById('inputTonicNum').value = activePreset.tonicNum;
+  document.getElementById('inputTonicDen').value = activePreset.tonicDen;
+  document.getElementById('txtTonicOctave').textContent = (activePreset.tonicOctave > 0 ? '+' : '') + activePreset.tonicOctave;
+  document.getElementById('badgeKeyMode').textContent = `${activeKeyMode}-Key`;
+
+  const t = activePreset.timbre || { attackTime: 0.004, decayTime: 2.5, sustainLevel: 0.0, releaseTime: 0.012, harmonicGain: 0.18, harmonicMode: 'harm3' };
+  if (!t.harmonicMode) t.harmonicMode = 'harm3';
+
+  updateEnvSliderUI();
+
+  const hGain = t.harmonicGain !== undefined ? parseFloat(t.harmonicGain) : 0.18;
+  document.getElementById('inputHarmonicGain').value = hGain;
+  document.getElementById('txtHarmonicGainVal').textContent = hGain.toFixed(2);
+
+  document.querySelectorAll('#harmonicModeGroup .segmented-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.mode === t.harmonicMode));
+  document.querySelectorAll('#presetSlotsGroup .segmented-btn').forEach((btn, idx) => btn.classList.toggle('active', idx === activeSlotIndex));
+
+  const ratioContainer = document.getElementById('tonicRatioBtns');
+  ratioContainer.innerHTML = '';
+  (activePreset.tonicRatios || DEFAULT_12_RATIOS).forEach((r, idx) => {
+    const btn = document.createElement('button');
+    btn.className = `segmented-btn ${idx === selectedRatioIndex ? 'active' : ''}`;
+    btn.textContent = `${r.num}/${r.den}`;
+    btn.addEventListener('click', () => {
+      selectedRatioIndex = idx;
+      activePreset.tonicNum = r.num;
+      activePreset.tonicDen = r.den;
+      renderApp();
+    });
+    ratioContainer.appendChild(btn);
+  });
+
+  const is17 = activeKeyMode === "17";
+  const keyList = is17 ? (activePreset.keys17 || []) : (activePreset.keys8 || []);
+  const shortcuts = is17 ? shortcuts17 : shortcuts8, vSlots = is17 ? vSlot17 : vSlot8;
+  const isLandscape = window.innerWidth > window.innerHeight;
+  const is8Key = (activeKeyMode === "8");
+
+  let baseMaxHeight = 280;
+  let heightDiffScale = 85;
+  if (isLandscape) {
+    if (window.innerHeight < 580 && !is8Key) {
+      baseMaxHeight = 190;
+      heightDiffScale = 57;
+    } else {
+      baseMaxHeight = 250;
+      heightDiffScale = 75;
+    }
+  }
+
+  const pitchList = keyList.map((item, idx) => {
+    const ratioVal = item.num / item.den;
+    const freq = computedTonicFreq * ratioVal;
+    let height = Math.round(baseMaxHeight - (ratioVal - 1) * heightDiffScale);
+    if (height < 30) height = 30;
+    return { ...item, idx, ratioVal, freq, height, cents: calcCents(item.num, item.den) };
+  });
+
+  activeTinesData = vSlots.map((pIdx, slotIdx) => ({
+    ...(pitchList[pIdx] || pitchList[0] || {num:1,den:1,name:'-'}),
+    slotIdx,
+    shortcut: shortcuts[slotIdx]
+  }));
+
+  const tinesWrapper = document.getElementById('tinesWrapper');
+  tinesWrapper.innerHTML = '<div class="bridge-bar"></div>';
+
+  activeTinesData.forEach((tine) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = `tine-wrapper ${tine.num === 1 && tine.den === 1 ? 'is-tonic' : ''}`;
+    wrapper.id = `tine-wrapper-${tine.slotIdx}`;
+    wrapper.innerHTML = `
+      <div class="tine" style="height:${tine.height}px;">
+        <span class="tine-idx">${tine.idx + 1}</span>
+        <span class="tine-name">${tine.name || ''}</span>
+      </div>
+      <span class="tine-ratio-text">${tine.num}/${tine.den}</span>
+      <span class="tine-cents-text">${tine.cents}¢</span>
+      <span class="tine-key-shortcut">[${tine.shortcut}]</span>
+    `;
+
+    const tineKeyId = `tine-${tine.slotIdx}`;
+    const onDown = (e) => { e.preventDefault(); startHold(tineKeyId, tine, wrapper); };
+    const onUp = (e) => { e.preventDefault(); stopHold(tineKeyId); };
+
+    wrapper.addEventListener('mousedown', onDown);
+    wrapper.addEventListener('mouseup', onUp);
+    wrapper.addEventListener('mouseleave', onUp);
+    wrapper.addEventListener('touchstart', onDown, { passive: false });
+    wrapper.addEventListener('touchend', onUp, { passive: false });
+    wrapper.addEventListener('touchcancel', onUp, { passive: false });
+
+    tinesWrapper.appendChild(wrapper);
+  });
+
+  const chordContainer = document.getElementById('chordButtonsContainer');
+  chordContainer.innerHTML = '';
+  (is17 ? (activePreset.chords17 || []) : (activePreset.chords8 || [])).forEach((c) => {
+    const btn = document.createElement('button');
+    btn.className = 'segmented-btn';
+    btn.style.cssText = "background-color:#0d0f17;border:1px solid #2e3545;color:#e5e7eb;padding:3px 6px;font-size:.65rem;";
+    btn.textContent = c.label;
+    btn.addEventListener('click', () => startChord(c));
+    chordContainer.appendChild(btn);
+  });
+}
+
+function stopChord() {
+  if (chordTimer) { clearInterval(chordTimer); chordTimer = null; }
+  currentActiveChord = null;
+  chordIndex = 0;
+}
+
+function startChord(chordObj) {
+  if (chordTimer) { clearInterval(chordTimer); chordTimer = null; }
+  currentActiveChord = chordObj;
+  const interval = (60 / (parseFloat(document.getElementById('inputChordBpm').value) || 90)) * 1000;
+
+  function step() {
+    if (!currentActiveChord) return;
+    if (chordIndex >= currentActiveChord.indices.length) {
+      if (isLooping) chordIndex = 0;
+      else { stopChord(); return; }
+    }
+    const keyIdx = currentActiveChord.indices[chordIndex];
+    const targetTine = activeTinesData.find(t => t.idx === keyIdx) || activeTinesData[keyIdx];
+    if (targetTine) {
+      triggerPluck(targetTine, document.getElementById(`tine-wrapper-${targetTine.slotIdx}`));
+    }
+    chordIndex++;
+  }
+  step();
+  chordTimer = setInterval(step, interval);
+}
+
+function updateBpmAndRefreshChord() {
+  if (chordTimer && currentActiveChord) startChord(currentActiveChord);
+}
+
+function openEditor() {
+  editorTargetKeyMode = activeKeyMode;
+  editorTargetChordMode = activeKeyMode;
+  document.querySelectorAll('#editorKeyTabToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.keymode === editorTargetKeyMode));
+  document.querySelectorAll('#editorChordTabToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.chordmode === editorTargetChordMode));
+  renderKeysTableEditor();
+  renderChordsEditor();
+  document.getElementById('editorModal').classList.add('open');
+}
+
+function renderKeysTableEditor() {
+  const keyList = editorTargetKeyMode === "17" ? (activePreset.keys17 || []) : (activePreset.keys8 || []);
+  const tbody = document.getElementById('keysTableBody');
+  tbody.innerHTML = '';
+  keyList.forEach((k, idx) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${idx + 1}</strong></td>
+      <td><input type="text" class="select-input key-name" value="${k.name || ''}"></td>
+      <td><input type="number" class="select-input key-num" value="${k.num}" min="1"></td>
+      <td><input type="number" class="select-input key-den" value="${k.den}" min="1"></td>
+      <td class="key-cents">${calcCents(k.num, k.den)}¢</td>
+    `;
+    const numInput = tr.querySelector('.key-num'), denInput = tr.querySelector('.key-den'), centsTd = tr.querySelector('.key-cents');
+    const updateCents = () => centsTd.textContent = `${calcCents(parseInt(numInput.value) || 1, parseInt(denInput.value) || 1)}¢`;
+    numInput.addEventListener('input', updateCents);
+    denInput.addEventListener('input', updateCents);
+    tbody.appendChild(tr);
+  });
+}
+
+function renderChordsEditor() {
+  const chords = editorTargetChordMode === "17" ? (activePreset.chords17 || []) : (activePreset.chords8 || []);
+  const container = document.getElementById('chordInputsContainer');
+  container.innerHTML = '';
+  chords.forEach((c) => {
+    const row = document.createElement('div');
+    row.className = 'control-group';
+    row.innerHTML = `
+      <input type="text" class="select-input chord-label" value="${c.label}" style="width:100px;">
+      <input type="text" class="select-input chord-indices" value="${c.indices.join(',')}" style="flex:1;">
+    `;
+    container.appendChild(row);
+  });
+}
+
+function applyEditorChanges() {
+  const newKeys = [];
+  document.querySelectorAll('#keysTableBody tr').forEach(tr => {
+    newKeys.push({
+      name: tr.querySelector('.key-name').value,
+      num: parseInt(tr.querySelector('.key-num').value) || 1,
+      den: parseInt(tr.querySelector('.key-den').value) || 1
+    });
+  });
+  if (editorTargetKeyMode === "17") activePreset.keys17 = newKeys; else activePreset.keys8 = newKeys;
+
+  const newChords = [];
+  document.querySelectorAll('#chordInputsContainer .control-group').forEach(row => {
+    newChords.push({
+      label: row.querySelector('.chord-label').value,
+      indices: row.querySelector('.chord-indices').value.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n))
+    });
+  });
+  if (editorTargetChordMode === "17") activePreset.chords17 = newChords; else activePreset.chords8 = newChords;
+
+  renderApp();
+  document.getElementById('editorModal').classList.remove('open');
+}
+
+function parseScalaContent(text) {
+  const lines = text.split(/\r?\n/).map(l => l.trim());
+  const validLines = lines.filter(l => l.length > 0 && !l.startsWith('!'));
+  if (validLines.length < 2) return null;
+
+  const title = validLines[0];
+  const count = parseInt(validLines[1], 10);
+  const pitchLines = validLines.slice(2, 2 + count);
+
+  const keys = [];
+  keys.push({ num: 1, den: 1, name: "1/1 Tonic" });
+
+  pitchLines.forEach((pLine, idx) => {
+    const token = pLine.split('!')[0].trim().split(/\s+/)[0];
+    if (!token) return;
+    let num = 1, den = 1, name = `Note ${idx + 2}`;
+
+    if (token.includes('/')) {
+      const parts = token.split('/');
+      num = parseInt(parts[0], 10) || 1;
+      den = parseInt(parts[1], 10) || 1;
+      name = `${num}/${den}`;
+    } else if (token.includes('.')) {
+      const cents = parseFloat(token);
+      const ratio = Math.pow(2, cents / 1200);
+      const mult = 100000;
+      const g = gcd(Math.round(ratio * mult), mult);
+      num = Math.round(ratio * mult) / g;
+      den = mult / g;
+      name = `${cents.toFixed(1)}¢`;
+    } else {
+      num = parseInt(token, 10) || 1;
+      den = 1;
+      name = `${num}/1`;
+    }
+    keys.push({ num, den, name });
+  });
+  return { title, keys };
+}
+
+function generateScalaContent() {
+  const keyList = editorTargetKeyMode === "17" ? (activePreset.keys17 || []) : (activePreset.keys8 || []);
+  if (!keyList.length) return null;
+  let exportKeys = keyList;
+  if (keyList[0] && keyList[0].num === 1 && keyList[0].den === 1) {
+    exportKeys = keyList.slice(1);
+  }
+
+  let sclText = `! ${activePreset.title || 'Custom_Scale'}.scl\n`;
+  sclText += `! Created with Extended Just Intonation Custom Synthesizer\n`;
+  sclText += `${activePreset.title || 'Custom Scale'}\n`;
+  sclText += `${exportKeys.length}\n!\n`;
+
+  exportKeys.forEach((k) => {
+    sclText += `${k.num}/${k.den}\n`;
+  });
+  return sclText;
+}
+
+function updateFullscreenButtonText() {
+  const txtFullscreen = document.getElementById('txtFullscreen');
+  if (txtFullscreen) {
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+      txtFullscreen.textContent = 'OFF';
+    } else {
+      txtFullscreen.textContent = 'Full';
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  checkOrientationAutoKeyMode();
+  window.addEventListener('resize', checkOrientationAutoKeyMode);
+
+  document.querySelectorAll('.display-mode-group .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      currentDisplayMode = btn.dataset.display;
+      document.querySelectorAll('.display-mode-group .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.display === currentDisplayMode));
+
+      const telView = document.getElementById('telemetryView'), fftView = document.getElementById('fftView');
+      if (currentDisplayMode === 'fft') {
+        telView.style.display = 'none';
+        fftView.style.display = 'flex';
+        await initAudio();
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        drawFFT();
+      } else {
+        fftView.style.display = 'none';
+        telView.style.display = 'block';
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+      }
+    });
+  });
+
+  document.getElementById('inputMasterGain').addEventListener('input', (e) => {
+    const val = parseFloat(e.target.value);
+    if (masterGain && audioCtx) masterGain.gain.setValueAtTime(val, audioCtx.currentTime);
+    document.getElementById('txtMasterGain').textContent = `${val.toFixed(2)} (${(20*Math.log10(val)).toFixed(0)}dB)`;
+  });
+
+  document.querySelectorAll('#envParamSelectGroup .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentEnvParam = btn.dataset.env;
+      updateEnvSliderUI();
+    });
+  });
+
+  document.getElementById('inputEnvParam').addEventListener('input', (e) => {
+    const val = parseFloat(e.target.value);
+    if (!activePreset.timbre) activePreset.timbre = {};
+    if (currentEnvParam === 'attack') activePreset.timbre.attackTime = val;
+    else if (currentEnvParam === 'decay') activePreset.timbre.decayTime = val;
+    else if (currentEnvParam === 'sustain') activePreset.timbre.sustainLevel = val;
+    else if (currentEnvParam === 'release') activePreset.timbre.releaseTime = val;
+    updateEnvSliderUI();
+  });
+
+  document.getElementById('inputHarmonicGain').addEventListener('input', (e) => {
+    const val = parseFloat(e.target.value);
+    if (!activePreset.timbre) activePreset.timbre = {};
+    activePreset.timbre.harmonicGain = val;
+    document.getElementById('txtHarmonicGainVal').textContent = val.toFixed(2);
+  });
+
+  document.querySelectorAll('#harmonicModeGroup .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!activePreset.timbre) activePreset.timbre = {};
+      activePreset.timbre.harmonicMode = btn.dataset.mode;
+      renderApp();
+    });
+  });
+
+  document.querySelectorAll('#longPressToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#longPressToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      longPressBehavior = e.target.dataset.longpress;
+    });
+  });
+
+  document.getElementById('inputNoiseGain').addEventListener('input', (e) => {
+    const val = parseFloat(e.target.value);
+    if (!activePreset.timbre) activePreset.timbre = {};
+    activePreset.timbre.noiseGain = val;
+    document.getElementById('txtNoiseGainVal').textContent = val.toFixed(2);
+  });
+
+  document.getElementById('inputNoiseCutoff').addEventListener('change', (e) => {
+    const val = parseFloat(e.target.value) || 1400;
+    if (!activePreset.timbre) activePreset.timbre = {};
+    activePreset.timbre.noiseCutoff = val;
+  });
+
+  document.querySelectorAll('#presetSlotsGroup .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeSlotIndex = parseInt(btn.dataset.slot);
+      activePreset = presets[activeSlotIndex];
+      renderApp();
+    });
+  });
+
+  document.getElementById('btnSavePreset').addEventListener('click', () => {
+    savePresetsToStorage();
+    alert(`Preset ${activeSlotIndex + 1} saved!`);
+  });
+
+  document.getElementById('btnResetPreset').addEventListener('click', () => {
+    if (confirm(`Reset Preset ${activeSlotIndex + 1} to default?`)) {
+      presets[activeSlotIndex] = JSON.parse(JSON.stringify(DEFAULT_PRESETS[activeSlotIndex]));
+      savePresetsToStorage();
+      renderApp();
+    }
+  });
+
+  document.querySelectorAll('#tonicPresetBtns .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activePreset.baseTonicFreq = parseFloat(btn.dataset.freq);
+      renderApp();
+    });
+  });
+
+  document.getElementById('inputCustomFreq').addEventListener('change', (e) => {
+    activePreset.baseTonicFreq = parseFloat(e.target.value) || 512.0;
+    renderApp();
+  });
+
+  document.getElementById('btnSetRatio').addEventListener('click', () => {
+    activePreset.tonicNum = parseInt(document.getElementById('inputTonicNum').value) || 1;
+    activePreset.tonicDen = parseInt(document.getElementById('inputTonicDen').value) || 1;
+    renderApp();
+  });
+
+  document.getElementById('btnOctaveMinus').addEventListener('click', () => {
+    activePreset.tonicOctave--;
+    renderApp();
+  });
+
+  document.getElementById('btnOctavePlus').addEventListener('click', () => {
+    activePreset.tonicOctave++;
+    renderApp();
+  });
+
+  document.getElementById('btnChordBpmMinus').addEventListener('click', () => {
+    const input = document.getElementById('inputChordBpm');
+    input.value = Math.max(1, parseInt(input.value) - 1);
+    updateBpmAndRefreshChord();
+  });
+
+  document.getElementById('btnChordBpmPlus').addEventListener('click', () => {
+    const input = document.getElementById('inputChordBpm');
+    input.value = Math.min(500, parseInt(input.value) + 1);
+    updateBpmAndRefreshChord();
+  });
+
+  document.getElementById('inputChordBpm').addEventListener('change', updateBpmAndRefreshChord);
+
+  document.getElementById('btnChordLoopToggle').addEventListener('click', (e) => {
+    isLooping = !isLooping;
+    e.target.textContent = `Loop: ${isLooping ? 'ON' : 'OFF'}`;
+    e.target.style.color = isLooping ? '#38bdf8' : '#9ca3af';
+  });
+
+  document.getElementById('btnChordStop').addEventListener('click', stopChord);
+  document.getElementById('btnRecord').addEventListener('click', toggleRecording);
+
+  document.getElementById('btnFullscreen').addEventListener('click', () => {
+    const card = document.getElementById('appCard');
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      card.requestFullscreen?.() || card.webkitRequestFullscreen?.();
+    } else {
+      document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+    }
+  });
+
+  document.addEventListener('fullscreenchange', updateFullscreenButtonText);
+  document.addEventListener('webkitfullscreenchange', updateFullscreenButtonText);
+
+  document.getElementById('btnOpenSettings').addEventListener('click', openSettingsModal);
+  document.getElementById('btnCloseSettings').addEventListener('click', () => document.getElementById('settingsModal').classList.remove('open'));
+
+  document.getElementById('btnOpenEditor').addEventListener('click', openEditor);
+  document.getElementById('btnCloseEditor').addEventListener('click', () => document.getElementById('editorModal').classList.remove('open'));
+
+  document.getElementById('btnApplyEditor').addEventListener('click', applyEditorChanges);
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      e.target.classList.add('active');
+      document.getElementById(e.target.dataset.tab).classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('#editorKeyTabToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#editorKeyTabToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      editorTargetKeyMode = e.target.dataset.keymode;
+      renderKeysTableEditor();
+    });
+  });
+
+  document.querySelectorAll('#editorChordTabToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#editorChordTabToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      editorTargetChordMode = e.target.dataset.chordmode;
+      renderChordsEditor();
+    });
+  });
+
+  document.getElementById('btnImportScl').addEventListener('click', () => {
+    document.getElementById('inputSclFile').click();
+  });
+
+  document.getElementById('inputSclFile').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      const result = parseScalaContent(evt.target.result);
+      if (result && result.keys.length > 0) {
+        if (editorTargetKeyMode === "17") {
+          activePreset.keys17 = result.keys;
+        } else {
+          activePreset.keys8 = result.keys;
+        }
+        renderKeysTableEditor();
+        renderApp();
+        alert(`Scala file "${file.name}" imported (${result.keys.length} keys loaded into ${editorTargetKeyMode}-Key Layout)!`);
+      } else {
+        alert("Could not parse Scala file. Please check file format.");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+
+  document.getElementById('btnExportScl').addEventListener('click', () => {
+    const sclText = generateScalaContent();
+    if (!sclText) return;
+    const blob = new Blob([sclText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `scale_${editorTargetKeyMode}key_${Date.now()}.scl`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      isRandomNoiseEnabled = (e.target.dataset.noise === 'on');
+    });
+  });
+
+  document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      isNoiseFilterEnabled = (e.target.dataset.filter === 'on');
+    });
+  });
+
+  document.querySelectorAll('#compressorRoutingToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#compressorRoutingToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      isCompressorRoutingEnabled = (e.target.dataset.compressor === 'on');
+      updateAudioRouting();
+    });
+  });
+
+  document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      selectedRecEngine = e.target.dataset.engine;
+    });
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+    const key = e.key.toLowerCase();
+    const tine = activeTinesData.find(t => t.shortcut === key);
+    if (tine) {
+      const wrapper = document.getElementById(`tine-wrapper-${tine.slotIdx}`);
+      const kbKeyId = `kbd-${key}`;
+      startHold(kbKeyId, tine, wrapper);
+    }
+  });
+
+  window.addEventListener('keyup', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+    const key = e.key.toLowerCase();
+    stopHold(`kbd-${key}`);
+  });
+
+  renderApp();
+  if (currentDisplayMode === 'fft') {
+    drawFFT();
+  }
+});
+
+
+   if('serviceWorker' in navigator){
+      window.addEventListener('load',()=>{
+        navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then((registration)=>{
+          function trackInstalling(worker){
+            worker.addEventListener('statechange',()=>{
+              if(worker.state==='installed'&&navigator.serviceWorker.controller)showUpdateNotification(registration);
+            });
+          }
+          if(registration.waiting)showUpdateNotification(registration);
+          if(registration.installing)trackInstalling(registration.installing);
+          registration.addEventListener('updatefound',()=>trackInstalling(registration.installing));
+        }).catch((err)=>console.log('Service Worker registration failed:',err));
+
+        let refreshing=false;
+        navigator.serviceWorker.addEventListener('controllerchange',()=>{
+          if(!refreshing){refreshing=true;window.location.reload();}
+        });
+      });
+    }
+
+    function showUpdateNotification(registration){
+      const notification=document.getElementById('updateNotification');
+      if(notification){
+        notification.style.display='flex';
+        document.getElementById('btnUpdateReload').onclick=()=>{
+          if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});
+        };
+      }
+    }
+  </script>
+  
+  <div id="updateNotification" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#181b26;border:1px solid #3b82f6;color:#fff;padding:12px 20px;border-radius:14px;box-shadow:0 10px 25px rgba(0,0,0,.8);z-index:10000;align-items:center;gap:14px;font-size:.8rem;font-weight:600;">
+    <span>✨ New Version</span>
+    <button id="btnUpdateReload" style="background:#2563eb;color:#fff;border:none;padding:6px 14px;border-radius:8px;font-weight:700;cursor:pointer;">Now Update</button>
+  </div>
+
+</body>
+</html>
