@@ -314,21 +314,23 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
       <div class="control-group">
         <span class="control-label">TINE NOISE FILTER</span>
         <div class="segmented-btn-group" id="noiseFilterToggle">
-          <button class="segmented-btn" data-filter="on">ON (Highly Simulated)</button>
+          <button class="segmented-btn" data-filter="on">ON</button>
           <button class="segmented-btn active" data-filter="off">OFF (Fast Processing)</button>
         </div>
       </div>
       <div class="control-group">
-        <span class="control-label">Noise Filter Frequency (Hz):</span>
+        <span class="control-label">Bandpass Filter Frequency (Hz):</span>
         <input type="number" id="inputNoiseCutoff" class="freq-input" value="1400" step="50">
       </div>
-      <div class="control-group">
-        <span class="control-label">COMPRESSOR ROUTING</span>
-        <div class="segmented-btn-group" id="compressorRoutingToggle">
-          <button class="segmented-btn active" data-compressor="on">ON</button>
-          <button class="segmented-btn" data-compressor="off">OFF (BYPASS)</button>
-        </div>
-      </div>
+
+<div class="control-group">
+  <span class="control-label">COMPRESSOR</span>
+  <div class="segmented-btn-group" id="compressorModeToggle">
+    <button class="segmented-btn active" data-comp="std">Std</button>
+    <button class="segmented-btn" data-comp="hard">Hard</button>
+    <button class="segmented-btn" data-comp="off">OFF (Bypass)</button>
+  </div>
+</div>
 
       <div style="font-size:.72rem;font-weight:700;color:#38bdf8;border-bottom:1px solid #252b3d;padding-bottom:4px;margin-top:6px;">
         🎛 Recording Options
@@ -580,6 +582,7 @@ function loadPresetsWithMigration() {
         if (!p.keys17 || !Array.isArray(p.keys17)) p.keys17 = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].keys17));
         if (!p.chords17 || !Array.isArray(p.chords17)) p.chords17 = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].chords17));
         if (!p.chords8 || !Array.isArray(p.chords8)) p.chords8 = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].chords8));
+        if (!p.tonicRatios || !Array.isArray(p.tonicRatios)) p.tonicRatios = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].tonicRatios));
         if (!p.timbre) p.timbre = {};
         if (p.timbre.attackTime === undefined) p.timbre.attackTime = 0.004;
         if (p.timbre.decayTime === undefined) p.timbre.decayTime = 2.5;
@@ -706,6 +709,26 @@ function updateFFTScaleLabels() {
   });
 }
 
+let compressorMode = 'std';
+
+function applyCompressorSettings() {
+  if (!compressor || !audioCtx) return;
+  const now = audioCtx.currentTime;
+  if (compressorMode === 'std') {
+    compressor.threshold.setValueAtTime(-24.0, now);
+    compressor.knee.setValueAtTime(30.0, now);
+    compressor.ratio.setValueAtTime(12.0, now);
+    compressor.attack.setValueAtTime(0.003, now);
+    compressor.release.setValueAtTime(0.25, now);
+  } else {
+    compressor.threshold.setValueAtTime(-12.0, now);
+    compressor.knee.setValueAtTime(6.0, now);
+    compressor.ratio.setValueAtTime(8.0, now);
+    compressor.attack.setValueAtTime(0.01, now);
+    compressor.release.setValueAtTime(0.1, now);
+  }
+}
+
 async function initAudio() {
   const { sampleRate: targetSampleRate } = parseRecFormat(document.getElementById('selectRecFormat').value);
   if (audioCtx && audioCtx.sampleRate !== targetSampleRate) {
@@ -721,11 +744,7 @@ async function initAudio() {
     hpf.frequency.setValueAtTime(120, audioCtx.currentTime);
 
     compressor = audioCtx.createDynamicsCompressor();
-    compressor.threshold.setValueAtTime(-12.0, audioCtx.currentTime);
-    compressor.knee.setValueAtTime(6.0, audioCtx.currentTime);
-    compressor.ratio.setValueAtTime(8.0, audioCtx.currentTime);
-    compressor.attack.setValueAtTime(0.01, audioCtx.currentTime);
-    compressor.release.setValueAtTime(0.1, audioCtx.currentTime);
+applyCompressorSettings();
 
     masterGain = audioCtx.createGain();
     masterGain.gain.setValueAtTime(parseFloat(document.getElementById('inputMasterGain').value), audioCtx.currentTime);
@@ -1005,12 +1024,12 @@ async function playTone(freq, isLongPress = false) {
             }
           });
         } else if (mode === 'inharm' || mode === 'inharm2') {
-          const hParams = (mode === 'inharm2') ? [
-            { ratio: parseFloat(t.harmonicRatio || 2.756), gainMult: 0.75, decayMult: 0.35 },
-            { ratio: 5.404, gainMult: 0.35, decayMult: 0.20 }
-          ] : [
-            { ratio: 2.756, gainMult: 0.36, decayMult: 0.112 }
-          ];
+  const hParams = (mode === 'inharm2') ? [
+    { ratio: parseFloat(t.harmonicRatio || 2.756), gainMult: 0.75, decayMult: 0.35 },
+    { ratio: 5.404, gainMult: 0.35, decayMult: 0.20 }
+  ] : [
+    { ratio: 2.756, gainMult: 1.0, decayMult: 0.112 }
+  ];
 
           hParams.forEach(h => {
             const hFreq = freq * h.ratio;
@@ -1249,6 +1268,9 @@ function updateEnvSliderUI() {
 
 function renderApp() {
   activePreset = presets[activeSlotIndex];
+  if (!activePreset.tonicRatios) {
+    activePreset.tonicRatios = JSON.parse(JSON.stringify(DEFAULT_12_RATIOS));
+  }
   updateComputedTonic();
 
   document.getElementById('inputCustomFreq').value = activePreset.baseTonicFreq;
@@ -1535,6 +1557,14 @@ document.addEventListener('DOMContentLoaded', () => {
   checkOrientationAutoKeyMode();
   window.addEventListener('resize', checkOrientationAutoKeyMode);
 
+document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    compressorMode = e.target.dataset.comp;
+    applyCompressorSettings();
+  });
+});
   document.querySelectorAll('.display-mode-group .segmented-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       currentDisplayMode = btn.dataset.display;
@@ -1655,8 +1685,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('btnSetRatio').addEventListener('click', () => {
-    activePreset.tonicNum = parseInt(document.getElementById('inputTonicNum').value) || 1;
-    activePreset.tonicDen = parseInt(document.getElementById('inputTonicDen').value) || 1;
+    const num = parseInt(document.getElementById('inputTonicNum').value) || 1;
+    const den = parseInt(document.getElementById('inputTonicDen').value) || 1;
+    activePreset.tonicNum = num;
+    activePreset.tonicDen = den;
+    if (activePreset.tonicRatios && activePreset.tonicRatios[selectedRatioIndex]) {
+      activePreset.tonicRatios[selectedRatioIndex].num = num;
+      activePreset.tonicRatios[selectedRatioIndex].den = den;
+    }
     renderApp();
   });
 
@@ -1867,11 +1903,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   </script>
-  
   <div id="updateNotification" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#181b26;border:1px solid #3b82f6;color:#fff;padding:12px 20px;border-radius:14px;box-shadow:0 10px 25px rgba(0,0,0,.8);z-index:10000;align-items:center;gap:14px;font-size:.8rem;font-weight:600;">
     <span>✨ New Version</span>
     <button id="btnUpdateReload" style="background:#2563eb;color:#fff;border:none;padding:6px 14px;border-radius:8px;font-weight:700;cursor:pointer;">Now Update</button>
   </div>
-
 </body>
 </html>
