@@ -31,9 +31,9 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .mode-badge{background:rgba(234,179,8,.15);border:1px solid rgba(234,179,8,.4);color:#facc15;padding:4px 8px;border-radius:10px;font-size:.68rem;font-weight:700;white-space:nowrap}
 .fullscreen-btn{background-color:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);color:#38bdf8;padding:4px 10px;border-radius:10px;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .15s ease;white-space:nowrap}
 .fullscreen-btn:hover{background-color:rgba(56,189,248,.3);border-color:#38bdf8}
-.tonic-badge{background:rgba(30,41,59,.7);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:4px 8px;display:flex;gap:4px;align-items:center;font-family:ui-monospace,monospace;white-space:nowrap}
+.tonic-badge{background:rgba(30,41,59,.7);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:5px 5px;display:flex;gap:4px;align-items:center;font-family:ui-monospace,monospace;white-space:nowrap}
 .tonic-badge .col-left{font-size:.65rem;color:#94a3b8}
-.tonic-badge .col-right{font-size:.75rem;font-weight:700;color:#38bdf8}
+.tonic-badge .col-right{font-size:.65rem;font-weight:700;color:#38bdf8}
 .top-panels{display:flex;flex-direction:column;gap:6px;margin-bottom:6px;flex-shrink:0}
 .controls-card{background-color:#181b26;border-radius:12px;padding:6px 10px;display:flex;flex-direction:column;justify-content:center;gap:4px;border:1px solid #252b3d}
 .telemetry-card{background-color:#181b26;border-radius:12px;padding:6px 10px;display:grid;grid-template-columns:1fr 1fr;gap:4px 6px;align-items:center;border:1px solid #252b3d}
@@ -110,13 +110,13 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
     </div>
     <div class="header-actions">
       <button class="rec-btn" id="btnRecord"><span class="rec-dot"></span><span id="txtRecord">REC</span></button>
-      <button class="download-btn" id="btnDownload">💾 WAV</button>
+      <button class="download-btn" id="btnDownload">💾</button>
       <span class="mode-badge" id="badgeKeyMode">8-Key</span>
       <button class="fullscreen-btn" id="btnFullscreen"><span>⛶</span><span id="txtFullscreen">Full</span></button>
       <div class="tonic-badge">
         <div class="col-right" id="badgeTonicFreq">512.0 Hz</div>
       </div>
-      <a href="index.html" class="btn" style="text-decoration: none;">Switch to Std</a>
+      <a href="index.html" class="btn" style="text-decoration: none;">To Std</a>
     </div>
   </div>
 
@@ -138,7 +138,7 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
       <div class="control-group">
         <span class="control-label">MASTER GAIN</span>
         <div style="display:flex;align-items:center;gap:8px;padding:2px;">
-          <input type="range" id="inputMasterGain" class="gain-slider" min="0.01" max="0.25" step="0.01" value="0.05" style="width:130px;cursor:pointer;">
+          <input type="range" id="inputMasterGain" class="gain-slider" min="0.01" max="0.25" step="0.01" value="0.05" style="width:160px;cursor:pointer;">
           <span id="txtMasterGain" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:70px;text-align:right;">0.05 (-26dB)</span>
         </div>
       </div>
@@ -155,16 +155,8 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
           <button class="fullscreen-btn" id="btnOpenSettings" title="Audio & Recording Settings" style="padding:2px 6px;font-size:.6rem;margin-left:auto;">OPTION</button>
         </div>
         <div style="display:flex;align-items:center;gap:8px;padding:2px;">
-          <input type="range" id="inputEnvParam" class="gain-slider" min="0.1" max="10.0" step="0.1" value="2.5" style="width:130px;cursor:pointer;">
-          <span id="txtEnvParamVal" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:45px;text-align:right;">2.5s</span>
-        </div>
-      </div>
-
-      <div class="control-group">
-        <span class="control-label">HARMONIC VOL</span>
-        <div style="display:flex;align-items:center;gap:8px;padding:2px;">
-          <input type="range" id="inputHarmonicGain" class="gain-slider" min="0.0" max="0.5" step="0.01" value="0.18" style="width:130px;cursor:pointer;">
-          <span id="txtHarmonicGainVal" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:40px;text-align:right;">0.18</span>
+          <input type="range" id="inputEnvParam" class="gain-slider" min="0.1" max="10.0" step="0.1" value="2.5" style="width:125px;cursor:pointer;">
+          <span id="txtEnvParamVal" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:25px;text-align:right;">2.5s</span>
         </div>
       </div>
 
@@ -181,7 +173,15 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
       </div>
 
       <div class="control-group">
-        <span class="control-label">BASE TONIC (1/1)</span>
+        <span class="control-label">Harmonic Vol:</span>
+        <div style="display:flex;align-items:center;gap:8px;padding:2px;">
+          <input type="range" id="inputHarmonicGain" class="gain-slider" min="0.0" max="0.5" step="0.01" value="0.18" style="width:205px;cursor:pointer;">
+          <span id="txtHarmonicGainVal" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:25px;text-align:right;">0.18</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">Base Tonic 1/1</span>
         <div style="display:flex;gap:3px;align-items:center;">
           <div class="segmented-btn-group" id="tonicPresetBtns">
             <button class="segmented-btn" data-freq="417.6">417.6</button>
@@ -312,25 +312,43 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
         </div>
       </div>
       <div class="control-group">
-        <span class="control-label">TINE NOISE FILTER</span>
+        <span class="control-label">BANDPASS FILTER</span>
         <div class="segmented-btn-group" id="noiseFilterToggle">
           <button class="segmented-btn" data-filter="on">ON</button>
-          <button class="segmented-btn active" data-filter="off">OFF (Fast Processing)</button>
+          <button class="segmented-btn active" data-filter="off">OFF</button>
         </div>
-      </div>
-      <div class="control-group">
-        <span class="control-label">Bandpass Filter Frequency (Hz):</span>
+        <span class="control-label">Frequency (Hz):</span>
         <input type="number" id="inputNoiseCutoff" class="freq-input" value="1400" step="50">
       </div>
 
-<div class="control-group">
-  <span class="control-label">COMPRESSOR</span>
-  <div class="segmented-btn-group" id="compressorModeToggle">
-    <button class="segmented-btn active" data-comp="std">Std</button>
-    <button class="segmented-btn" data-comp="hard">Hard</button>
-    <button class="segmented-btn" data-comp="off">OFF (Bypass)</button>
-  </div>
-</div>
+      <div class="control-group">
+        <span class="control-label">HIGH-PASS FILTER</span>
+        <div class="segmented-btn-group" id="hpfToggle">
+          <button class="segmented-btn active" data-hpf="on">ON</button>
+          <button class="segmented-btn" data-hpf="off">OFF</button>
+        </div>
+        <span class="control-label">HPF Cutoff (Hz):</span>
+        <input type="number" id="inputHpfCutoff" class="freq-input" value="120" min="10" max="10000" step="10">
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">LOW-PASS FILTER</span>
+        <div class="segmented-btn-group" id="lpfToggle">
+          <button class="segmented-btn" data-lpf="on">ON</button>
+          <button class="segmented-btn active" data-lpf="off">OFF</button>
+        </div>
+        <span class="control-label">LPF Cutoff (Hz):</span>
+        <input type="number" id="inputLpfCutoff" class="freq-input" value="22000" min="100" max="48000" step="100">
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">COMPRESSOR</span>
+        <div class="segmented-btn-group" id="compressorModeToggle">
+          <button class="segmented-btn active" data-comp="std">Standard</button>
+          <button class="segmented-btn" data-comp="hard">Hard</button>
+          <button class="segmented-btn" data-comp="off">OFF (Bypass)</button>
+        </div>
+      </div>
 
       <div style="font-size:.72rem;font-weight:700;color:#38bdf8;border-bottom:1px solid #252b3d;padding-bottom:4px;margin-top:6px;">
         🎛 Recording Options
@@ -450,8 +468,8 @@ const BUILTIN_SCALES = {
       { num: 12, den: 11, name: '12/11' },
       { num: 28, den: 25, name: '28/25' }
     ],
-    chords8: [{ label: "Cricket Triad", indices: [0, 3, 6] }, { label: "Micro Cluster", indices: [1, 2, 3, 4] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }],
-    chords17: [{ label: "Cricket Sweep", indices: [14, 2, 11, 10, 7, 8, 13, 1, 9] }, { label: "Micro Cluster", indices: [1, 2, 3, 4, 5] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }]
+    chords8: [{ label: "Sample1", indices: [0, 3, 6] }, { label: "Sample2", indices: [1, 2, 3, 4] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }],
+    chords17: [{ label: "Cricket Sweep", indices: [14, 2, 11, 10, 7, 8, 13, 1, 9] }, { label: "Sample", indices: [1, 2, 3, 4, 5] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }]
   },
   'harmonics': {
     title: '23-Limit Natural Harmonics',
@@ -484,8 +502,8 @@ const BUILTIN_SCALES = {
       { num: 19, den: 8, name: "38th H" },
       { num: 5, den: 2, name: "40th Harmonic" }
     ],
-    chords8: [{ label: "Harmonic 7th", indices: [0, 2, 4, 6] }, { label: "Undecimal IV", indices: [2, 4, 5, 0] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }],
-    chords17: [{ label: "Harmonic Sweep", indices: [0, 2, 4, 7, 10, 12] }, { label: "High Arp", indices: [12, 13, 14, 15, 16] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }]
+    chords8: [{ label: "Sample1", indices: [0, 2, 4, 6] }, { label: "Sample2", indices: [2, 4, 5, 0] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }],
+    chords17: [{ label: "Sample1", indices: [0, 2, 4, 7, 10, 12] }, { label: "Sample2", indices: [12, 13, 14, 15, 16] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }]
   },
   'nearlytet19':{
     title:'Nearly TET 19-limit JI',
@@ -519,16 +537,16 @@ const BUILTIN_SCALES = {
       {num:63,den:25,name:'63/25 Major 3rd'}
     ],
     chords8:[
-      {label:'Major Triad',indices:[4,5,6,0]},
-      {label:'Major 7th',indices:[4,5,6,7]},
-      {label:'Subdominant IV',indices:[2,1,4,0]},
-      {label:'Dominant V7',indices:[6,7,3,2]}
+      {label:'Sample1',indices:[4,5,6,0]},
+      {label:'Sample2',indices:[4,5,6,7]},
+      {label:'Sample3',indices:[2,1,4,0]},
+      {label:'Sample4',indices:[6,7,3,2]}
     ],
     chords17:[
-      {label:'Major Triad',indices:[0,4,7,12]},
-      {label:'Major 7th',indices:[0,4,7,11]},
-      {label:'Minor 7th',indices:[0,3,7,10]},
-      {label:'Sweep',indices:[0,4,8,12]}
+      {label:'Sample1',indices:[0,4,7,12]},
+      {label:'Sample2',indices:[0,4,7,11]},
+      {label:'Sample3',indices:[0,3,7,10]},
+      {label:'Sample4',indices:[0,4,8,12]}
     ]
   }
 };
@@ -548,7 +566,7 @@ const DEFAULT_PRESETS = [
     ...JSON.parse(JSON.stringify(BUILTIN_SCALES.harmonics))
   },
   {
-    title: "Preset 2: Nearly TET 19-limit",
+    title: "Preset 2: Nearly TET 19-limit JI",
     baseTonicFreq: 440.0, tonicNum: 1, tonicDen: 1, tonicOctave: 0,
     tonicRatios: JSON.parse(JSON.stringify(DEFAULT_12_RATIOS)),
     timbre: { attackTime: 0.004, decayTime: 2.5, sustainLevel: 0.0, releaseTime: 0.012, harmonicMode: 'inharm', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400 },
@@ -596,7 +614,8 @@ function loadPresetsWithMigration() {
 }
 
 let presets = loadPresetsWithMigration(), activePreset = presets[activeSlotIndex];
-let audioCtx = null, masterGain = null, hpf = null, compressor = null, sharedNoiseBuffer = null;
+let audioCtx = null, masterGain = null, hpf = null, lpf = null, compressor = null, sharedNoiseBuffer = null;
+let isHpfEnabled = true, isLpfEnabled = false, hpfCutoff = 120, lpfCutoff = 22000, hpfQ = 0.707, lpfQ = 0.707;
 let analyser = null, fftDataArray = null, animationFrameId = null, currentDisplayMode = 'fft';
 let isNoiseFilterEnabled = false, isRandomNoiseEnabled = false, isCompressorRoutingEnabled = true;
 let computedTonicFreq = 512.0, activeTinesData = [], lastTine = null, currentTine = null;
@@ -670,14 +689,32 @@ function checkOrientationAutoKeyMode() {
   renderApp();
 }
 
+function getAudioEntryNode() {
+  if (isHpfEnabled && hpf) return hpf;
+  if (isLpfEnabled && lpf) return lpf;
+  if (isCompressorRoutingEnabled && compressor && compressorMode !== 'off') return compressor;
+  return masterGain;
+}
+
 function updateAudioRouting() {
-  if (!audioCtx || !hpf || !compressor || !masterGain) return;
-  try { hpf.disconnect(); compressor.disconnect(); } catch(e){}
-  if (isCompressorRoutingEnabled) {
-    hpf.connect(compressor);
-    compressor.connect(masterGain);
-  } else {
-    hpf.connect(masterGain);
+  if (!audioCtx || !hpf || !lpf || !compressor || !masterGain) return;
+  try {
+    hpf.disconnect();
+    lpf.disconnect();
+    compressor.disconnect();
+  } catch(e){}
+
+  let chain = [];
+  if (isHpfEnabled) chain.push(hpf);
+  if (isLpfEnabled) chain.push(lpf);
+  if (isCompressorRoutingEnabled && compressorMode !== 'off') chain.push(compressor);
+
+  for (let i = 0; i < chain.length - 1; i++) {
+    chain[i].connect(chain[i + 1]);
+  }
+  
+  if (chain.length > 0) {
+    chain[chain.length - 1].connect(masterGain);
   }
 }
 
@@ -739,12 +776,19 @@ async function initAudio() {
   if (!audioCtx) {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     audioCtx = new AudioContextClass({ sampleRate: targetSampleRate });
+
     hpf = audioCtx.createBiquadFilter();
     hpf.type = 'highpass';
-    hpf.frequency.setValueAtTime(120, audioCtx.currentTime);
+    hpf.frequency.setValueAtTime(hpfCutoff, audioCtx.currentTime);
+    hpf.Q.setValueAtTime(hpfQ, audioCtx.currentTime);
+
+    lpf = audioCtx.createBiquadFilter();
+    lpf.type = 'lowpass';
+    lpf.frequency.setValueAtTime(lpfCutoff, audioCtx.currentTime);
+    lpf.Q.setValueAtTime(lpfQ, audioCtx.currentTime);
 
     compressor = audioCtx.createDynamicsCompressor();
-applyCompressorSettings();
+    applyCompressorSettings();
 
     masterGain = audioCtx.createGain();
     masterGain.gain.setValueAtTime(parseFloat(document.getElementById('inputMasterGain').value), audioCtx.currentTime);
@@ -885,7 +929,7 @@ async function playTone(freq, isLongPress = false) {
 
   const now = audioCtx.currentTime;
   const t = activePreset.timbre;
-  const dest = hpf;
+  const dest = getAudioEntryNode();
   const mode = t.harmonicMode || 'harm3';
 
   const attackTime = Math.max(0.001, parseFloat(t.attackTime) || 0.004);
@@ -1024,12 +1068,12 @@ async function playTone(freq, isLongPress = false) {
             }
           });
         } else if (mode === 'inharm' || mode === 'inharm2') {
-  const hParams = (mode === 'inharm2') ? [
-    { ratio: parseFloat(t.harmonicRatio || 2.756), gainMult: 0.75, decayMult: 0.35 },
-    { ratio: 5.404, gainMult: 0.35, decayMult: 0.20 }
-  ] : [
-    { ratio: 2.756, gainMult: 1.0, decayMult: 0.112 }
-  ];
+          const hParams = (mode === 'inharm2') ? [
+            { ratio: parseFloat(t.harmonicRatio || 2.756), gainMult: 0.75, decayMult: 0.35 },
+            { ratio: 5.404, gainMult: 0.35, decayMult: 0.20 }
+          ] : [
+            { ratio: 2.756, gainMult: 1.0, decayMult: 0.112 }
+          ];
 
           hParams.forEach(h => {
             const hFreq = freq * h.ratio;
@@ -1172,12 +1216,32 @@ function exportWAV() {
   if (lastRecordedBlobUrl) URL.revokeObjectURL(lastRecordedBlobUrl);
   lastRecordedBlobUrl = URL.createObjectURL(blob);
 
+function getFormattedLocalDate(date = new Date()) {
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23'
+  });
+
+  const p = {};
+  formatter.formatToParts(date).forEach(({ type, value }) => {
+    p[type] = value;
+  });
+
+  return `${p.year}${p.month}${p.day}_${p.hour}${p.minute}${p.second}`;
+}
+
   const btnDl = document.getElementById('btnDownload');
   btnDl.style.display = 'inline-flex';
   btnDl.onclick = () => {
     const a = document.createElement('a');
     a.href = lastRecordedBlobUrl;
-    a.download = `kalimba_custom_${Date.now()}.wav`;
+    const dateStr = getFormattedLocalDate();
+    a.download=`EJI_${dateStr}.wav`;
     a.click();
   };
 }
@@ -1231,6 +1295,13 @@ function openSettingsModal() {
   document.getElementById('inputNoiseGain').value = t.noiseGain !== undefined ? t.noiseGain : 0.10;
   document.getElementById('txtNoiseGainVal').textContent = (t.noiseGain !== undefined ? t.noiseGain : 0.10).toString();
   document.getElementById('inputNoiseCutoff').value = t.noiseCutoff !== undefined ? t.noiseCutoff : 1400;
+
+  document.querySelectorAll('#hpfToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.hpf === 'on') === isHpfEnabled));
+  document.getElementById('inputHpfCutoff').value = hpfCutoff;
+
+  document.querySelectorAll('#lpfToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.lpf === 'on') === isLpfEnabled));
+  document.getElementById('inputLpfCutoff').value = lpfCutoff;
+
   document.getElementById('settingsModal').classList.add('open');
 }
 
@@ -1557,14 +1628,47 @@ document.addEventListener('DOMContentLoaded', () => {
   checkOrientationAutoKeyMode();
   window.addEventListener('resize', checkOrientationAutoKeyMode);
 
-document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(b => b.classList.remove('active'));
-    e.target.classList.add('active');
-    compressorMode = e.target.dataset.comp;
-    applyCompressorSettings();
+  document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      compressorMode = e.target.dataset.comp;
+      applyCompressorSettings();
+    });
   });
-});
+
+  document.querySelectorAll('#hpfToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#hpfToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      isHpfEnabled = (e.target.dataset.hpf === 'on');
+      updateAudioRouting();
+    });
+  });
+
+  document.getElementById('inputHpfCutoff').addEventListener('change', (e) => {
+    hpfCutoff = parseFloat(e.target.value) || 120;
+    if (hpf && audioCtx) {
+      hpf.frequency.setValueAtTime(hpfCutoff, audioCtx.currentTime);
+    }
+  });
+
+  document.querySelectorAll('#lpfToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#lpfToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      isLpfEnabled = (e.target.dataset.lpf === 'on');
+      updateAudioRouting();
+    });
+  });
+
+  document.getElementById('inputLpfCutoff').addEventListener('change', (e) => {
+    lpfCutoff = parseFloat(e.target.value) || 8000;
+    if (lpf && audioCtx) {
+      lpf.frequency.setValueAtTime(lpfCutoff, audioCtx.currentTime);
+    }
+  });
+
   document.querySelectorAll('.display-mode-group .segmented-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       currentDisplayMode = btn.dataset.display;
@@ -1831,15 +1935,6 @@ document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(btn =>
     });
   });
 
-  document.querySelectorAll('#compressorRoutingToggle .segmented-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      document.querySelectorAll('#compressorRoutingToggle .segmented-btn').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      isCompressorRoutingEnabled = (e.target.dataset.compressor === 'on');
-      updateAudioRouting();
-    });
-  });
-
   document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(b => b.classList.remove('active'));
@@ -1872,40 +1967,40 @@ document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(btn =>
   }
 });
 
-
-   if('serviceWorker' in navigator){
-      window.addEventListener('load',()=>{
-        navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then((registration)=>{
-          function trackInstalling(worker){
-            worker.addEventListener('statechange',()=>{
-              if(worker.state==='installed'&&navigator.serviceWorker.controller)showUpdateNotification(registration);
-            });
-          }
-          if(registration.waiting)showUpdateNotification(registration);
-          if(registration.installing)trackInstalling(registration.installing);
-          registration.addEventListener('updatefound',()=>trackInstalling(registration.installing));
-        }).catch((err)=>console.log('Service Worker registration failed:',err));
-
-        let refreshing=false;
-        navigator.serviceWorker.addEventListener('controllerchange',()=>{
-          if(!refreshing){refreshing=true;window.location.reload();}
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then((registration)=>{
+      function trackInstalling(worker){
+        worker.addEventListener('statechange',()=>{
+          if(worker.state==='installed'&&navigator.serviceWorker.controller)showUpdateNotification(registration);
         });
-      });
-    }
-
-    function showUpdateNotification(registration){
-      const notification=document.getElementById('updateNotification');
-      if(notification){
-        notification.style.display='flex';
-        document.getElementById('btnUpdateReload').onclick=()=>{
-          if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});
-        };
       }
-    }
-  </script>
-  <div id="updateNotification" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#181b26;border:1px solid #3b82f6;color:#fff;padding:12px 20px;border-radius:14px;box-shadow:0 10px 25px rgba(0,0,0,.8);z-index:10000;align-items:center;gap:14px;font-size:.8rem;font-weight:600;">
-    <span>✨ New Version</span>
-    <button id="btnUpdateReload" style="background:#2563eb;color:#fff;border:none;padding:6px 14px;border-radius:8px;font-weight:700;cursor:pointer;">Now Update</button>
-  </div>
+      if(registration.waiting)showUpdateNotification(registration);
+      if(registration.installing)trackInstalling(registration.installing);
+      registration.addEventListener('updatefound',()=>trackInstalling(registration.installing));
+    }).catch((err)=>console.log('Service Worker registration failed:',err));
+
+    let refreshing=false;
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{
+      if(!refreshing){refreshing=true;window.location.reload();}
+    });
+  });
+}
+
+function showUpdateNotification(registration){
+  const notification=document.getElementById('updateNotification');
+  if(notification){
+    notification.style.display='flex';
+    document.getElementById('btnUpdateReload').onclick=()=>{
+      if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});
+    };
+  }
+}
+</script>
+
+<div id="updateNotification" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#181b26;border:1px solid #3b82f6;color:#fff;padding:12px 20px;border-radius:14px;box-shadow:0 10px 25px rgba(0,0,0,.8);z-index:10000;align-items:center;gap:14px;font-size:.8rem;font-weight:600;">
+  <span>✨ New Version</span>
+  <button id="btnUpdateReload" style="background:#2563eb;color:#fff;border:none;padding:6px 14px;border-radius:8px;font-weight:700;cursor:pointer;">Now Update</button>
+</div>
 </body>
 </html>
