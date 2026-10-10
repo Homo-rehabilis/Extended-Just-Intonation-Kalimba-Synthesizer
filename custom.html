@@ -137,14 +137,14 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 
       <div class="control-group">
         <span class="control-label">MASTER GAIN</span>
-        <div style="display:flex;align-items:center;gap:8px;padding:2px;">
-          <input type="range" id="inputMasterGain" class="gain-slider" min="0.01" max="0.25" step="0.01" value="0.05" style="width:160px;cursor:pointer;">
+        <div style="display:flex;align-items:center;gap:8px;padding:2px;flex:1;justify-content:flex-end;">
+          <input type="range" id="inputMasterGain" class="gain-slider" min="0.01" max="0.25" step="0.01" value="0.05" style="flex:1;cursor:pointer;">
           <span id="txtMasterGain" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:70px;text-align:right;">0.05 (-26dB)</span>
         </div>
       </div>
 
       <div class="control-group">
-        <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:4px;">
           <span class="control-label">ENV</span>
           <div class="segmented-btn-group" id="envParamSelectGroup">
             <button class="segmented-btn" data-env="attack">A</button>
@@ -152,10 +152,9 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
             <button class="segmented-btn" data-env="sustain">S</button>
             <button class="segmented-btn" data-env="release">R</button>
           </div>
-          <button class="fullscreen-btn" id="btnOpenSettings" title="Audio & Recording Settings" style="padding:2px 6px;font-size:.6rem;margin-left:auto;">OPTION</button>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;padding:2px;">
-          <input type="range" id="inputEnvParam" class="gain-slider" min="0.1" max="10.0" step="0.1" value="2.5" style="width:125px;cursor:pointer;">
+        <div style="display:flex;align-items:center;gap:8px;padding:2px;flex:1;justify-content:flex-end;">
+          <input type="range" id="inputEnvParam" class="gain-slider" min="0.1" max="10.0" step="0.1" value="2.5" style="flex:1;cursor:pointer;">
           <span id="txtEnvParamVal" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:25px;text-align:right;">2.5s</span>
         </div>
       </div>
@@ -173,9 +172,10 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
       </div>
 
       <div class="control-group">
+          <button class="fullscreen-btn" id="btnOpenSettings" title="Audio & Recording Settings" style="padding:2px 6px;font-size:.6rem;margin-left:0px;">OPTION</button>
         <span class="control-label">Harmonic Vol:</span>
-        <div style="display:flex;align-items:center;gap:8px;padding:2px;">
-          <input type="range" id="inputHarmonicGain" class="gain-slider" min="0.0" max="0.5" step="0.01" value="0.18" style="width:205px;cursor:pointer;">
+        <div style="display:flex;align-items:center;gap:8px;padding:2px;flex:1;justify-content:flex-end;">
+          <input type="range" id="inputHarmonicGain" class="gain-slider" min="0.0" max="0.5" step="0.01" value="0.18" style="flex:1;cursor:pointer;">
           <span id="txtHarmonicGainVal" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:25px;text-align:right;">0.18</span>
         </div>
       </div>
@@ -1292,9 +1292,10 @@ function openSettingsModal() {
   const t = activePreset.timbre || { decayTime: 2.5, harmonicMode: 'harm3', harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400 };
   if (!t.harmonicMode) t.harmonicMode = 'harm3';
   document.querySelectorAll('#longPressToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.longpress === longPressBehavior));
-  document.getElementById('inputNoiseGain').value = t.noiseGain !== undefined ? t.noiseGain : 0.10;
-  document.getElementById('txtNoiseGainVal').textContent = (t.noiseGain !== undefined ? t.noiseGain : 0.10).toString();
-  document.getElementById('inputNoiseCutoff').value = t.noiseCutoff !== undefined ? t.noiseCutoff : 1400;
+  document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.noise === 'on') === isRandomNoiseEnabled));
+  document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.filter === 'on') === isNoiseFilterEnabled));
+  document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.comp === compressorMode));
+  document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.engine === selectedRecEngine));
 
   document.querySelectorAll('#hpfToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.hpf === 'on') === isHpfEnabled));
   document.getElementById('inputHpfCutoff').value = hpfCutoff;
@@ -1302,8 +1303,18 @@ function openSettingsModal() {
   document.querySelectorAll('#lpfToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.lpf === 'on') === isLpfEnabled));
   document.getElementById('inputLpfCutoff').value = lpfCutoff;
 
-  document.getElementById('settingsModal').classList.add('open');
+  document.getElementById('inputNoiseGain').value = t.noiseGain !== undefined ? t.noiseGain : 0.10;
+  document.getElementById('txtNoiseGainVal').textContent = (t.noiseGain !== undefined ? t.noiseGain : 0.10).toString();
+  document.getElementById('inputNoiseCutoff').value = t.noiseCutoff !== undefined ? t.noiseCutoff : 1400;
+
+const savedRecFormat = localStorage.getItem('cfg_recFormat');
+  if (savedRecFormat) {
+    const recFormatEl = document.getElementById('selectRecFormat');
+    if (recFormatEl) recFormatEl.value = savedRecFormat;
+  }
+ document.getElementById('settingsModal').classList.add('open');
 }
+
 
 function updateEnvSliderUI() {
   const t = activePreset.timbre || {};
@@ -1533,10 +1544,12 @@ function renderChordsEditor() {
 function applyEditorChanges() {
   const newKeys = [];
   document.querySelectorAll('#keysTableBody tr').forEach(tr => {
+    const rawNum = parseInt(tr.querySelector('.key-num').value);
+    const rawDen = parseInt(tr.querySelector('.key-den').value);
     newKeys.push({
-      name: tr.querySelector('.key-name').value,
-      num: parseInt(tr.querySelector('.key-num').value) || 1,
-      den: parseInt(tr.querySelector('.key-den').value) || 1
+      name: tr.querySelector('.key-name').value.trim() || 'Custom',
+      num: Math.max(1, isNaN(rawNum) ? 1 : rawNum),
+      den: Math.max(1, isNaN(rawDen) ? 1 : rawDen)
     });
   });
   if (editorTargetKeyMode === "17") activePreset.keys17 = newKeys; else activePreset.keys8 = newKeys;
@@ -1627,48 +1640,63 @@ function updateFullscreenButtonText() {
 document.addEventListener('DOMContentLoaded', () => {
   checkOrientationAutoKeyMode();
   window.addEventListener('resize', checkOrientationAutoKeyMode);
+  longPressBehavior = localStorage.getItem('cfg_longPress') || longPressBehavior;
+  isRandomNoiseEnabled = localStorage.getItem('cfg_noise') === 'true';
+  isNoiseFilterEnabled = localStorage.getItem('cfg_noiseFilter') === 'true';
+  isHpfEnabled = (localStorage.getItem('cfg_hpf') ?? 'true') === 'true';
+  hpfCutoff = parseFloat(localStorage.getItem('cfg_hpfCut')) || hpfCutoff;
+  isLpfEnabled = localStorage.getItem('cfg_lpf') === 'true';
+  lpfCutoff = parseFloat(localStorage.getItem('cfg_lpfCut')) || lpfCutoff;
+    compressorMode = localStorage.getItem('cfg_comp') || compressorMode;
+  selectedRecEngine = localStorage.getItem('cfg_recEng') || selectedRecEngine;
 
-  document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(btn => {
+  const savedRecFormat = localStorage.getItem('cfg_recFormat');
+  if (savedRecFormat) {
+    const recFormatEl = document.getElementById('selectRecFormat');
+    if (recFormatEl) recFormatEl.value = savedRecFormat;
+  }
+    document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
       compressorMode = e.target.dataset.comp;
+      localStorage.setItem('cfg_comp', compressorMode);
       applyCompressorSettings();
     });
   });
-
-  document.querySelectorAll('#hpfToggle .segmented-btn').forEach(btn => {
+    document.querySelectorAll('#hpfToggle .segmented-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       document.querySelectorAll('#hpfToggle .segmented-btn').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
       isHpfEnabled = (e.target.dataset.hpf === 'on');
+      localStorage.setItem('cfg_hpf', isHpfEnabled);
       updateAudioRouting();
     });
   });
 
   document.getElementById('inputHpfCutoff').addEventListener('change', (e) => {
     hpfCutoff = parseFloat(e.target.value) || 120;
+    localStorage.setItem('cfg_hpfCut', hpfCutoff);
     if (hpf && audioCtx) {
       hpf.frequency.setValueAtTime(hpfCutoff, audioCtx.currentTime);
     }
   });
-
-  document.querySelectorAll('#lpfToggle .segmented-btn').forEach(btn => {
+    document.querySelectorAll('#lpfToggle .segmented-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       document.querySelectorAll('#lpfToggle .segmented-btn').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
       isLpfEnabled = (e.target.dataset.lpf === 'on');
+      localStorage.setItem('cfg_lpf', isLpfEnabled);
       updateAudioRouting();
     });
   });
-
-  document.getElementById('inputLpfCutoff').addEventListener('change', (e) => {
+ document.getElementById('inputLpfCutoff').addEventListener('change', (e) => {
     lpfCutoff = parseFloat(e.target.value) || 8000;
+    localStorage.setItem('cfg_lpfCut', lpfCutoff);
     if (lpf && audioCtx) {
       lpf.frequency.setValueAtTime(lpfCutoff, audioCtx.currentTime);
     }
   });
-
   document.querySelectorAll('.display-mode-group .segmented-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       currentDisplayMode = btn.dataset.display;
@@ -1691,13 +1719,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-
   document.getElementById('inputMasterGain').addEventListener('input', (e) => {
-    const val = parseFloat(e.target.value);
-    if (masterGain && audioCtx) masterGain.gain.setValueAtTime(val, audioCtx.currentTime);
-    document.getElementById('txtMasterGain').textContent = `${val.toFixed(2)} (${(20*Math.log10(val)).toFixed(0)}dB)`;
-  });
-
+  const val = parseFloat(e.target.value);
+  if (masterGain && audioCtx) {
+    const now = audioCtx.currentTime;
+    masterGain.gain.cancelScheduledValues(now);
+    masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+    masterGain.gain.linearRampToValueAtTime(val, now + 0.015);
+  }
+  document.getElementById('txtMasterGain').textContent = `${val.toFixed(2)} (${(20*Math.log10(val)).toFixed(0)}dB)`;
+});
   document.querySelectorAll('#envParamSelectGroup .segmented-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       currentEnvParam = btn.dataset.env;
@@ -1735,6 +1766,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('#longPressToggle .segmented-btn').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
       longPressBehavior = e.target.dataset.longpress;
+      localStorage.setItem('cfg_longPress', longPressBehavior);
     });
   });
 
@@ -1751,10 +1783,10 @@ document.addEventListener('DOMContentLoaded', () => {
     activePreset.timbre.noiseCutoff = val;
   });
 
-  document.getElementById('selectRecFormat').addEventListener('change', () => {
+    document.getElementById('selectRecFormat').addEventListener('change', (e) => {
+    localStorage.setItem('cfg_recFormat', e.target.value);
     updateFFTScaleLabels();
   });
-
   document.querySelectorAll('#presetSlotsGroup .segmented-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       activeSlotIndex = parseInt(btn.dataset.slot);
@@ -1918,28 +1950,28 @@ document.addEventListener('DOMContentLoaded', () => {
     a.click();
     URL.revokeObjectURL(url);
   });
-
-  document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(btn => {
+    document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
       isRandomNoiseEnabled = (e.target.dataset.noise === 'on');
+      localStorage.setItem('cfg_noise', isRandomNoiseEnabled);
     });
   });
-
-  document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(btn => {
+ document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
       isNoiseFilterEnabled = (e.target.dataset.filter === 'on');
+      localStorage.setItem('cfg_noiseFilter', isNoiseFilterEnabled);
     });
   });
-
   document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
       selectedRecEngine = e.target.dataset.engine;
+      localStorage.setItem('cfg_recEng', selectedRecEngine);
     });
   });
 
