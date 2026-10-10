@@ -155,7 +155,12 @@
     <div class="top-panels">
       <div class="controls-card">
         <div class="control-group">
-          <span class="control-label">SCALE SYSTEM</span>
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 2px;">
+            <span class="control-label">SCALE SYSTEM</span>
+            <a href="custom.html" style="text-decoration: none; color: #38bdf8; background: rgba(56,189,248,.15); border: 1px solid rgba(56,189,248,.4); padding: 2px 8px; border-radius: 8px; font-size: .62rem; font-weight: 700; display: inline-flex; align-items: center; transition: all .15s ease;">
+              Custom Mode
+            </a>
+          </div>
           <div class="segmented-btn-group" id="scaleToggle">
             <button class="segmented-btn active" data-scale="souljazz">7-Limit JI Soul Jazz Blues</button>
             <button class="segmented-btn" data-scale="harmonics">23-Limit Natural Harmonics</button>
@@ -690,6 +695,47 @@ registerProcessor('recorder-processor', RecorderProcessor);
       return a;
     }
 
+    function toSuperscript(n) {
+      const map = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
+      return String(n).split('').map(c => map[c] || c).join('');
+    }
+
+    function formatPrimeRatio(num, den) {
+      const original = `${num}/${den}`;
+      // 4桁まではそのままで、5桁以上(10000以上)の場合のみ素因数分解を試みる
+      if (num < 10000 && den < 10000) return original;
+      
+      let tn1 = num, a = 0;
+      while (tn1 > 1 && tn1 % 3 === 0) { tn1 /= 3; a++; }
+      let td1 = den, b = 0;
+      while (td1 > 1 && td1 % 2 === 0) { td1 /= 2; b++; }
+      
+      if (tn1 === 1 && td1 === 1) {
+        let s = "";
+        if (a > 0 && b > 0) s = `3${toSuperscript(a)}/2${toSuperscript(b)}`;
+        else if (a > 0) s = `3${toSuperscript(a)}`;
+        else if (b > 0) s = `1/2${toSuperscript(b)}`;
+        else s = "1";
+        if (s.length < original.length) return s;
+      }
+
+      let tn2 = num, b2 = 0;
+      while (tn2 > 1 && tn2 % 2 === 0) { tn2 /= 2; b2++; }
+      let td2 = den, a2 = 0;
+      while (td2 > 1 && td2 % 3 === 0) { td2 /= 3; a2++; }
+      
+      if (tn2 === 1 && td2 === 1) {
+        let s = "";
+        if (b2 > 0 && a2 > 0) s = `2${toSuperscript(b2)}/3${toSuperscript(a2)}`;
+        else if (b2 > 0) s = `2${toSuperscript(b2)}`;
+        else if (a2 > 0) s = `1/3${toSuperscript(a2)}`;
+        else s = "1";
+        if (s.length < original.length) return s;
+      }
+
+      return original;
+    }
+
     function calcIntervalRatio(tineA,tineB){
       let num=tineB.num*tineA.den,den=tineB.den*tineA.num;
       const g=gcd(num,den);
@@ -944,12 +990,13 @@ registerProcessor('recorder-processor', RecorderProcessor);
         const wrapper=document.createElement('div');
         wrapper.className=`tine-wrapper ${tine.num===1&&tine.den===1?'is-tonic':''}`;
         wrapper.dataset.slotIndex=tine.slotIndex;
+        const displayRatioStr = formatPrimeRatio(tine.num, tine.den);
         wrapper.innerHTML=`
           <div class="tine" style="height:${tine.height}px;">
             <span class="tine-idx">${tine.labelNum}</span>
             <span class="tine-name">${tine.name}</span>
           </div>
-          <span class="tine-ratio-text">${tine.ratioStr}</span>
+          <span class="tine-ratio-text">${displayRatioStr}</span>
           <span class="tine-cents-text">${tine.cents.toFixed(0)}¢</span>
           <span class="tine-key-shortcut" title="PC Keyboard Shortcut">${tine.shortcut||tine.keyShortcut}</span>
         `;
@@ -959,11 +1006,11 @@ registerProcessor('recorder-processor', RecorderProcessor);
       });
 
       presetButtons.innerHTML='';
-const activeChords = is8KeyMode
-  ? scaleDef.chords8
-  : (landscapeKeyCount === 17 && scaleDef.chords17)
-    ? scaleDef.chords17
-    : scaleDef.chords13.filter(c => !(c.pitchIndices && c.pitchIndices.some(idx => idx !== null && idx >= 13)));
+      const activeChords = is8KeyMode
+        ? scaleDef.chords8
+        : (landscapeKeyCount === 17 && scaleDef.chords17)
+          ? scaleDef.chords17
+          : scaleDef.chords13.filter(c => !(c.pitchIndices && c.pitchIndices.some(idx => idx !== null && idx >= 13)));
       activeChords.forEach((c,idx)=>{
         const btn=document.createElement('button');
         btn.className=`preset-btn ${idx===0?'active':''}`;
@@ -1148,12 +1195,12 @@ const activeChords = is8KeyMode
     inputTonicNum.addEventListener('input',handleCustomRatioInput);
     inputTonicDen.addEventListener('input',handleCustomRatioInput);
 
-window.addEventListener('keydown', (e) => {
-  if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
-  const pressedKey = e.key.toLowerCase();
-  const match = currentTines.find(t => (t.shortcut || t.keyShortcut) === pressedKey);
-  if (match) triggerTine(match);
-});
+    window.addEventListener('keydown', (e) => {
+      if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+      const pressedKey = e.key.toLowerCase();
+      const match = currentTines.find(t => (t.shortcut || t.keyShortcut) === pressedKey);
+      if (match) triggerTine(match);
+    });
 
     renderApp();
 
