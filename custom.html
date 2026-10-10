@@ -12,6 +12,10 @@
 body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:12px;overflow-x:hidden;overflow-y:auto}
 .app-card{background-color:#12141c;border:1px solid #1f2433;border-radius:20px;padding:16px;width:100%;max-width:540px;box-shadow:0 20px 50px rgba(0,0,0,0.9);transition:max-width .3s ease,padding .3s ease;display:flex;flex-direction:column;position:relative}
 .app-card:fullscreen,.app-card:-webkit-full-screen{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:10px 16px!important;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden!important}
+@media (display-mode: fullscreen) {
+  body{padding:0!important;overflow:hidden!important;height:100vh!important;align-items:stretch!important;justify-content:stretch!important}
+  .app-card{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:10px 16px!important;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden!important}
+}
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;flex-shrink:0}
 .title-group h1{font-size:1rem;font-weight:700;color:#fff;line-height:1.2}
 .title-group p{font-size:.7rem;color:#8b92a5;margin-top:1px}
@@ -343,7 +347,7 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
         <span class="control-label">LOW-PASS FILTER</span>
         <div class="segmented-btn-group" id="lpfToggle">
           <button class="segmented-btn" data-lpf="on">ON</button>
-          <button class="segmented-btn active" data-lpf="off">OFF</button>
+          <button class="segmented-btn" data-lpf="off">OFF</button>
         </div>
         <span class="control-label">LPF Cutoff (Hz):</span>
         <input type="number" id="inputLpfCutoff" class="freq-input" value="22000" min="100" max="48000" step="100">
