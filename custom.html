@@ -711,6 +711,46 @@ function calcIntervalRatio(tineA, tineB) {
   return { ratioStr: `${num}/${den}`, cents: (1200 * Math.log2(num / den)).toFixed(1) };
 }
 
+function toSuperscript(n) {
+  const map = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
+  return String(n).split('').map(c => map[c] || c).join('');
+}
+
+function formatPrimeRatio(num, den) {
+  const original = `${num}/${den}`;
+
+  let tn1 = num, a = 0;
+  while (tn1 > 1 && tn1 % 3 === 0) { tn1 /= 3; a++; }
+  let td1 = den, b = 0;
+  while (td1 > 1 && td1 % 2 === 0) { td1 /= 2; b++; }
+  
+  if (tn1 === 1 && td1 === 1) {
+    let s = "";
+    if (a > 0 && b > 0) s = `3${toSuperscript(a)}/2${toSuperscript(b)}`;
+    else if (a > 0) s = `3${toSuperscript(a)}`;
+    else if (b > 0) s = `1/2${toSuperscript(b)}`;
+    else s = "1";
+    
+    if (s.length < original.length) return s;
+  }
+
+  let tn2 = num, b2 = 0;
+  while (tn2 > 1 && tn2 % 2 === 0) { tn2 /= 2; b2++; }
+  let td2 = den, a2 = 0;
+  while (td2 > 1 && td2 % 3 === 0) { td2 /= 3; a2++; }
+  
+  if (tn2 === 1 && td2 === 1) {
+    let s = "";
+    if (b2 > 0 && a2 > 0) s = `2${toSuperscript(b2)}/3${toSuperscript(a2)}`;
+    else if (b2 > 0) s = `2${toSuperscript(b2)}`;
+    else if (a2 > 0) s = `1/3${toSuperscript(a2)}`;
+    else s = "1";
+    
+    if (s.length < original.length) return s;
+  }
+  return original;
+}
+
 function updateComputedTonic() {
   const freq = activePreset.baseTonicFreq * (activePreset.tonicNum / activePreset.tonicDen) * Math.pow(2, activePreset.tonicOctave);
   computedTonicFreq = Math.min(Math.max(freq, 20), 4000);
@@ -1403,7 +1443,6 @@ function updateHarmParamSliderUI() {
     slider.value = val;
     txt.textContent = val.toFixed(2);
   } else if (currentHarmParam === 'ratio') {
-    // 【修正】配列の長さに合わせて動的に max を設定（最小値は 0、ステップは 1）
     slider.min = "0"; 
     slider.max = (TYPICAL_INHARM_RATIOS.length - 1).toString(); 
     slider.step = "1";
@@ -1491,12 +1530,15 @@ function renderApp() {
     const wrapper = document.createElement('div');
     wrapper.className = `tine-wrapper ${tine.num === 1 && tine.den === 1 ? 'is-tonic' : ''}`;
     wrapper.id = `tine-wrapper-${tine.slotIdx}`;
+    
+    const displayRatioStr = formatPrimeRatio(tine.num, tine.den);
+
     wrapper.innerHTML = `
       <div class="tine" style="height:${tine.height}px;">
         <span class="tine-idx">${tine.idx + 1}</span>
         <span class="tine-name">${tine.name || ''}</span>
       </div>
-      <span class="tine-ratio-text">${tine.num}/${tine.den}</span>
+      <span class="tine-ratio-text">${displayRatioStr}</span>
       <span class="tine-cents-text">${tine.cents}¢</span>
       <span class="tine-key-shortcut">[${tine.shortcut}]</span>
     `;
