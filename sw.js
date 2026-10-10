@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ji-kalimba-ver.1.0.5.3.5.2.1.3.2'; // アプリ更新時はここを v3, v4... とインクリメントします
+const CACHE_NAME = 'ji-kalimba-ver.1.0.5.3.5.2.1.3.3'; // アプリ更新時はここを v3, v4... とインクリメントします
 const urlsToCache = [
   './',
   './index.html',
