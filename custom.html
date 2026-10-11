@@ -106,6 +106,7 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .header{margin-bottom:2px}
 .tines-container{height:170px}
 }
+/* Fullscreen tighter spacing adjustments & layout fix to prevent overflow */
 .app-card:fullscreen .header, .app-card:-webkit-full-screen .header{margin-bottom:2px!important;}
 .app-card:fullscreen .top-panels, .app-card:-webkit-full-screen .top-panels{gap:2px!important;margin-bottom:2px!important;}
 .app-card:fullscreen .stereo-control-bar, .app-card:-webkit-full-screen .stereo-control-bar{margin-bottom:2px!important;}
@@ -486,24 +487,6 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
             <button class="btn btn-primary" id="btnExportScl">💾 Export .scl</button>
           </div>
         </div>
-
-        <!-- 同一階層上の.sclファイル自動読込＆直接ロードメニュー -->
-        <div style="background-color:#181b26;padding:8px;border-radius:8px;border:1px solid #252b3d;display:flex;flex-direction:column;gap:6px;margin-top:4px;">
-          <span class="control-label" style="color:#38bdf8;">Load Same-Directory .scl Files:</span>
-          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-            <select id="selectServerScl" class="select-input" style="flex:1;min-width:140px;">
-              <option value="">-- Scan / Select .scl --</option>
-            </select>
-            <button class="btn btn-primary" id="btnFetchServerScl">📥 Load</button>
-            <button class="btn" id="btnScanServerScl">🔄 Scan</button>
-          </div>
-          <!-- ファイル名を直接入力して読み込む機能（ディレクトリリスティング制限回避用） -->
-          <div style="display:flex;gap:6px;align-items:center;margin-top:2px;">
-            <input type="text" id="inputCustomSclName" class="select-input" placeholder="filename.scl (Direct Load)" style="flex:1;">
-            <button class="btn" id="btnDirectLoadScl">📂 Direct Load</button>
-          </div>
-        </div>
-
         <div class="control-group" style="margin-top:4px;">
           <span class="control-label">Layout to Edit:</span>
           <div class="segmented-btn-group" id="editorKeyTabToggle">
@@ -511,7 +494,7 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
             <button class="segmented-btn" data-keymode="17">17-Key Layout</button>
           </div>
         </div>
-        <div style="max-height:220px;overflow-y:auto;border:1px solid #1f2433;border-radius:6px;">
+        <div style="max-height:260px;overflow-y:auto;border:1px solid #1f2433;border-radius:6px;">
           <table class="keys-editor-table">
             <thead>
               <tr>
@@ -704,8 +687,8 @@ let currentHarmParam = 'vol';
 let isStereoEnabled = false;
 let isPhysicalNoiseEnabled = true;
 let isNonlinearDecayEnabled = true;
-let isInitialChirpEnabled = true;
-let isKeyStereoSpreadEnabled = true;
+let isInitialChirpEnabled = true;       // 新機能1: 初期ピッチ・チープ
+let isKeyStereoSpreadEnabled = true;    // 新機能2: キー位置連動ステレオ定位
 const activeHoldTrackers = new Map();
 
 let perfRecordedEvents = [];
@@ -1185,9 +1168,9 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
 
   function applyFrequencyChirp(oscNode, targetFreq) {
     if (isInitialChirpEnabled) {
-      const startFreq = targetFreq * 1.015;
+      const startFreq = targetFreq * 1.015; // 1.5%高めのピッチからアタック
       oscNode.frequency.setValueAtTime(startFreq, now);
-      oscNode.frequency.exponentialRampToValueAtTime(targetFreq, now + 0.008);
+      oscNode.frequency.exponentialRampToValueAtTime(targetFreq, now + 0.008); // 8msで収束
     } else {
       oscNode.frequency.setValueAtTime(targetFreq, now);
     }
@@ -1397,6 +1380,7 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
       }
     }
 
+    // 物理アタックノイズ
     if (isPhysicalNoiseEnabled && sharedNoiseBuffer) {
       const pNoise = audioCtx.createBufferSource();
       pNoise.buffer = sharedNoiseBuffer;
@@ -1417,6 +1401,7 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
       pNoise.stop(now + 0.012);
     }
 
+    // テクスチャ用ランダムノイズ
     if (randNoise && t.noiseGain > 0 && sharedNoiseBuffer) {
       const noise = audioCtx.createBufferSource();
       noise.buffer = sharedNoiseBuffer;
@@ -1536,7 +1521,7 @@ function exportWAV() {
 function getCalculatedPan(slotIdx, totalKeys) {
   let basePan = activePreset.presetPan !== undefined ? parseFloat(activePreset.presetPan) : 0.0;
   if (!isStereoEnabled || !isKeyStereoSpreadEnabled || totalKeys <= 1) return basePan;
-  const spread = 0.7;
+  const spread = 0.7; // 左右への広がり幅
   const autoPan = ((slotIdx / (totalKeys - 1)) - 0.5) * spread;
   return Math.max(-1.0, Math.min(1.0, basePan + autoPan));
 }
@@ -1989,7 +1974,6 @@ function openEditor() {
   document.querySelectorAll('#editorChordTabToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.chordmode === editorTargetChordMode));
   renderKeysTableEditor();
   renderChordsEditor();
-  scanServerSclFiles();
   document.getElementById('editorModal').classList.add('open');
 }
 
@@ -2093,56 +2077,6 @@ function parseScalaContent(text) {
     keys.push({ num, den, name });
   });
   return { title, keys };
-}
-
-async function scanServerSclFiles() {
-  const select = document.getElementById('selectServerScl');
-  if (!select) return;
-  select.innerHTML = '';
-
-  // GitHubリポジトリにアップロードした実際の.sclファイル名をここに列挙する
-  const sclFiles = [
-    'chinese3limit_17.scl',
-    'chinese3limit_8.scl',
-    'classic5limit_17.scl',
-    'classic5limit_8.scl'
-  ];
-
-  const defaultOpt = document.createElement('option');
-  defaultOpt.value = "";
-  defaultOpt.textContent = `-- Select .scl file (${sclFiles.length} available) --`;
-  select.appendChild(defaultOpt);
-
-  sclFiles.forEach(file => {
-    const opt = document.createElement('option');
-    opt.value = file;
-    opt.textContent = file;
-    select.appendChild(opt);
-  });
-}
-
-async function fetchAndImportServerScl(fileName) {
-  if (!fileName) return;
-  try {
-    const res = await fetch(fileName);
-    if (!res.ok) throw new Error(`Failed to load ${fileName}`);
-    const text = await res.text();
-    const result = parseScalaContent(text);
-    if (result && result.keys.length > 0) {
-      if (editorTargetKeyMode === "17") {
-        activePreset.keys17 = result.keys;
-      } else {
-        activePreset.keys8 = result.keys;
-      }
-      renderKeysTableEditor();
-      renderApp();
-      alert(`Successfully imported "${fileName}" (${result.keys.length} keys loaded into ${editorTargetKeyMode}-Key Layout)!`);
-    } else {
-      alert(`Could not parse Scala file: ${fileName}`);
-    }
-  } catch (e) {
-    alert(`Error loading file "${fileName}". Ensure the file exists in the same directory as custom.html.`);
-  }
 }
 
 function generateScalaContent() {
@@ -2560,27 +2494,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btnImportScl').addEventListener('click', () => {
     document.getElementById('inputSclFile').click();
-  });
-
-  // 同一階層の.sclファイル読込関連のイベントリスナー
-  document.getElementById('btnScanServerScl').addEventListener('click', scanServerSclFiles);
-  document.getElementById('btnFetchServerScl').addEventListener('click', () => {
-    const select = document.getElementById('selectServerScl');
-    if (select && select.value) {
-      fetchAndImportServerScl(select.value);
-    } else {
-      alert("Please select a .scl file from the dropdown.");
-    }
-  });
-
-  // ファイル名直接ロード用ボタンのイベントリスナー
-  document.getElementById('btnDirectLoadScl').addEventListener('click', () => {
-    const customName = document.getElementById('inputCustomSclName').value.trim();
-    if (customName) {
-      fetchAndImportServerScl(customName);
-    } else {
-      alert("Please enter a .scl file name (e.g. filename.scl).");
-    }
   });
 
   document.getElementById('inputSclFile').addEventListener('change', (e) => {
