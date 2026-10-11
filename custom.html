@@ -11,10 +11,10 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:12px;overflow-x:hidden;overflow-y:auto}
 .app-card{background-color:#12141c;border:1px solid #1f2433;border-radius:20px;padding:16px;width:100%;max-width:540px;box-shadow:0 20px 50px rgba(0,0,0,0.9);transition:max-width .3s ease,padding .3s ease;display:flex;flex-direction:column;position:relative}
-.app-card:fullscreen,.app-card:-webkit-full-screen{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:4px 16px!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;overflow:hidden!important}
+.app-card:fullscreen,.app-card:-webkit-full-screen{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:4px 20px!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;overflow:hidden!important}
 @media (display-mode: fullscreen) {
   body{padding:0!important;overflow:hidden!important;height:100vh!important;align-items:stretch!important;justify-content:stretch!important}
-  .app-card{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:4px 16px!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;overflow:hidden!important}
+  .app-card{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:4px 20px!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;overflow:hidden!important}
 }
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-wrap:wrap;gap:4px;flex-shrink:0}
 .title-group h1{font-size:1rem;font-weight:700;color:#fff;line-height:1.2}
@@ -106,7 +106,6 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .header{margin-bottom:2px}
 .tines-container{height:170px}
 }
-/* Fullscreen tighter spacing adjustments & layout fix to prevent overflow */
 .app-card:fullscreen .header, .app-card:-webkit-full-screen .header{margin-bottom:2px!important;}
 .app-card:fullscreen .top-panels, .app-card:-webkit-full-screen .top-panels{gap:2px!important;margin-bottom:2px!important;}
 .app-card:fullscreen .stereo-control-bar, .app-card:-webkit-full-screen .stereo-control-bar{margin-bottom:2px!important;}
@@ -288,7 +287,6 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
     </div>
   </div>
 
-  <!-- ステレオ/モノラル共用コントロール行（モノラル時はPAN非表示・GAINはPRESET GAIN表示） -->
   <div id="stereoControlBar" class="stereo-control-bar">
     <div style="display:flex;align-items:center;gap:3px;font-size:.4rem;font-weight:700;color:#38bdf8;"></div>
     <div class="stereo-control-group" id="panControlGroup">
@@ -341,7 +339,7 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
         <button class="btn" id="btnCloseSettings">✕</button>
       </div>
       <div style="font-size:.72rem;font-weight:700;color:#38bdf8;border-bottom:1px solid #252b3d;padding-bottom:4px;margin-top:6px;">
-        🎵 Timbre & Output
+        🎵 Timbre
       </div>
       <div class="control-group">
         <span class="control-label">AUDIO MODE (STEREO/MONO)</span>
@@ -351,16 +349,47 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
         </div>
       </div>
       <div class="control-group">
+        <span class="control-label">KEY-POSITION STEREO SPREAD</span>
+        <div class="segmented-btn-group" id="keyStereoSpreadToggle">
+          <button class="segmented-btn active" data-kspread="on">ON (Auto PAN)</button>
+          <button class="segmented-btn" data-kspread="off">OFF</button>
+        </div>
+      </div>
+      <div class="control-group">
         <span class="control-label">LONG PRESS MODE</span>
         <div class="segmented-btn-group" id="longPressToggle">
           <button class="segmented-btn active" data-longpress="long">Long Tone</button>
           <button class="segmented-btn" data-longpress="repeat">Rapid Fire</button>
         </div>
       </div>
+      
       <div class="control-group">
-        <span class="control-label">RANDOM NOISE for Texture</span>
+        <span class="control-label">PHYSICAL ATTACK NOISE</span>
+        <div class="segmented-btn-group" id="physicalNoiseToggle">
+          <button class="segmented-btn active" data-pnoise="on">ON (Metalic Touch)</button>
+          <button class="segmented-btn" data-pnoise="off">OFF</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="control-label">NONLINEAR HARMONIC DECAY</span>
+        <div class="segmented-btn-group" id="nonlinearDecayToggle">
+          <button class="segmented-btn active" data-ndecay="on">ON (Acoustic Decay)</button>
+          <button class="segmented-btn" data-ndecay="off">OFF</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">INITIAL PITCH CHIRP</span>
+        <div class="segmented-btn-group" id="initialChirpToggle">
+          <button class="segmented-btn active" data-chirp="on">ON (Attack Sharpened)</button>
+          <button class="segmented-btn" data-chirp="off">OFF</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">RANDOM NOISE</span>
         <div class="segmented-btn-group" id="randomNoiseToggle">
-          <button class="segmented-btn" data-noise="on">ON</button>
+          <button class="segmented-btn" data-noise="on">ON (For Texture)</button>
           <button class="segmented-btn active" data-noise="off">OFF</button>
         </div>
       </div>
@@ -457,6 +486,19 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
             <button class="btn btn-primary" id="btnExportScl">💾 Export .scl</button>
           </div>
         </div>
+
+        <!-- 追加：同一階層上の.sclファイル自動読込メニュー -->
+        <div style="background-color:#181b26;padding:8px;border-radius:8px;border:1px solid #252b3d;display:flex;flex-direction:column;gap:6px;margin-top:4px;">
+          <span class="control-label" style="color:#38bdf8;">Load Standard Scale .scl files:</span>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+            <select id="selectServerScl" class="select-input" style="flex:1;min-width:140px;">
+              <option value="">--Scan .scl files--</option>
+            </select>
+            <button class="btn btn-primary" id="btnFetchServerScl">📥 Load</button>
+            <button class="btn" id="btnScanServerScl">🔄 Scan</button>
+          </div>
+        </div>
+
         <div class="control-group" style="margin-top:4px;">
           <span class="control-label">Layout to Edit:</span>
           <div class="segmented-btn-group" id="editorKeyTabToggle">
@@ -464,7 +506,7 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
             <button class="segmented-btn" data-keymode="17">17-Key Layout</button>
           </div>
         </div>
-        <div style="max-height:260px;overflow-y:auto;border:1px solid #1f2433;border-radius:6px;">
+        <div style="max-height:220px;overflow-y:auto;border:1px solid #1f2433;border-radius:6px;">
           <table class="keys-editor-table">
             <thead>
               <tr>
@@ -655,6 +697,10 @@ let longPressBehavior = 'long';
 let currentEnvParam = 'decay';
 let currentHarmParam = 'vol';
 let isStereoEnabled = false;
+let isPhysicalNoiseEnabled = true;
+let isNonlinearDecayEnabled = true;
+let isInitialChirpEnabled = true;
+let isKeyStereoSpreadEnabled = true;
 const activeHoldTrackers = new Map();
 
 let perfRecordedEvents = [];
@@ -1132,7 +1178,19 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
 
   const maxAllowedFreq = Math.min(20000, audioCtx.sampleRate * 0.45);
 
-  function applyEnvelopeAndPlay(osc, gainNode, peakGain, decayDuration) {
+  function applyFrequencyChirp(oscNode, targetFreq) {
+    if (isInitialChirpEnabled) {
+      const startFreq = targetFreq * 1.015;
+      oscNode.frequency.setValueAtTime(startFreq, now);
+      oscNode.frequency.exponentialRampToValueAtTime(targetFreq, now + 0.008);
+    } else {
+      oscNode.frequency.setValueAtTime(targetFreq, now);
+    }
+  }
+
+  function applyEnvelopeAndPlay(osc, gainNode, peakGain, decayDuration, customFreq = freq) {
+    applyFrequencyChirp(osc, customFreq);
+
     const dDur = Math.max(0.01, decayDuration);
     const tAttackEnd = now + attackTime;
     const tDecayEnd = tAttackEnd + dDur;
@@ -1171,9 +1229,9 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
     const osc1 = audioCtx.createOscillator();
     const g1 = audioCtx.createGain();
     osc1.type = 'sine';
-    osc1.frequency.setValueAtTime(freq, now);
 
     if (mode === 'cricket') {
+      applyFrequencyChirp(osc1, freq);
       const amOsc = audioCtx.createOscillator();
       const amGain = audioCtx.createGain();
       amOsc.type = 'sine';
@@ -1226,20 +1284,24 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
           { ratio: 2.116, gainMult: 0.23, decayMult: 0.6 },
           { ratio: 2.801, gainMult: 0.09, decayMult: 0.4 },
           { ratio: 4.202, gainMult: 0.08, decayMult: 0.3 }
-        ].forEach(h => {
+        ].forEach((h) => {
           const hFreq = freq * h.ratio;
           if (hFreq < maxAllowedFreq) {
             const osc = audioCtx.createOscillator();
             const g = audioCtx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(hFreq, now);
             const peakG = parseFloat(t.harmonicGain) * h.gainMult;
-            applyEnvelopeAndPlay(osc, g, peakG, baseDecay * h.decayMult);
+            let dMult = h.decayMult;
+            if (isNonlinearDecayEnabled) {
+              const orderFactor = Math.pow(h.ratio, 0.4);
+              dMult = Math.max(0.05, h.decayMult / orderFactor);
+            }
+            applyEnvelopeAndPlay(osc, g, peakG, baseDecay * dMult, hFreq);
           }
         });
       }
     } else {
-      applyEnvelopeAndPlay(osc1, g1, 0.5, baseDecay);
+      applyEnvelopeAndPlay(osc1, g1, 0.5, baseDecay, freq);
 
       const hGain = parseFloat(t.harmonicGain) || 0;
       if (hGain > 0) {
@@ -1247,15 +1309,20 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
           [
             { ratio: 2, gainMult: 0.6, decayMult: 0.6 },
             { ratio: 3, gainMult: 0.3, decayMult: 0.4 }
-          ].forEach(h => {
+          ].forEach((h) => {
             const hFreq = freq * h.ratio;
             if (hFreq < maxAllowedFreq) {
               const osc = audioCtx.createOscillator();
               const g = audioCtx.createGain();
               osc.type = 'sine';
-              osc.frequency.setValueAtTime(hFreq, now);
               const peakG = hGain * h.gainMult;
-              applyEnvelopeAndPlay(osc, g, peakG, baseDecay * h.decayMult);
+              
+              let dMult = h.decayMult;
+              if (isNonlinearDecayEnabled) {
+                const orderFactor = Math.pow(h.ratio, 0.5);
+                dMult = Math.max(0.05, h.decayMult / orderFactor);
+              }
+              applyEnvelopeAndPlay(osc, g, peakG, baseDecay * dMult, hFreq);
             }
           });
         } else if (mode === 'inharm' || mode === 'inharm2') {
@@ -1267,14 +1334,19 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
             { ratio: currentRatio, gainMult: 1.0, decayMult: 0.112 }
           ];
 
-          hParams.forEach(h => {
+          hParams.forEach((h) => {
             const hFreq = freq * h.ratio;
             if (hFreq < maxAllowedFreq) {
               const osc = audioCtx.createOscillator();
               const g = audioCtx.createGain();
               osc.type = 'sine';
-              osc.frequency.setValueAtTime(hFreq, now);
-              applyEnvelopeAndPlay(osc, g, hGain * h.gainMult, baseDecay * h.decayMult);
+              
+              let dMult = h.decayMult;
+              if (isNonlinearDecayEnabled) {
+                const orderFactor = Math.pow(h.ratio, 0.5);
+                dMult = Math.max(0.03, h.decayMult / orderFactor);
+              }
+              applyEnvelopeAndPlay(osc, g, hGain * h.gainMult, baseDecay * dMult, hFreq);
             }
           });
         } else if (mode === 'syrinx') {
@@ -1304,17 +1376,40 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
             const gVal = hGain * ampRatio * 1.0;
             if (gVal < 0.0003) continue;
 
-            const decayMult = Math.max(0.1, 0.95 / Math.pow(h, 0.6));
+            let decayMult = Math.max(0.1, 0.95 / Math.pow(h, 0.6));
+            if (isNonlinearDecayEnabled) {
+              const orderFactor = Math.pow(h, 0.7);
+              decayMult = Math.max(0.02, decayMult / orderFactor);
+            }
             const dur = baseDecay * decayMult;
 
             const osc = audioCtx.createOscillator();
             const g = audioCtx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(hFreq, now);
-            applyEnvelopeAndPlay(osc, g, gVal, dur);
+            applyEnvelopeAndPlay(osc, g, gVal, dur, hFreq);
           }
         }
       }
+    }
+
+    if (isPhysicalNoiseEnabled && sharedNoiseBuffer) {
+      const pNoise = audioCtx.createBufferSource();
+      pNoise.buffer = sharedNoiseBuffer;
+      const png = audioCtx.createGain();
+      const pFilter = audioCtx.createBiquadFilter();
+      pFilter.type = 'highpass';
+      pFilter.frequency.setValueAtTime(Math.min(8000, Math.max(1500, freq * 1.5)), now);
+
+      png.gain.setValueAtTime(0.00001, now);
+      png.gain.linearRampToValueAtTime(0.12, now + 0.001);
+      png.gain.exponentialRampToValueAtTime(0.0001, now + 0.008);
+      png.gain.linearRampToValueAtTime(0, now + 0.010);
+
+      pNoise.connect(pFilter);
+      pFilter.connect(png);
+      png.connect(dest);
+      pNoise.start(now);
+      pNoise.stop(now + 0.012);
     }
 
     if (randNoise && t.noiseGain > 0 && sharedNoiseBuffer) {
@@ -1415,20 +1510,11 @@ function exportWAV() {
 
   function getFormattedLocalDate(date = new Date()) {
     const formatter = new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hourCycle: 'h23'
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
     });
-
     const p = {};
-    formatter.formatToParts(date).forEach(({ type, value }) => {
-      p[type] = value;
-    });
-
+    formatter.formatToParts(date).forEach(({ type, value }) => { p[type] = value; });
     return `${p.year}${p.month}${p.day}_${p.hour}${p.minute}${p.second}`;
   }
 
@@ -1437,23 +1523,34 @@ function exportWAV() {
   btnDl.onclick = () => {
     const a = document.createElement('a');
     a.href = lastRecordedBlobUrl;
-    const dateStr = getFormattedLocalDate();
-    a.download=`EJI_${dateStr}.wav`;
+    a.download = `EJI_${getFormattedLocalDate()}.wav`;
     a.click();
   };
 }
 
+function getCalculatedPan(slotIdx, totalKeys) {
+  let basePan = activePreset.presetPan !== undefined ? parseFloat(activePreset.presetPan) : 0.0;
+  if (!isStereoEnabled || !isKeyStereoSpreadEnabled || totalKeys <= 1) return basePan;
+  const spread = 0.7;
+  const autoPan = ((slotIdx / (totalKeys - 1)) - 0.5) * spread;
+  return Math.max(-1.0, Math.min(1.0, basePan + autoPan));
+}
+
 function triggerPluck(tine, wrapper, isLongPress = false) {
-  playTone(tine.freq, isLongPress);
+  const totalKeys = activeTinesData.length || 8;
+  const calcPan = getCalculatedPan(tine.slotIdx, totalKeys);
+
+  playTone(tine.freq, isLongPress, null, null, null, calcPan);
   
   if (perfIsRecording) {
     const elapsed = performance.now() - perfStartTime;
     perfRecordedEvents.push({
       time: elapsed,
       idx: tine.idx,
+      slotIdx: tine.slotIdx,
       freq: tine.freq,
       timbre: JSON.parse(JSON.stringify(activePreset.timbre)),
-      presetPan: activePreset.presetPan !== undefined ? activePreset.presetPan : 0.0,
+      presetPan: calcPan,
       presetGain: activePreset.presetGain !== undefined ? activePreset.presetGain : 1.0,
       isRandomNoiseEnabled: isRandomNoiseEnabled,
       isNoiseFilterEnabled: isNoiseFilterEnabled
@@ -1600,6 +1697,10 @@ function openSettingsModal() {
   document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.comp === compressorMode));
   document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.engine === selectedRecEngine));
   document.querySelectorAll('#stereoModeToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.stereo === 'on') === isStereoEnabled));
+  document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.pnoise === 'on') === isPhysicalNoiseEnabled));
+  document.querySelectorAll('#nonlinearDecayToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.ndecay === 'on') === isNonlinearDecayEnabled));
+  document.querySelectorAll('#initialChirpToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.chirp === 'on') === isInitialChirpEnabled));
+  document.querySelectorAll('#keyStereoSpreadToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.kspread === 'on') === isKeyStereoSpreadEnabled));
 
   document.querySelectorAll('#hpfToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.hpf === 'on') === isHpfEnabled));
   document.getElementById('inputHpfCutoff').value = hpfCutoff;
@@ -1883,6 +1984,7 @@ function openEditor() {
   document.querySelectorAll('#editorChordTabToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.chordmode === editorTargetChordMode));
   renderKeysTableEditor();
   renderChordsEditor();
+  scanServerSclFiles();
   document.getElementById('editorModal').classList.add('open');
 }
 
@@ -1988,6 +2090,76 @@ function parseScalaContent(text) {
   return { title, keys };
 }
 
+async function scanServerSclFiles() {
+  const select = document.getElementById('selectServerScl');
+  if (!select) return;
+  select.innerHTML = '<option value="">-- Scanning... --</option>';
+
+  try {
+    const response = await fetch('./');
+    if (!response.ok) throw new Error('Directory listing not available');
+    const html = await response.text();
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const links = doc.querySelectorAll('a');
+    
+    const sclFiles = [];
+    links.forEach(a => {
+      const href = a.getAttribute('href');
+      if (href && href.toLowerCase().endsWith('.scl')) {
+        const fileName = decodeURIComponent(href.split('/').pop());
+        if (fileName && !sclFiles.includes(fileName)) {
+          sclFiles.push(fileName);
+        }
+      }
+    });
+
+    select.innerHTML = '';
+    if (sclFiles.length === 0) {
+      select.innerHTML = '<option value="">(No .scl file was found.)</option>';
+    } else {
+      const defaultOpt = document.createElement('option');
+      defaultOpt.value = "";
+      defaultOpt.textContent = `-- Discovered ${sclFiles.length} .scl files --`;
+      select.appendChild(defaultOpt);
+
+      sclFiles.forEach(file => {
+        const opt = document.createElement('option');
+        opt.value = file;
+        opt.textContent = file;
+        select.appendChild(opt);
+      });
+    }
+  } catch (err) {
+    select.innerHTML = '<option value="">(Auto scanning is not possible via CORS, etc.)</option>';
+  }
+}
+
+async function fetchAndImportServerScl(fileName) {
+  if (!fileName) return;
+  try {
+    const res = await fetch(fileName);
+    if (!res.ok) throw new Error(`Failed to load ${fileName}`);
+    const text = await res.text();
+    const result = parseScalaContent(text);
+    if (result && result.keys.length > 0) {
+      if (editorTargetKeyMode === "17") {
+        activePreset.keys17 = result.keys;
+      } else {
+        activePreset.keys8 = result.keys;
+      }
+      renderKeysTableEditor();
+      renderApp();
+      alert(`Successfully imported "${fileName}" (${result.keys.length} keys loaded into ${editorTargetKeyMode}-Key Layout)!`);
+    } else {
+      alert(`Could not parse Scala file: ${fileName}`);
+    }
+  } catch (e) {
+    alert(`Error loading file "${fileName}". Make sure it is in the same directory.`);
+  }
+}
+
 function generateScalaContent() {
   const keyList = editorTargetKeyMode === "17" ? (activePreset.keys17 || []) : (activePreset.keys8 || []);
   if (!keyList.length) return null;
@@ -2030,6 +2202,10 @@ document.addEventListener('DOMContentLoaded', () => {
   longPressBehavior = localStorage.getItem('cfg_longPress') || longPressBehavior;
   isRandomNoiseEnabled = localStorage.getItem('cfg_noise') === 'true';
   isNoiseFilterEnabled = localStorage.getItem('cfg_noiseFilter') === 'true';
+  isPhysicalNoiseEnabled = (localStorage.getItem('cfg_pnoise') ?? 'true') === 'true';
+  isNonlinearDecayEnabled = (localStorage.getItem('cfg_ndecay') ?? 'true') === 'true';
+  isInitialChirpEnabled = (localStorage.getItem('cfg_chirp') ?? 'true') === 'true';
+  isKeyStereoSpreadEnabled = (localStorage.getItem('cfg_kspread') ?? 'true') === 'true';
   isHpfEnabled = (localStorage.getItem('cfg_hpf') ?? 'true') === 'true';
   hpfCutoff = parseFloat(localStorage.getItem('cfg_hpfCut')) || hpfCutoff;
   isLpfEnabled = localStorage.getItem('cfg_lpf') === 'true';
@@ -2085,6 +2261,42 @@ document.addEventListener('DOMContentLoaded', () => {
       isStereoEnabled = (e.target.dataset.stereo === 'on');
       localStorage.setItem('cfg_stereo', isStereoEnabled);
       updateStereoBarUI();
+    });
+  });
+
+  document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      isPhysicalNoiseEnabled = (e.target.dataset.pnoise === 'on');
+      localStorage.setItem('cfg_pnoise', isPhysicalNoiseEnabled);
+    });
+  });
+
+  document.querySelectorAll('#nonlinearDecayToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#nonlinearDecayToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      isNonlinearDecayEnabled = (e.target.dataset.ndecay === 'on');
+      localStorage.setItem('cfg_ndecay', isNonlinearDecayEnabled);
+    });
+  });
+
+  document.querySelectorAll('#initialChirpToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#initialChirpToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      isInitialChirpEnabled = (e.target.dataset.chirp === 'on');
+      localStorage.setItem('cfg_chirp', isInitialChirpEnabled);
+    });
+  });
+
+  document.querySelectorAll('#keyStereoSpreadToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#keyStereoSpreadToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      isKeyStereoSpreadEnabled = (e.target.dataset.kspread === 'on');
+      localStorage.setItem('cfg_kspread', isKeyStereoSpreadEnabled);
     });
   });
 
@@ -2319,7 +2531,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
       card.requestFullscreen?.() || card.webkitRequestFullscreen?.();
     } else {
-      document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+      document.exitFullscreen?.() || document.exitFullscreen?.();
     }
   });
 
@@ -2363,6 +2575,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btnImportScl').addEventListener('click', () => {
     document.getElementById('inputSclFile').click();
+  });
+
+  // 同一階層の.sclファイル読込関連のイベントリスナー
+  document.getElementById('btnScanServerScl').addEventListener('click', scanServerSclFiles);
+  document.getElementById('btnFetchServerScl').addEventListener('click', () => {
+    const select = document.getElementById('selectServerScl');
+    if (select && select.value) {
+      fetchAndImportServerScl(select.value);
+    } else {
+      alert("インポートする .scl ファイルを選択してください。");
+    }
   });
 
   document.getElementById('inputSclFile').addEventListener('change', (e) => {
