@@ -2098,33 +2098,28 @@ function parseScalaContent(text) {
 async function scanServerSclFiles() {
   const select = document.getElementById('selectServerScl');
   if (!select) return;
-  select.innerHTML = '<option value="">-- Scanning directory... --</option>';
+  select.innerHTML = '';
 
-  // ブラウザの制限やローカルサーバーでディレクトリ一覧が取得できない場合のデフォルトフォールバック候補
-  const defaultCandidates = ['scale.scl', 'tuning.scl', 'custom.scl', 'pythagorean.scl', 'just.scl'];
-  let sclFiles = [...defaultCandidates];
+  const sclFiles = [
+    'chinese3limit_17.scl',
+    'chinese3limit_8.scl',
+    'classic5limit_17.scl',
+    'classic5limit_8.scl'
+  ];
 
-  try {
-    const response = await fetch('./');
-    if (response.ok) {
-      const html = await response.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-      const links = doc.querySelectorAll('a');
-      
-      links.forEach(a => {
-        const href = a.getAttribute('href');
-        if (href && href.toLowerCase().endsWith('.scl')) {
-          const fileName = decodeURIComponent(href.split('/').pop());
-          if (fileName && !sclFiles.includes(fileName)) {
-            sclFiles.push(fileName);
-          }
-        }
-      });
-    }
-  } catch (err) {
-    // ディレクトリリスティングが禁止されている環境ではデフォルト候補リストを維持
-  }
+  const defaultOpt = document.createElement('option');
+  defaultOpt.value = "";
+  defaultOpt.textContent = `-- Select .scl file (${sclFiles.length} available) --`;
+  select.appendChild(defaultOpt);
+
+  sclFiles.forEach(file => {
+    const opt = document.createElement('option');
+    opt.value = file;
+    opt.textContent = file;
+    select.appendChild(opt);
+  });
+}
+
 
   select.innerHTML = '';
   const defaultOpt = document.createElement('option');
