@@ -11,12 +11,12 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:12px;overflow-x:hidden;overflow-y:auto}
 .app-card{background-color:#12141c;border:1px solid #1f2433;border-radius:20px;padding:16px;width:100%;max-width:540px;box-shadow:0 20px 50px rgba(0,0,0,0.9);transition:max-width .3s ease,padding .3s ease;display:flex;flex-direction:column;position:relative}
-.app-card:fullscreen,.app-card:-webkit-full-screen{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:6px 12px!important;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden!important}
+.app-card:fullscreen,.app-card:-webkit-full-screen{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:4px 10px!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;overflow:hidden!important}
 @media (display-mode: fullscreen) {
   body{padding:0!important;overflow:hidden!important;height:100vh!important;align-items:stretch!important;justify-content:stretch!important}
-  .app-card{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:6px 12px!important;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden!important}
+  .app-card{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:4px 10px!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;overflow:hidden!important}
 }
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;flex-shrink:0}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-wrap:wrap;gap:4px;flex-shrink:0}
 .title-group h1{font-size:1rem;font-weight:700;color:#fff;line-height:1.2}
 .title-group p{font-size:.7rem;color:#8b92a5;margin-top:1px}
 .header-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
@@ -38,10 +38,10 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .tonic-badge{background:rgba(30,41,59,.7);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:5px 5px;display:flex;gap:4px;align-items:center;font-family:ui-monospace,monospace;white-space:nowrap}
 .tonic-badge .col-left{font-size:.65rem;color:#94a3b8}
 .tonic-badge .col-right{font-size:.65rem;font-weight:700;color:#38bdf8}
-.top-panels{display:flex;flex-direction:column;gap:4px;margin-bottom:4px;flex-shrink:0}
-.controls-card{background-color:#181b26;border-radius:12px;padding:5px 10px;display:flex;flex-direction:column;justify-content:center;gap:3px;border:1px solid #252b3d}
-.telemetry-card{background-color:#181b26;border-radius:12px;padding:5px 10px;display:grid;grid-template-columns:1fr 1fr;gap:4px 6px;align-items:center;border:1px solid #252b3d}
-.telemetry-card .control-group-full{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.06);padding-top:3px;margin-top:2px}
+.top-panels{display:flex;flex-direction:column;gap:3px;margin-bottom:3px;flex-shrink:0}
+.controls-card{background-color:#181b26;border-radius:12px;padding:4px 10px;display:flex;flex-direction:column;justify-content:center;gap:2px;border:1px solid #252b3d}
+.telemetry-card{background-color:#181b26;border-radius:12px;padding:4px 10px;display:grid;grid-template-columns:1fr 1fr;gap:3px 6px;align-items:center;border:1px solid #252b3d}
+.telemetry-card .control-group-full{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.06);padding-top:2px;margin-top:1px}
 .control-group{display:flex;align-items:center;justify-content:space-between;gap:3px;flex-wrap:wrap}
 .control-label{font-size:.62rem;font-weight:700;color:#9ca3af;letter-spacing:.03em}
 .segmented-btn-group{display:flex;background-color:#0d0f17;border-radius:8px;padding:2px;border:1px solid #232838;flex-wrap:wrap;gap:2px}
@@ -56,10 +56,10 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .tel-value{font-family:ui-monospace,monospace;font-size:.7rem;font-weight:600;color:#f3f4f6;line-height:1.2;display:flex;flex-direction:column;justify-content:center;min-height:3.1em}
 .tel-value .line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .tel-value.highlight{color:#38bdf8}
-.stereo-control-bar{background-color:#181b26;border-radius:12px;padding:2px 6px;display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:5px;border:1px solid #252b3d;flex-wrap:nowrap;flex-shrink:0;width:100%;overflow:hidden}
+.stereo-control-bar{background-color:#181b26;border-radius:12px;padding:2px 6px;display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:3px;border:1px solid #252b3d;flex-wrap:nowrap;flex-shrink:0;width:100%;overflow:hidden}
 .stereo-control-group{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
-.stage-card{background-color:#181b26;border-radius:14px;padding:8px;margin-bottom:6px;border:1px solid #252b3d;flex-grow:1;display:flex;align-items:center;min-height:130px}
-.tines-container{position:relative;height:320px;max-height:100%;display:flex;justify-content:space-between;align-items:flex-start;padding-top:8px;width:100%}
+.stage-card{background-color:#181b26;border-radius:14px;padding:6px;margin-bottom:4px;border:1px solid #252b3d;flex-grow:1;display:flex;align-items:center;min-height:110px}
+.tines-container{position:relative;height:320px;max-height:100%;display:flex;justify-content:space-between;align-items:flex-start;padding-top:6px;width:100%}
 .bridge-bar{position:absolute;top:0;left:0;right:0;height:10px;background:linear-gradient(180deg,#4a2e1b 0%,#2a180e 100%);border-radius:5px;box-shadow:0 2px 6px rgba(0,0,0,.6);z-index:1}
 .tine-wrapper{flex:1;display:flex;flex-direction:column;align-items:center;z-index:2;margin:0 1px;min-width:0;height:100%;justify-content:flex-start}
 .tine{width:100%;max-width:44px;min-width:16px;background:linear-gradient(180deg,#4b5263 0%,#2b2f3a 100%);border-radius:0 0 8px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:6px 2px;transition:height .2s ease,background .08s ease,transform .08s ease;box-shadow:0 4px 10px rgba(0,0,0,.5);user-select:none;overflow:hidden}
@@ -106,21 +106,21 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .header{margin-bottom:2px}
 .tines-container{height:170px}
 }
-/* Fullscreen tighter spacing adjustments */
+/* Fullscreen tighter spacing adjustments & layout fix to prevent overflow */
 .app-card:fullscreen .header, .app-card:-webkit-full-screen .header{margin-bottom:2px!important;}
 .app-card:fullscreen .top-panels, .app-card:-webkit-full-screen .top-panels{gap:2px!important;margin-bottom:2px!important;}
 .app-card:fullscreen .stereo-control-bar, .app-card:-webkit-full-screen .stereo-control-bar{margin-bottom:2px!important;}
-.app-card:fullscreen .stage-card, .app-card:-webkit-full-screen .stage-card{margin-bottom:2px!important;padding:3px!important;min-height:100px!important;}
+.app-card:fullscreen .stage-card, .app-card:-webkit-full-screen .stage-card{margin-bottom:2px!important;padding:2px!important;min-height:60px!important;flex-grow:1!important;}
 @media (orientation: landscape) {
-  .app-card:fullscreen .tines-container, .app-card:-webkit-full-screen .tines-container{height:170px!important;padding-top:2px!important;}
+  .app-card:fullscreen .tines-container, .app-card:-webkit-full-screen .tines-container{height:140px!important;padding-top:2px!important;}
 }
 @media (display-mode: fullscreen) {
   .app-card .header{margin-bottom:2px!important;}
   .app-card .top-panels{gap:2px!important;margin-bottom:2px!important;}
   .app-card .stereo-control-bar{margin-bottom:2px!important;}
-  .app-card .stage-card{margin-bottom:2px!important;padding:3px!important;min-height:100px!important;}
+  .app-card .stage-card{margin-bottom:2px!important;padding:2px!important;min-height:60px!important;flex-grow:1!important;}
   @media (orientation: landscape) {
-    .app-card .tines-container{height:170px!important;padding-top:2px!important;}
+    .app-card .tines-container{height:140px!important;padding-top:2px!important;}
   }
 }
 </style>
@@ -200,7 +200,6 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 
       <div class="control-group">
         <div style="display:flex;align-items:center;gap:4px;">
-
           <div class="segmented-btn-group" id="harmParamSelectGroup">
             <button class="segmented-btn active" data-harmparam="vol">Harm Vol</button>
             <button class="segmented-btn" data-harmparam="ratio">Inharm Ratio</button>
@@ -254,14 +253,14 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
       </div>
 
       <div id="fftView" style="grid-column:1/-1;display:flex;flex-direction:column;gap:2px;">
-        <div style="position:relative;width:100%;height:70px;">
+        <div style="position:relative;width:100%;height:65px;">
           <canvas id="fftCanvas" style="width:100%;height:100%;background-color:#0d0f17;border-radius:6px;border:1px solid #232838;display:block;"></canvas>
-<div style="position:absolute;top:3px;left:6px;right:6px;display:flex;justify-content:flex-end;align-items:center;pointer-events:none;z-index:2;">
-  <div class="segmented-btn-group display-mode-group" style="pointer-events:auto;background:rgba(13,15,23,0.85);">
-    <button class="segmented-btn" data-display="telemetry">INFO</button>
-    <button class="segmented-btn active" data-display="fft">FFT Analyzer</button>
-  </div>
-</div>
+          <div style="position:absolute;top:3px;left:6px;right:6px;display:flex;justify-content:flex-end;align-items:center;pointer-events:none;z-index:2;">
+            <div class="segmented-btn-group display-mode-group" style="pointer-events:auto;background:rgba(13,15,23,0.85);">
+              <button class="segmented-btn" data-display="telemetry">INFO</button>
+              <button class="segmented-btn active" data-display="fft">FFT Analyzer</button>
+            </div>
+          </div>
         </div>
         <div id="fftScaleLabels" style="display:flex;justify-content:space-between;font-size:.52rem;color:#6b7280;font-family:monospace;padding:0 2px;">
           <span>0Hz</span><span>--</span><span>--</span><span>--</span><span>--</span>
@@ -269,7 +268,7 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
       </div>
 
       <div class="control-group-full">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;margin-bottom:3px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;margin-bottom:2px;">
           <span class="control-label">Ratio Multiplier:</span>
           <div style="display:flex;align-items:center;gap:3px;font-size:.55rem;">
             <input type="number" id="inputTonicNum" class="freq-input" value="1" min="1" max="99" style="width:34px;text-align:center;">
@@ -289,17 +288,16 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
     </div>
   </div>
 
-  <!-- ステレオモード時のみ表示される個別パン＆ゲインコントロール行 -->
-  <div id="stereoControlBar" class="stereo-control-bar" style="display:none;">
-    <div style="display:flex;align-items:center;gap:3px;font-size:.4rem;font-weight:700;color:#38bdf8;">
-    </div>
-    <div class="stereo-control-group">
+  <!-- ステレオ/モノラル共用コントロール行（モノラル時はPAN非表示・GAINはPRESET GAIN表示） -->
+  <div id="stereoControlBar" class="stereo-control-bar">
+    <div style="display:flex;align-items:center;gap:3px;font-size:.4rem;font-weight:700;color:#38bdf8;"></div>
+    <div class="stereo-control-group" id="panControlGroup">
       <span class="control-label">PAN</span>
       <input type="range" id="inputPresetPan" class="gain-slider" min="-1.0" max="1.0" step="0.05" value="0.0" style="flex:1;cursor:pointer; min-width:0px">
       <span id="txtPresetPan" style="font-size:.5rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:20px;text-align:left;">C</span>
     </div>
     <div class="stereo-control-group">
-      <span class="control-label">GAIN</span>
+      <span class="control-label" id="gainControlLabel">PRESET GAIN</span>
       <input type="range" id="inputPresetGain" class="gain-slider" min="0.1" max="2.0" step="0.05" value="1.0" style="flex:1;cursor:pointer; min-width:30px">
       <span id="txtPresetGain" style="font-size:.5rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:0px;text-align:right;">1.00</span>
     </div>
@@ -1688,19 +1686,26 @@ function updateHarmParamSliderUI() {
 
 function updateStereoBarUI() {
   const bar = document.getElementById('stereoControlBar');
+  const panGroup = document.getElementById('panControlGroup');
+  const gainLabel = document.getElementById('gainControlLabel');
   if (!bar) return;
-  if (isStereoEnabled) {
-    bar.style.display = 'flex';
-    const panVal = activePreset.presetPan !== undefined ? parseFloat(activePreset.presetPan) : 0.0;
-    const gainVal = activePreset.presetGain !== undefined ? parseFloat(activePreset.presetGain) : 1.0;
-    
-    document.getElementById('inputPresetPan').value = panVal;
-    document.getElementById('txtPresetPan').textContent = panVal === 0 ? 'C' : (panVal < 0 ? `L${Math.abs(panVal).toFixed(2)}` : `R${panVal.toFixed(2)}`);
 
-    document.getElementById('inputPresetGain').value = gainVal;
-    document.getElementById('txtPresetGain').textContent = gainVal.toFixed(2);
+  bar.style.display = 'flex';
+  const panVal = activePreset.presetPan !== undefined ? parseFloat(activePreset.presetPan) : 0.0;
+  const gainVal = activePreset.presetGain !== undefined ? parseFloat(activePreset.presetGain) : 1.0;
+  
+  document.getElementById('inputPresetPan').value = panVal;
+  document.getElementById('txtPresetPan').textContent = panVal === 0 ? 'C' : (panVal < 0 ? `L${Math.abs(panVal).toFixed(2)}` : `R${panVal.toFixed(2)}`);
+
+  document.getElementById('inputPresetGain').value = gainVal;
+  document.getElementById('txtPresetGain').textContent = gainVal.toFixed(2);
+
+  if (isStereoEnabled) {
+    if (panGroup) panGroup.style.display = 'flex';
+    if (gainLabel) gainLabel.textContent = 'GAIN';
   } else {
-    bar.style.display = 'none';
+    if (panGroup) panGroup.style.display = 'none';
+    if (gainLabel) gainLabel.textContent = 'PRESET GAIN';
   }
 }
 
@@ -2016,6 +2021,12 @@ function updateFullscreenButtonText() {
 document.addEventListener('DOMContentLoaded', () => {
   checkOrientationAutoKeyMode();
   window.addEventListener('resize', checkOrientationAutoKeyMode);
+  window.addEventListener('pageshow', (event) => {
+    checkOrientationAutoKeyMode();
+    updateFullscreenButtonText();
+    updateStereoBarUI();
+  });
+
   longPressBehavior = localStorage.getItem('cfg_longPress') || longPressBehavior;
   isRandomNoiseEnabled = localStorage.getItem('cfg_noise') === 'true';
   isNoiseFilterEnabled = localStorage.getItem('cfg_noiseFilter') === 'true';
@@ -2157,32 +2168,32 @@ document.addEventListener('DOMContentLoaded', () => {
       updateEnvSliderUI();
     });
   });
- document.getElementById('inputEnvParam').addEventListener('input', (e) => {
-  const sliderVal = parseFloat(e.target.value);
-  if (!activePreset.timbre) activePreset.timbre = {};
-  const txt = document.getElementById('txtEnvParamVal');
+  document.getElementById('inputEnvParam').addEventListener('input', (e) => {
+    const sliderVal = parseFloat(e.target.value);
+    if (!activePreset.timbre) activePreset.timbre = {};
+    const txt = document.getElementById('txtEnvParamVal');
 
-  if (currentEnvParam === 'attack') {
-    const val = 0.001 * Math.pow(1.0 / 0.001, sliderVal / 100);
-    activePreset.timbre.attackTime = val;
-    txt.textContent = val < 0.1 ? Math.round(val * 1000) + 'ms' : val.toFixed(3) + 's';
+    if (currentEnvParam === 'attack') {
+      const val = 0.001 * Math.pow(1.0 / 0.001, sliderVal / 100);
+      activePreset.timbre.attackTime = val;
+      txt.textContent = val < 0.1 ? Math.round(val * 1000) + 'ms' : val.toFixed(3) + 's';
 
-  } else if (currentEnvParam === 'decay') {
-    activePreset.timbre.decayTime = sliderVal;
-    txt.textContent = sliderVal.toFixed(1) + 's';
+    } else if (currentEnvParam === 'decay') {
+      activePreset.timbre.decayTime = sliderVal;
+      txt.textContent = sliderVal.toFixed(1) + 's';
 
-  } else if (currentEnvParam === 'sustain') {
-    const ratio = sliderVal / 100;
-    const val = ratio * ratio;
-    activePreset.timbre.sustainLevel = val;
-    txt.textContent = Math.round(val * 100) + '%';
+    } else if (currentEnvParam === 'sustain') {
+      const ratio = sliderVal / 100;
+      const val = ratio * ratio;
+      activePreset.timbre.sustainLevel = val;
+      txt.textContent = Math.round(val * 100) + '%';
 
-  } else if (currentEnvParam === 'release') {
-    const val = 0.001 * Math.pow(2.0 / 0.001, sliderVal / 100);
-    activePreset.timbre.releaseTime = val;
-    txt.textContent = val < 0.1 ? Math.round(val * 1000) + 'ms' : val.toFixed(3) + 's';
-  }
-});
+    } else if (currentEnvParam === 'release') {
+      const val = 0.001 * Math.pow(2.0 / 0.001, sliderVal / 100);
+      activePreset.timbre.releaseTime = val;
+      txt.textContent = val < 0.1 ? Math.round(val * 1000) + 'ms' : val.toFixed(3) + 's';
+    }
+  });
   document.querySelectorAll('#harmonicModeGroup .segmented-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       if (!activePreset.timbre) activePreset.timbre = {};
