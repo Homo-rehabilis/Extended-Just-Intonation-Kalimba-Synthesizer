@@ -11,12 +11,12 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:12px;overflow-x:hidden;overflow-y:auto}
 .app-card{background-color:#12141c;border:1px solid #1f2433;border-radius:20px;padding:16px;width:100%;max-width:540px;box-shadow:0 20px 50px rgba(0,0,0,0.9);transition:max-width .3s ease,padding .3s ease;display:flex;flex-direction:column;position:relative}
-.app-card:fullscreen,.app-card:-webkit-full-screen{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:10px 16px!important;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden!important}
+.app-card:fullscreen,.app-card:-webkit-full-screen{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:6px 12px!important;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden!important}
 @media (display-mode: fullscreen) {
   body{padding:0!important;overflow:hidden!important;height:100vh!important;align-items:stretch!important;justify-content:stretch!important}
-  .app-card{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:10px 16px!important;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden!important}
+  .app-card{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:6px 12px!important;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden!important}
 }
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;flex-shrink:0}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;flex-shrink:0}
 .title-group h1{font-size:1rem;font-weight:700;color:#fff;line-height:1.2}
 .title-group p{font-size:.7rem;color:#8b92a5;margin-top:1px}
 .header-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
@@ -38,10 +38,10 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .tonic-badge{background:rgba(30,41,59,.7);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:5px 5px;display:flex;gap:4px;align-items:center;font-family:ui-monospace,monospace;white-space:nowrap}
 .tonic-badge .col-left{font-size:.65rem;color:#94a3b8}
 .tonic-badge .col-right{font-size:.65rem;font-weight:700;color:#38bdf8}
-.top-panels{display:flex;flex-direction:column;gap:6px;margin-bottom:6px;flex-shrink:0}
-.controls-card{background-color:#181b26;border-radius:12px;padding:6px 10px;display:flex;flex-direction:column;justify-content:center;gap:4px;border:1px solid #252b3d}
-.telemetry-card{background-color:#181b26;border-radius:12px;padding:6px 10px;display:grid;grid-template-columns:1fr 1fr;gap:4px 6px;align-items:center;border:1px solid #252b3d}
-.telemetry-card .control-group-full{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.06);padding-top:4px;margin-top:2px}
+.top-panels{display:flex;flex-direction:column;gap:4px;margin-bottom:4px;flex-shrink:0}
+.controls-card{background-color:#181b26;border-radius:12px;padding:5px 10px;display:flex;flex-direction:column;justify-content:center;gap:3px;border:1px solid #252b3d}
+.telemetry-card{background-color:#181b26;border-radius:12px;padding:5px 10px;display:grid;grid-template-columns:1fr 1fr;gap:4px 6px;align-items:center;border:1px solid #252b3d}
+.telemetry-card .control-group-full{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.06);padding-top:3px;margin-top:2px}
 .control-group{display:flex;align-items:center;justify-content:space-between;gap:3px;flex-wrap:wrap}
 .control-label{font-size:.62rem;font-weight:700;color:#9ca3af;letter-spacing:.03em}
 .segmented-btn-group{display:flex;background-color:#0d0f17;border-radius:8px;padding:2px;border:1px solid #232838;flex-wrap:wrap;gap:2px}
@@ -56,7 +56,9 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .tel-value{font-family:ui-monospace,monospace;font-size:.7rem;font-weight:600;color:#f3f4f6;line-height:1.2;display:flex;flex-direction:column;justify-content:center;min-height:3.1em}
 .tel-value .line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .tel-value.highlight{color:#38bdf8}
-.stage-card{background-color:#181b26;border-radius:14px;padding:10px 8px;margin-bottom:8px;border:1px solid #252b3d;flex-grow:1;display:flex;align-items:center;min-height:140px}
+.stereo-control-bar{background-color:#181b26;border-radius:12px;padding:2px 6px;display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:5px;border:1px solid #252b3d;flex-wrap:nowrap;flex-shrink:0;width:100%;overflow:hidden}
+.stereo-control-group{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
+.stage-card{background-color:#181b26;border-radius:14px;padding:8px;margin-bottom:6px;border:1px solid #252b3d;flex-grow:1;display:flex;align-items:center;min-height:130px}
 .tines-container{position:relative;height:320px;max-height:100%;display:flex;justify-content:space-between;align-items:flex-start;padding-top:8px;width:100%}
 .bridge-bar{position:absolute;top:0;left:0;right:0;height:10px;background:linear-gradient(180deg,#4a2e1b 0%,#2a180e 100%);border-radius:5px;box-shadow:0 2px 6px rgba(0,0,0,.6);z-index:1}
 .tine-wrapper{flex:1;display:flex;flex-direction:column;align-items:center;z-index:2;margin:0 1px;min-width:0;height:100%;justify-content:flex-start}
@@ -68,10 +70,10 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .tine-ratio-text{font-size:.6rem;font-weight:700;color:#9ca3af;margin-top:4px;text-align:center;white-space:nowrap}
 .tine-cents-text{font-size:.52rem;color:#6b7280;white-space:nowrap}
 .tine-key-shortcut{font-size:.5rem;color:#38bdf8;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.25);padding:1px 4px;border-radius:3px;margin-top:2px;white-space:nowrap;font-family:monospace}
-.presets-section{display:flex;align-items:center;justify-content:space-between;width:100%;gap:6px;flex-shrink:0;background-color:#181b26;border:1px solid #252b3d;border-radius:12px;padding:5px 8px;flex-wrap:nowrap}
-.presets-left{display:flex;align-items:center;gap:6px;flex:1;min-width:0;flex-wrap:wrap}
-.presets-grid{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
-.chord-bpm-card{display:flex;flex-direction:column;align-items:flex-end;gap:3px;background-color:#0d0f17;border:1px solid #232838;padding:3px 6px;border-radius:10px;flex-shrink:0}
+.presets-section{display:flex;align-items:center;justify-content:space-between;width:100%;gap:6px;flex-shrink:0;background-color:#181b26;border:1px solid #252b3d;border-radius:12px;padding:4px 8px;flex-wrap:nowrap}
+.presets-left{display:flex;align-items:center;gap:1px;flex:1;min-width:0;flex-wrap:wrap}
+.presets-grid{display:flex;gap:1px;align-items:center;flex-wrap:wrap;}
+.chord-bpm-card{display:flex;flex-direction:column;align-items:flex-end;gap:3px;background-color:#0d0f17;border:1px solid #232838;padding:2px 6px;border-radius:10px;flex-shrink:0}
 .modal-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background-color:rgba(0,0,0,.75);display:flex;justify-content:center;align-items:center;z-index:10000;opacity:0;pointer-events:none;transition:opacity .2s ease;padding:12px}
 .modal-overlay.open{opacity:1;pointer-events:auto}
 .modal-card{background-color:#12141c;border:1px solid #1f2433;border-radius:16px;padding:16px;width:90%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.9);display:flex;flex-direction:column;gap:10px}
@@ -87,21 +89,39 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .keys-editor-table th{color:#9ca3af;font-weight:600}
 .keys-editor-table input{width:100%;text-align:center}
 @media(orientation:landscape) or (min-width:768px){
-.app-card{max-width:1020px;padding:8px 14px;max-height:100vh}
-.header{margin-bottom:4px}
-.top-panels{display:grid;grid-template-columns:1.1fr .9fr;gap:6px;margin-bottom:4px}
-.controls-card,.telemetry-card{margin-bottom:0;height:100%;padding:4px 8px;gap:3px}
-.stage-card{padding:4px;margin-bottom:4px}
-.tines-container{height:250px}
+.app-card{max-width:1020px;padding:6px 12px;max-height:100vh}
+.header{margin-bottom:3px}
+.top-panels{display:grid;grid-template-columns:1.1fr .9fr;gap:4px;margin-bottom:3px}
+.controls-card,.telemetry-card{margin-bottom:0;height:100%;padding:3px 6px;gap:2px}
+.stage-card{padding:3px;margin-bottom:3px}
+.tines-container{height:230px}
 }
 @media(orientation:landscape){
 .title-group h1{font-size:.85rem}
 .title-group p{font-size:.65rem}
-.chord-bpm-card{flex-direction:row;align-items:center;gap:6px}
+.chord-bpm-card{flex-direction:row;align-items:center;gap:3px}
+.presets-left{flex-direction:row!important;align-items:center!important;gap:6px!important}
 }
 @media(orientation:landscape) and (max-height:580px){
 .header{margin-bottom:2px}
-.tines-container{height:190px}
+.tines-container{height:170px}
+}
+/* Fullscreen tighter spacing adjustments */
+.app-card:fullscreen .header, .app-card:-webkit-full-screen .header{margin-bottom:2px!important;}
+.app-card:fullscreen .top-panels, .app-card:-webkit-full-screen .top-panels{gap:2px!important;margin-bottom:2px!important;}
+.app-card:fullscreen .stereo-control-bar, .app-card:-webkit-full-screen .stereo-control-bar{margin-bottom:2px!important;}
+.app-card:fullscreen .stage-card, .app-card:-webkit-full-screen .stage-card{margin-bottom:2px!important;padding:3px!important;min-height:100px!important;}
+@media (orientation: landscape) {
+  .app-card:fullscreen .tines-container, .app-card:-webkit-full-screen .tines-container{height:170px!important;padding-top:2px!important;}
+}
+@media (display-mode: fullscreen) {
+  .app-card .header{margin-bottom:2px!important;}
+  .app-card .top-panels{gap:2px!important;margin-bottom:2px!important;}
+  .app-card .stereo-control-bar{margin-bottom:2px!important;}
+  .app-card .stage-card{margin-bottom:2px!important;padding:3px!important;min-height:100px!important;}
+  @media (orientation: landscape) {
+    .app-card .tines-container{height:170px!important;padding-top:2px!important;}
+  }
 }
 </style>
 </head>
@@ -269,6 +289,22 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
     </div>
   </div>
 
+  <!-- ステレオモード時のみ表示される個別パン＆ゲインコントロール行 -->
+  <div id="stereoControlBar" class="stereo-control-bar" style="display:none;">
+    <div style="display:flex;align-items:center;gap:3px;font-size:.4rem;font-weight:700;color:#38bdf8;">
+    </div>
+    <div class="stereo-control-group">
+      <span class="control-label">PAN</span>
+      <input type="range" id="inputPresetPan" class="gain-slider" min="-1.0" max="1.0" step="0.05" value="0.0" style="flex:1;cursor:pointer; min-width:0px">
+      <span id="txtPresetPan" style="font-size:.5rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:20px;text-align:left;">C</span>
+    </div>
+    <div class="stereo-control-group">
+      <span class="control-label">GAIN</span>
+      <input type="range" id="inputPresetGain" class="gain-slider" min="0.1" max="2.0" step="0.05" value="1.0" style="flex:1;cursor:pointer; min-width:30px">
+      <span id="txtPresetGain" style="font-size:.5rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:0px;text-align:right;">1.00</span>
+    </div>
+  </div>
+
   <div class="stage-card">
     <div class="tines-container" id="tinesWrapper">
       <div class="bridge-bar"></div>
@@ -276,8 +312,15 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
   </div>
 
   <div class="presets-section">
-    <div class="presets-left">
+    <div class="presets-left" style="flex-direction:column;align-items:flex-start;gap:6px;">
       <div class="presets-grid" id="chordButtonsContainer"></div>
+      <div style="display:flex;align-items:center;gap:4px;font-size:.5rem;">
+        <span style="color:#38bdf8;font-weight:700;margin-left:5px;">Loop Playback:</span>
+        <button class="rec-btn" id="btnPerfRec" style="padding:4px 5px;font-size:.50rem;"><span class="rec-dot"></span>REC</button>
+        <button class="segmented-btn" id="btnPerfPlay" style="padding:2px 6px;font-size:.55rem;">Play: OFF</button>
+        <button class="segmented-btn" id="btnPerfClear" style="padding:2px 6px;font-size:.55rem;color:#ef4444;">Clear</button>
+        <span id="txtPerfStatus" style="color:#8b92a5;font-size:.45rem;">Ready (0 notes)</span>
+      </div>
     </div>
     <div class="chord-bpm-card">
       <div style="display:flex;align-items:center;gap:4px;">
@@ -300,7 +343,14 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
         <button class="btn" id="btnCloseSettings">✕</button>
       </div>
       <div style="font-size:.72rem;font-weight:700;color:#38bdf8;border-bottom:1px solid #252b3d;padding-bottom:4px;margin-top:6px;">
-        🎵 Timbre
+        🎵 Timbre & Output
+      </div>
+      <div class="control-group">
+        <span class="control-label">AUDIO MODE (STEREO/MONO)</span>
+        <div class="segmented-btn-group" id="stereoModeToggle">
+          <button class="segmented-btn" data-stereo="on">Stereo</button>
+          <button class="segmented-btn active" data-stereo="off">Mono</button>
+        </div>
       </div>
       <div class="control-group">
         <span class="control-label">LONG PRESS MODE</span>
@@ -347,7 +397,7 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
         <span class="control-label">LOW-PASS FILTER</span>
         <div class="segmented-btn-group" id="lpfToggle">
           <button class="segmented-btn" data-lpf="on">ON</button>
-          <button class="segmented-btn" data-lpf="off">OFF</button>
+          <button class="segmented-btn active" data-lpf="off">OFF</button>
         </div>
         <span class="control-label">LPF Cutoff (Hz):</span>
         <input type="number" id="inputLpfCutoff" class="freq-input" value="22000" min="100" max="48000" step="100">
@@ -480,8 +530,9 @@ const BUILTIN_SCALES = {
       { num: 12, den: 11, name: '12/11' },
       { num: 28, den: 25, name: '28/25' }
     ],
-    chords8: [{ label: "Sample1", indices: [0, 3, 6] }, { label: "Sample2", indices: [1, 2, 3, 4] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }],
-    chords17: [{ label: "Cricket Sweep", indices: [14, 2, 11, 10, 7, 8, 13, 1, 9] }, { label: "Sample", indices: [1, 2, 3, 4, 5] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }]
+    chords8: [{ label: "Chord1", indices: [0, 3, 6] }, { label: "Chord2", indices: [1, 2, 3, 4] },       {label:'Chord3',indices:[4,5,6,0]},
+      {label:'Chord4',indices:[4,5,6,7]}],
+    chords17: [{ label: "Cricket Sweep", indices: [14, 2, 11, 10, 7, 8, 13, 1, 9] }, { label: "Chord", indices: [1, 2, 3, 4, 5] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }]
   },
   'harmonics': {
     title: '23-Limit Natural Harmonics',
@@ -514,8 +565,8 @@ const BUILTIN_SCALES = {
       { num: 19, den: 8, name: "38th H" },
       { num: 5, den: 2, name: "40th Harmonic" }
     ],
-    chords8: [{ label: "Sample1", indices: [0, 2, 4, 6] }, { label: "Sample2", indices: [2, 4, 5, 0] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }],
-    chords17: [{ label: "Sample1", indices: [0, 2, 4, 7, 10, 12] }, { label: "Sample2", indices: [12, 13, 14, 15, 16] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }]
+    chords8: [{ label: "Chord1", indices: [0, 2, 4, 6] }, { label: "Chord2", indices: [2, 4, 5, 0] }, {label:'Chord3',indices:[4,5,6,0]}, {label:'Chord4',indices:[4,5,6,7]}],
+    chords17: [{ label: "Chord1", indices: [0, 2, 4, 7, 10, 12] }, { label: "Chord2", indices: [12, 13, 14, 15, 16] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }]
   },
   'nearlytet19':{
     title:'Nearly TET 19-limit JI',
@@ -549,16 +600,16 @@ const BUILTIN_SCALES = {
       {num:63,den:25,name:'63/25 Major 3rd'}
     ],
     chords8:[
-      {label:'Sample1',indices:[4,5,6,0]},
-      {label:'Sample2',indices:[4,5,6,7]},
-      {label:'Sample3',indices:[2,1,4,0]},
-      {label:'Sample4',indices:[6,7,3,2]}
+      {label:'Chord1',indices:[4,5,6,0]},
+      {label:'Chord2',indices:[4,5,6,7]},
+      {label:'Chord3',indices:[4,5,6,0]},
+      {label:'Chord4',indices:[4,5,6,7]}
     ],
     chords17:[
-      {label:'Sample1',indices:[0,4,7,12]},
-      {label:'Sample2',indices:[0,4,7,11]},
-      {label:'Sample3',indices:[0,3,7,10]},
-      {label:'Sample4',indices:[0,4,8,12]}
+      {label:'Chord1',indices:[0,4,7,12]},
+      {label:'Chord2',indices:[0,4,7,11]},
+      {label:'Chord3',indices:[0,3,7,10]},
+      {label:'Chord4',indices:[0,4,8,12]}
     ]
   }
 };
@@ -573,6 +624,7 @@ const DEFAULT_PRESETS = [
   {
     title: "Preset 1: 23-limit Natural Harmonics",
     baseTonicFreq: 512.0, tonicNum: 1, tonicDen: 1, tonicOctave: 0,
+    presetPan: 0.0, presetGain: 1.0,
     tonicRatios: JSON.parse(JSON.stringify(DEFAULT_12_RATIOS)),
     timbre: { attackTime: 0.004, decayTime: 2.5, sustainLevel: 0.0, releaseTime: 0.012, harmonicMode: 'inharm', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400 },
     ...JSON.parse(JSON.stringify(BUILTIN_SCALES.harmonics))
@@ -580,6 +632,7 @@ const DEFAULT_PRESETS = [
   {
     title: "Preset 2: Nearly TET 19-limit JI",
     baseTonicFreq: 440.0, tonicNum: 1, tonicDen: 1, tonicOctave: 0,
+    presetPan: 0.0, presetGain: 1.0,
     tonicRatios: JSON.parse(JSON.stringify(DEFAULT_12_RATIOS)),
     timbre: { attackTime: 0.004, decayTime: 2.5, sustainLevel: 0.0, releaseTime: 0.012, harmonicMode: 'inharm', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400 },
     ...JSON.parse(JSON.stringify(BUILTIN_SCALES.nearlytet19))
@@ -587,6 +640,7 @@ const DEFAULT_PRESETS = [
   {
     title: "Preset 3: 17-limit Cricket",
     baseTonicFreq: 3569.48, tonicNum: 1, tonicDen: 1, tonicOctave: 0,
+    presetPan: 0.0, presetGain: 1.0,
     tonicRatios: JSON.parse(JSON.stringify(DEFAULT_12_RATIOS)),
     timbre: { attackTime: 0.004, decayTime: 2.5, sustainLevel: 0.0, releaseTime: 0.012, harmonicMode: 'cricket', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400 },
     ...JSON.parse(JSON.stringify(BUILTIN_SCALES.cricket))
@@ -602,7 +656,15 @@ let activeSlotIndex = 0, activeKeyMode = "8", selectedRatioIndex = 0;
 let longPressBehavior = 'long';
 let currentEnvParam = 'decay';
 let currentHarmParam = 'vol';
+let isStereoEnabled = false;
 const activeHoldTrackers = new Map();
+
+let perfRecordedEvents = [];
+let perfStartTime = 0;
+let perfIsRecording = false;
+let perfIsPlaying = false;
+let perfTimeoutId = null;
+let perfLoopDuration = 0;
 
 const TYPICAL_INHARM_RATIOS = [
   { val: 1.000, label: "1.000 (Fundamental)" },
@@ -638,6 +700,8 @@ function loadPresetsWithMigration() {
         if (!p.chords17 || !Array.isArray(p.chords17)) p.chords17 = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].chords17));
         if (!p.chords8 || !Array.isArray(p.chords8)) p.chords8 = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].chords8));
         if (!p.tonicRatios || !Array.isArray(p.tonicRatios)) p.tonicRatios = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].tonicRatios));
+        if (p.presetPan === undefined) p.presetPan = 0.0;
+        if (p.presetGain === undefined) p.presetGain = 1.0;
         if (!p.timbre) p.timbre = {};
         if (p.timbre.attackTime === undefined) p.timbre.attackTime = 0.004;
         if (p.timbre.decayTime === undefined) p.timbre.decayTime = 2.5;
@@ -666,38 +730,51 @@ class RecorderProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
     this.isRecording = false;
-    this.bufferSize = 4096;
+    this.isStereo = false;
+    this.bufferSize = 8192;
     this.buffer = new Float32Array(this.bufferSize);
     this.bufferIndex = 0;
     this.port.onmessage = (e) => {
       if (e.data.command === 'START') {
         this.isRecording = true;
+        this.isStereo = !!e.data.isStereo;
         this.bufferIndex = 0;
       } else if (e.data.command === 'STOP') {
         this.isRecording = false;
-        if (this.bufferIndex > 0) {
-          const sendBuffer = this.buffer.slice(0, this.bufferIndex);
-          this.port.postMessage(sendBuffer.buffer, [sendBuffer.buffer]);
-          this.bufferIndex = 0;
-        }
+        this.flush();
       }
     };
   }
   process(inputs) {
     if (!this.isRecording) return true;
     const input = inputs[0];
-    if (input && input.length > 0 && input[0].length > 0) {
-      const channel = input[0];
-      for (let i = 0; i < channel.length; i++) {
-        this.buffer[this.bufferIndex++] = channel[i];
-        if (this.bufferIndex >= this.bufferSize) {
-          const copy = new Float32Array(this.buffer);
-          this.port.postMessage(copy.buffer, [copy.buffer]);
-          this.bufferIndex = 0;
+    if (!input || input.length === 0 || !input[0] || input[0].length === 0) return true;
+    const sampleCount = input[0].length;
+    const hasRight = input.length > 1 && input[1];
+
+    for (let i = 0; i < sampleCount; i++) {
+      if (this.isStereo) {
+        if (this.bufferIndex + 2 > this.buffer.length) {
+          this.flush();
         }
+        this.buffer[this.bufferIndex++] = input[0][i];
+        this.buffer[this.bufferIndex++] = hasRight ? input[1][i] : input[0][i];
+      } else {
+        if (this.bufferIndex + 1 > this.buffer.length) {
+          this.flush();
+        }
+        const monoSample = hasRight ? (input[0][i] + input[1][i]) * 0.5 : input[0][i];
+        this.buffer[this.bufferIndex++] = monoSample;
       }
     }
     return true;
+  }
+  flush() {
+    if (this.bufferIndex > 0) {
+      const copy = new Float32Array(this.buffer.slice(0, this.bufferIndex));
+      this.port.postMessage(copy.buffer, [copy.buffer]);
+      this.bufferIndex = 0;
+    }
   }
 }
 registerProcessor('recorder-processor', RecorderProcessor);
@@ -904,7 +981,11 @@ async function setupRecorderNode(ctx) {
         await ctx.audioWorklet.addModule(dataUrl);
         loadedWorkletContexts.add(ctx);
       }
-      recorderNode = new AudioWorkletNode(ctx, 'recorder-processor');
+      recorderNode = new AudioWorkletNode(ctx, 'recorder-processor', {
+        numberOfInputs: 1,
+        numberOfOutputs: 1,
+        outputChannelCount: [2]
+      });
       recorderNode.port.onmessage = (e) => { if (isRecording) recordedBuffers.push(new Float32Array(e.data)); };
       const muteGain = ctx.createGain();
       muteGain.gain.setValueAtTime(0, ctx.currentTime);
@@ -914,9 +995,24 @@ async function setupRecorderNode(ctx) {
     } catch(err) {}
   }
   if (!recorderNode) {
-    const scriptNode = ctx.createScriptProcessor(4096, 1, 1);
+    const scriptNode = ctx.createScriptProcessor(4096, 2, 2);
     scriptNode.onaudioprocess = (e) => {
-      if (isRecording) recordedBuffers.push(new Float32Array(e.inputBuffer.getChannelData(0)));
+      if (!isRecording) return;
+      const inputBuffer = e.inputBuffer;
+      const numChannels = isStereoEnabled ? 2 : 1;
+      const ch0 = inputBuffer.getChannelData(0);
+      const ch1 = inputBuffer.numberOfChannels > 1 ? inputBuffer.getChannelData(1) : ch0;
+      const frameCount = ch0.length;
+      const chunk = new Float32Array(frameCount * numChannels);
+      for (let i = 0; i < frameCount; i++) {
+        if (numChannels === 2) {
+          chunk[i * 2] = ch0[i];
+          chunk[i * 2 + 1] = ch1[i];
+        } else {
+          chunk[i] = (ch0[i] + ch1[i]) * 0.5;
+        }
+      }
+      recordedBuffers.push(chunk);
     };
     const muteGain = ctx.createGain();
     muteGain.gain.setValueAtTime(0, ctx.currentTime);
@@ -1000,13 +1096,33 @@ function drawFFT() {
   ctx.restore();
 }
 
-async function playTone(freq, isLongPress = false) {
+async function playTone(freq, isLongPress = false, overrideTimbre = null, overrideNoiseEnabled = null, overrideNoiseFilterEnabled = null, overridePan = null, overrideGain = null) {
   await initAudio();
   if (!audioCtx) return;
 
   const now = audioCtx.currentTime;
-  const t = activePreset.timbre;
-  const dest = getAudioEntryNode();
+  const t = overrideTimbre || activePreset.timbre;
+  const randNoise = overrideNoiseEnabled !== null ? overrideNoiseEnabled : isRandomNoiseEnabled;
+  const noiseFilter = overrideNoiseFilterEnabled !== null ? overrideNoiseFilterEnabled : isNoiseFilterEnabled;
+
+  const baseDest = getAudioEntryNode();
+  
+  let dest = baseDest;
+  const presetGainVal = overrideGain !== null ? overrideGain : (activePreset.presetGain !== undefined ? parseFloat(activePreset.presetGain) : 1.0);
+  
+  const presetGainNode = audioCtx.createGain();
+  presetGainNode.gain.setValueAtTime(presetGainVal, now);
+  presetGainNode.connect(dest);
+  dest = presetGainNode;
+
+  if (isStereoEnabled) {
+    const panner = audioCtx.createStereoPanner();
+    const panVal = overridePan !== null ? overridePan : (activePreset.presetPan !== undefined ? parseFloat(activePreset.presetPan) : 0.0);
+    panner.pan.setValueAtTime(panVal, now);
+    panner.connect(dest);
+    dest = panner;
+  }
+
   const mode = t.harmonicMode || 'harm3';
 
   const attackTime = Math.max(0.001, parseFloat(t.attackTime) || 0.004);
@@ -1203,7 +1319,7 @@ async function playTone(freq, isLongPress = false) {
       }
     }
 
-    if (isRandomNoiseEnabled && t.noiseGain > 0 && sharedNoiseBuffer) {
+    if (randNoise && t.noiseGain > 0 && sharedNoiseBuffer) {
       const noise = audioCtx.createBufferSource();
       noise.buffer = sharedNoiseBuffer;
       const ng = audioCtx.createGain();
@@ -1213,7 +1329,7 @@ async function playTone(freq, isLongPress = false) {
       ng.gain.exponentialRampToValueAtTime(0.0001, now + 0.015);
       ng.gain.linearRampToValueAtTime(0, now + 0.018);
 
-      if (isNoiseFilterEnabled) {
+      if (noiseFilter) {
         const filter = audioCtx.createBiquadFilter();
         filter.type = 'bandpass';
         filter.frequency.setValueAtTime(parseFloat(t.noiseCutoff) || 1400, now);
@@ -1240,13 +1356,17 @@ async function toggleRecording() {
     txtRec.textContent = `REC 0s`;
     recTimerInterval = setInterval(() => { sec++; txtRec.textContent = `REC ${sec}s`; }, 1000);
     btnDl.style.display = 'none';
-    if (selectedRecEngine === 'worklet' && recorderNode?.port) recorderNode.port.postMessage({ command: 'START' });
+    if (selectedRecEngine === 'worklet' && recorderNode?.port) {
+      recorderNode.port.postMessage({ command: 'START', isStereo: isStereoEnabled });
+    }
   } else {
     isRecording = false;
     btnRec.classList.remove('recording');
     clearInterval(recTimerInterval);
     txtRec.textContent = 'REC';
-    if (selectedRecEngine === 'worklet' && recorderNode?.port) recorderNode.port.postMessage({ command: 'STOP' });
+    if (selectedRecEngine === 'worklet' && recorderNode?.port) {
+      recorderNode.port.postMessage({ command: 'STOP' });
+    }
     setTimeout(exportWAV, 150);
   }
 }
@@ -1259,7 +1379,8 @@ function exportWAV() {
   for (const b of recordedBuffers) { merged.set(b, offset); offset += b.length; }
 
   const format = parseRecFormat(document.getElementById('selectRecFormat').value);
-  const is32Float = format.bitDepth === '32float', sampleRate = audioCtx.sampleRate, numChannels = 1;
+  const is32Float = format.bitDepth === '32float', sampleRate = audioCtx.sampleRate;
+  const numChannels = isStereoEnabled ? 2 : 1;
   const bytesPerSample = is32Float ? 4 : 2, blockAlign = numChannels * bytesPerSample, byteRate = sampleRate * blockAlign;
   const dataSize = merged.length * bytesPerSample;
 
@@ -1294,24 +1415,24 @@ function exportWAV() {
   if (lastRecordedBlobUrl) URL.revokeObjectURL(lastRecordedBlobUrl);
   lastRecordedBlobUrl = URL.createObjectURL(blob);
 
-function getFormattedLocalDate(date = new Date()) {
-  const formatter = new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hourCycle: 'h23'
-  });
+  function getFormattedLocalDate(date = new Date()) {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hourCycle: 'h23'
+    });
 
-  const p = {};
-  formatter.formatToParts(date).forEach(({ type, value }) => {
-    p[type] = value;
-  });
+    const p = {};
+    formatter.formatToParts(date).forEach(({ type, value }) => {
+      p[type] = value;
+    });
 
-  return `${p.year}${p.month}${p.day}_${p.hour}${p.minute}${p.second}`;
-}
+    return `${p.year}${p.month}${p.day}_${p.hour}${p.minute}${p.second}`;
+  }
 
   const btnDl = document.getElementById('btnDownload');
   btnDl.style.display = 'inline-flex';
@@ -1326,6 +1447,21 @@ function getFormattedLocalDate(date = new Date()) {
 
 function triggerPluck(tine, wrapper, isLongPress = false) {
   playTone(tine.freq, isLongPress);
+  
+  if (perfIsRecording) {
+    const elapsed = performance.now() - perfStartTime;
+    perfRecordedEvents.push({
+      time: elapsed,
+      idx: tine.idx,
+      freq: tine.freq,
+      timbre: JSON.parse(JSON.stringify(activePreset.timbre)),
+      presetPan: activePreset.presetPan !== undefined ? activePreset.presetPan : 0.0,
+      presetGain: activePreset.presetGain !== undefined ? activePreset.presetGain : 1.0,
+      isRandomNoiseEnabled: isRandomNoiseEnabled,
+      isNoiseFilterEnabled: isNoiseFilterEnabled
+    });
+  }
+
   lastTine = currentTine;
   currentTine = tine;
   document.getElementById('valLastPlucked').innerHTML = `<span class="line">#${tine.idx + 1} ${tine.name}</span><span class="line">(${tine.num}/${tine.den} • ${tine.freq.toFixed(1)}Hz)</span>`;
@@ -1337,6 +1473,97 @@ function triggerPluck(tine, wrapper, isLongPress = false) {
     wrapper.classList.add('active');
     setTimeout(() => wrapper.classList.remove('active'), 150);
   }
+}
+
+function togglePerfRecord() {
+  if (!perfIsRecording) {
+    if (perfIsPlaying) stopPerfPlay();
+    perfRecordedEvents = [];
+    perfIsRecording = true;
+    perfStartTime = performance.now();
+    const btn = document.getElementById('btnPerfRec');
+    btn.classList.add('recording');
+    document.getElementById('txtPerfStatus').textContent = "Recording...";
+  } else {
+    perfIsRecording = false;
+    const btn = document.getElementById('btnPerfRec');
+    btn.classList.remove('recording');
+    if (perfRecordedEvents.length > 0) {
+      perfLoopDuration = performance.now() - perfStartTime;
+      document.getElementById('txtPerfStatus').textContent = `Recorded (${perfRecordedEvents.length} notes)`;
+    } else {
+      document.getElementById('txtPerfStatus').textContent = "Ready (0 notes)";
+    }
+  }
+}
+
+function togglePerfPlay() {
+  if (perfIsRecording) togglePerfRecord();
+  if (!perfIsPlaying) {
+    if (perfRecordedEvents.length === 0) return;
+    perfIsPlaying = true;
+    const btn = document.getElementById('btnPerfPlay');
+    btn.textContent = "Loop: ON";
+    btn.style.color = "#38bdf8";
+    runPerfLoop();
+  } else {
+    stopPerfPlay();
+  }
+}
+
+function stopPerfPlay() {
+  perfIsPlaying = false;
+  if (perfTimeoutId) {
+    clearTimeout(perfTimeoutId);
+    perfTimeoutId = null;
+  }
+  const btn = document.getElementById('btnPerfPlay');
+  btn.textContent = "Play: OFF";
+  btn.style.color = "#9ca3af";
+}
+
+function runPerfLoop() {
+  if (!perfIsPlaying || perfRecordedEvents.length === 0) return;
+  const loopStart = performance.now();
+  let eventIdx = 0;
+
+  function scheduleNext() {
+    if (!perfIsPlaying) return;
+    if (eventIdx >= perfRecordedEvents.length) {
+      const elapsed = performance.now() - loopStart;
+      const nextLoopDelay = Math.max(10, perfLoopDuration - elapsed);
+      perfTimeoutId = setTimeout(() => {
+        eventIdx = 0;
+        runPerfLoop();
+      }, nextLoopDelay);
+      return;
+    }
+
+    const ev = perfRecordedEvents[eventIdx];
+    const targetTime = loopStart + ev.time;
+    const now = performance.now();
+    const delay = Math.max(0, targetTime - now);
+
+    perfTimeoutId = setTimeout(() => {
+      if (!perfIsPlaying) return;
+
+      playTone(ev.freq, false, ev.timbre, ev.isRandomNoiseEnabled, ev.isNoiseFilterEnabled, ev.presetPan, ev.presetGain);
+
+      document.getElementById('valLastPlucked').innerHTML = `<span class="line">Loop Playback</span><span class="line">(${ev.freq.toFixed(1)}Hz)</span>`;
+
+      eventIdx++;
+      scheduleNext();
+    }, delay);
+  }
+  scheduleNext();
+}
+
+function clearPerfData() {
+  stopPerfPlay();
+  if (perfIsRecording) togglePerfRecord();
+  perfRecordedEvents = [];
+  perfLoopDuration = 0;
+  document.getElementById('txtPerfStatus').textContent = "Ready (0 notes)";
 }
 
 function startHold(keyId, tine, wrapper) {
@@ -1374,6 +1601,7 @@ function openSettingsModal() {
   document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.filter === 'on') === isNoiseFilterEnabled));
   document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.comp === compressorMode));
   document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.engine === selectedRecEngine));
+  document.querySelectorAll('#stereoModeToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.stereo === 'on') === isStereoEnabled));
 
   document.querySelectorAll('#hpfToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.hpf === 'on') === isHpfEnabled));
   document.getElementById('inputHpfCutoff').value = hpfCutoff;
@@ -1458,12 +1686,31 @@ function updateHarmParamSliderUI() {
   }
 }
 
+function updateStereoBarUI() {
+  const bar = document.getElementById('stereoControlBar');
+  if (!bar) return;
+  if (isStereoEnabled) {
+    bar.style.display = 'flex';
+    const panVal = activePreset.presetPan !== undefined ? parseFloat(activePreset.presetPan) : 0.0;
+    const gainVal = activePreset.presetGain !== undefined ? parseFloat(activePreset.presetGain) : 1.0;
+    
+    document.getElementById('inputPresetPan').value = panVal;
+    document.getElementById('txtPresetPan').textContent = panVal === 0 ? 'C' : (panVal < 0 ? `L${Math.abs(panVal).toFixed(2)}` : `R${panVal.toFixed(2)}`);
+
+    document.getElementById('inputPresetGain').value = gainVal;
+    document.getElementById('txtPresetGain').textContent = gainVal.toFixed(2);
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
 function renderApp() {
   activePreset = presets[activeSlotIndex];
   if (!activePreset.tonicRatios) {
     activePreset.tonicRatios = JSON.parse(JSON.stringify(DEFAULT_12_RATIOS));
   }
   updateComputedTonic();
+  updateStereoBarUI();
 
   document.getElementById('inputCustomFreq').value = activePreset.baseTonicFreq;
   document.getElementById('inputTonicNum').value = activePreset.tonicNum;
@@ -1566,7 +1813,7 @@ function renderApp() {
   (is17 ? (activePreset.chords17 || []) : (activePreset.chords8 || [])).forEach((c) => {
     const btn = document.createElement('button');
     btn.className = 'segmented-btn';
-    btn.style.cssText = "background-color:#0d0f17;border:1px solid #2e3545;color:#e5e7eb;padding:3px 6px;font-size:.65rem;";
+    btn.style.cssText = "background-color:#0d0f17;border:1px solid #2e3545;color:#e5e7eb;padding:3px 6px;font-size:.65rem;border-radius:6px;";
     btn.textContent = c.label;
     btn.addEventListener('click', () => startChord(c));
     chordContainer.appendChild(btn);
@@ -1778,6 +2025,7 @@ document.addEventListener('DOMContentLoaded', () => {
   lpfCutoff = parseFloat(localStorage.getItem('cfg_lpfCut')) || lpfCutoff;
   compressorMode = localStorage.getItem('cfg_comp') || compressorMode;
   selectedRecEngine = localStorage.getItem('cfg_recEng') || selectedRecEngine;
+  isStereoEnabled = localStorage.getItem('cfg_stereo') === 'true';
 
   const savedRecFormat = localStorage.getItem('cfg_recFormat');
   if (savedRecFormat) {
@@ -1805,6 +2053,28 @@ document.addEventListener('DOMContentLoaded', () => {
       activePreset.timbre.harmonicRatio = selected.val;
       txt.textContent = selected.val.toFixed(3) + 'x';
     }
+  });
+
+  document.getElementById('inputPresetPan').addEventListener('input', (e) => {
+    const val = parseFloat(e.target.value);
+    activePreset.presetPan = val;
+    document.getElementById('txtPresetPan').textContent = val === 0 ? 'C' : (val < 0 ? `L${Math.abs(val).toFixed(2)}` : `R${val.toFixed(2)}`);
+  });
+
+  document.getElementById('inputPresetGain').addEventListener('input', (e) => {
+    const val = parseFloat(e.target.value);
+    activePreset.presetGain = val;
+    document.getElementById('txtPresetGain').textContent = val.toFixed(2);
+  });
+
+  document.querySelectorAll('#stereoModeToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#stereoModeToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      isStereoEnabled = (e.target.dataset.stereo === 'on');
+      localStorage.setItem('cfg_stereo', isStereoEnabled);
+      updateStereoBarUI();
+    });
   });
 
   document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(btn => {
@@ -2002,20 +2272,22 @@ document.addEventListener('DOMContentLoaded', () => {
     renderApp();
   });
 
-    document.getElementById('btnChordBpmMinus').addEventListener('click', () => {
+  document.getElementById('btnChordBpmMinus').addEventListener('click', () => {
     const input = document.getElementById('inputChordBpm');
     let val = parseInt(input.value);
     if (isNaN(val)) val = 90;
     input.value = Math.max(1, val - 1);
     updateBpmAndRefreshChord();
   });
- document.getElementById('btnChordBpmPlus').addEventListener('click', () => {
+  
+  document.getElementById('btnChordBpmPlus').addEventListener('click', () => {
     const input = document.getElementById('inputChordBpm');
     let val = parseInt(input.value);
     if (isNaN(val)) val = 90;
     input.value = Math.min(500, val + 1);
     updateBpmAndRefreshChord();
   });
+  
   document.getElementById('inputChordBpm').addEventListener('change', updateBpmAndRefreshChord);
 
   document.getElementById('btnChordLoopToggle').addEventListener('click', (e) => {
@@ -2026,6 +2298,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btnChordStop').addEventListener('click', stopChord);
   document.getElementById('btnRecord').addEventListener('click', toggleRecording);
+
+  document.getElementById('btnPerfRec').addEventListener('click', togglePerfRecord);
+  document.getElementById('btnPerfPlay').addEventListener('click', togglePerfPlay);
+  document.getElementById('btnPerfClear').addEventListener('click', clearPerfData);
 
   document.getElementById('btnFullscreen').addEventListener('click', () => {
     const card = document.getElementById('appCard');
