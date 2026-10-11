@@ -478,15 +478,23 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
       </div>
 
       <div class="tab-content active" id="tab-scale">
-        <!-- サーバー上の.sclファイルを読み込む機能 -->
         <div style="background-color:#181b26;padding:8px;border-radius:8px;border:1px solid #252b3d;display:flex;flex-direction:column;gap:6px;">
           <span class="control-label" style="color:#38bdf8;">Server SCL Files (.scl):</span>
           <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
             <select id="selectServerScl" class="select-input" style="flex:1;min-width:140px;">
               <option value="chinese3limit_8.scl">chinese3limit_8.scl</option>
               <option value="chinese3limit_17.scl">chinese3limit_17.scl</option>
+              <option value="pythagorean_8.scl">pythagorean_8.scl</option>
+              <option value="pythagorean_17.scl">pythagorean_17.scl</option>
               <option value="classic5limit_8.scl">classic5limit_8.scl</option>
               <option value="classic5limit_17.scl">classic5limit_17.scl</option>
+              <option value="7limitsouljazz_8.scl">7limitsouljazz_8.scl</option>
+              <option value="7limitsouljazz_17.scl">7limitsouljazz_17.scl</option>
+              <option value="7limitarchytas_8.scl">7limitarchytas_8.scl</option>
+              <option value="7limitarchytas_17.scl">7limitarchytas_17.scl</option>
+              <option value="23limitharmonics_8.scl">23limitharmonics_8.scl</option>
+              <option value="23limitharmonics_17.scl">23limitharmonics_17.scl</option>
+
             </select>
             <button class="btn btn-primary" id="btnLoadServerScl">🌐 Load Server SCL</button>
           </div>
@@ -2491,7 +2499,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ローカルファイルのインポート
   document.getElementById('btnImportScl').addEventListener('click', () => {
     document.getElementById('inputSclFile').click();
   });
@@ -2519,7 +2526,6 @@ document.addEventListener('DOMContentLoaded', () => {
     e.target.value = '';
   });
 
-  // サーバー上のSCLファイルをロードする機能
   document.getElementById('btnLoadServerScl').addEventListener('click', async () => {
     const filename = document.getElementById('selectServerScl').value;
     try {
