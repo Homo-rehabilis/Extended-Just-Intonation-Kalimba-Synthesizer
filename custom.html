@@ -487,15 +487,20 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
           </div>
         </div>
 
-        <!-- 追加：同一階層上の.sclファイル自動読込メニュー -->
+        <!-- 同一階層上の.sclファイル自動読込＆直接ロードメニュー -->
         <div style="background-color:#181b26;padding:8px;border-radius:8px;border:1px solid #252b3d;display:flex;flex-direction:column;gap:6px;margin-top:4px;">
-          <span class="control-label" style="color:#38bdf8;">Load Standard Scale .scl files:</span>
+          <span class="control-label" style="color:#38bdf8;">Load Same-Directory .scl Files:</span>
           <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
             <select id="selectServerScl" class="select-input" style="flex:1;min-width:140px;">
-              <option value="">--Scan .scl files--</option>
+              <option value="">-- Scan / Select .scl --</option>
             </select>
             <button class="btn btn-primary" id="btnFetchServerScl">📥 Load</button>
             <button class="btn" id="btnScanServerScl">🔄 Scan</button>
+          </div>
+          <!-- ファイル名を直接入力して読み込む機能（ディレクトリリスティング制限回避用） -->
+          <div style="display:flex;gap:6px;align-items:center;margin-top:2px;">
+            <input type="text" id="inputCustomSclName" class="select-input" placeholder="filename.scl (Direct Load)" style="flex:1;">
+            <button class="btn" id="btnDirectLoadScl">📂 Direct Load</button>
           </div>
         </div>
 
@@ -2093,47 +2098,46 @@ function parseScalaContent(text) {
 async function scanServerSclFiles() {
   const select = document.getElementById('selectServerScl');
   if (!select) return;
-  select.innerHTML = '<option value="">-- Scanning... --</option>';
+  select.innerHTML = '<option value="">-- Scanning directory... --</option>';
+
+  // ブラウザの制限やローカルサーバーでディレクトリ一覧が取得できない場合のデフォルトフォールバック候補
+  const defaultCandidates = ['scale.scl', 'tuning.scl', 'custom.scl', 'pythagorean.scl', 'just.scl'];
+  let sclFiles = [...defaultCandidates];
 
   try {
     const response = await fetch('./');
-    if (!response.ok) throw new Error('Directory listing not available');
-    const html = await response.text();
-
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const links = doc.querySelectorAll('a');
-    
-    const sclFiles = [];
-    links.forEach(a => {
-      const href = a.getAttribute('href');
-      if (href && href.toLowerCase().endsWith('.scl')) {
-        const fileName = decodeURIComponent(href.split('/').pop());
-        if (fileName && !sclFiles.includes(fileName)) {
-          sclFiles.push(fileName);
+    if (response.ok) {
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const links = doc.querySelectorAll('a');
+      
+      links.forEach(a => {
+        const href = a.getAttribute('href');
+        if (href && href.toLowerCase().endsWith('.scl')) {
+          const fileName = decodeURIComponent(href.split('/').pop());
+          if (fileName && !sclFiles.includes(fileName)) {
+            sclFiles.push(fileName);
+          }
         }
-      }
-    });
-
-    select.innerHTML = '';
-    if (sclFiles.length === 0) {
-      select.innerHTML = '<option value="">(No .scl file was found.)</option>';
-    } else {
-      const defaultOpt = document.createElement('option');
-      defaultOpt.value = "";
-      defaultOpt.textContent = `-- Discovered ${sclFiles.length} .scl files --`;
-      select.appendChild(defaultOpt);
-
-      sclFiles.forEach(file => {
-        const opt = document.createElement('option');
-        opt.value = file;
-        opt.textContent = file;
-        select.appendChild(opt);
       });
     }
   } catch (err) {
-    select.innerHTML = '<option value="">(Auto scanning is not possible via CORS, etc.)</option>';
+    // ディレクトリリスティングが禁止されている環境ではデフォルト候補リストを維持
   }
+
+  select.innerHTML = '';
+  const defaultOpt = document.createElement('option');
+  defaultOpt.value = "";
+  defaultOpt.textContent = `-- Select from ${sclFiles.length} candidates --`;
+  select.appendChild(defaultOpt);
+
+  sclFiles.forEach(file => {
+    const opt = document.createElement('option');
+    opt.value = file;
+    opt.textContent = file;
+    select.appendChild(opt);
+  });
 }
 
 async function fetchAndImportServerScl(fileName) {
@@ -2156,7 +2160,7 @@ async function fetchAndImportServerScl(fileName) {
       alert(`Could not parse Scala file: ${fileName}`);
     }
   } catch (e) {
-    alert(`Error loading file "${fileName}". Make sure it is in the same directory.`);
+    alert(`Error loading file "${fileName}". Ensure the file exists in the same directory as custom.html.`);
   }
 }
 
@@ -2584,7 +2588,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (select && select.value) {
       fetchAndImportServerScl(select.value);
     } else {
-      alert("インポートする .scl ファイルを選択してください。");
+      alert("Please select a .scl file from the dropdown.");
+    }
+  });
+
+  // ファイル名直接ロード用ボタンのイベントリスナー
+  document.getElementById('btnDirectLoadScl').addEventListener('click', () => {
+    const customName = document.getElementById('inputCustomSclName').value.trim();
+    if (customName) {
+      fetchAndImportServerScl(customName);
+    } else {
+      alert("Please enter a .scl file name (e.g. filename.scl).");
     }
   });
 
