@@ -36,7 +36,6 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .fullscreen-btn{background-color:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);color:#38bdf8;padding:4px 10px;border-radius:10px;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .15s ease;white-space:nowrap}
 .fullscreen-btn:hover{background-color:rgba(56,189,248,.3);border-color:#38bdf8}
 .tonic-badge{background:rgba(30,41,59,.7);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:5px 5px;display:flex;gap:4px;align-items:center;font-family:ui-monospace,monospace;white-space:nowrap}
-.tonic-badge .col-left{font-size:.65rem;color:#94a3b8}
 .tonic-badge .col-right{font-size:.65rem;font-weight:700;color:#38bdf8}
 .top-panels{display:flex;flex-direction:column;gap:3px;margin-bottom:3px;flex-shrink:0}
 .controls-card{background-color:#181b26;border-radius:12px;padding:4px 10px;display:flex;flex-direction:column;justify-content:center;gap:2px;border:1px solid #252b3d}
@@ -105,22 +104,6 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 @media(orientation:landscape) and (max-height:580px){
 .header{margin-bottom:2px}
 .tines-container{height:170px}
-}
-.app-card:fullscreen .header, .app-card:-webkit-full-screen .header{margin-bottom:2px!important;}
-.app-card:fullscreen .top-panels, .app-card:-webkit-full-screen .top-panels{gap:2px!important;margin-bottom:2px!important;}
-.app-card:fullscreen .stereo-control-bar, .app-card:-webkit-full-screen .stereo-control-bar{margin-bottom:2px!important;}
-.app-card:fullscreen .stage-card, .app-card:-webkit-full-screen .stage-card{margin-bottom:2px!important;padding:2px!important;min-height:60px!important;flex-grow:1!important;}
-@media (orientation: landscape) {
-  .app-card:fullscreen .tines-container, .app-card:-webkit-full-screen .tines-container{height:140px!important;padding-top:2px!important;}
-}
-@media (display-mode: fullscreen) {
-  .app-card .header{margin-bottom:2px!important;}
-  .app-card .top-panels{gap:2px!important;margin-bottom:2px!important;}
-  .app-card .stereo-control-bar{margin-bottom:2px!important;}
-  .app-card .stage-card{margin-bottom:2px!important;padding:2px!important;min-height:60px!important;flex-grow:1!important;}
-  @media (orientation: landscape) {
-    .app-card .tines-container{height:140px!important;padding-top:2px!important;}
-  }
 }
 </style>
 </head>
@@ -288,15 +271,14 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
   </div>
 
   <div id="stereoControlBar" class="stereo-control-bar">
-    <div style="display:flex;align-items:center;gap:3px;font-size:.4rem;font-weight:700;color:#38bdf8;"></div>
     <div class="stereo-control-group" id="panControlGroup">
       <span class="control-label">PAN</span>
-      <input type="range" id="inputPresetPan" class="gain-slider" min="-1.0" max="1.0" step="0.05" value="0.0" style="flex:1;cursor:pointer; min-width:0px">
+      <input type="range" id="inputPresetPan" class="gain-slider" min="-1.0" max="1.0" step="0.05" value="0.0" style="flex:1;cursor:pointer;min-width:0px">
       <span id="txtPresetPan" style="font-size:.5rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:20px;text-align:left;">C</span>
     </div>
     <div class="stereo-control-group">
       <span class="control-label" id="gainControlLabel">PRESET GAIN</span>
-      <input type="range" id="inputPresetGain" class="gain-slider" min="0.1" max="2.0" step="0.05" value="1.0" style="flex:1;cursor:pointer; min-width:30px">
+      <input type="range" id="inputPresetGain" class="gain-slider" min="0.1" max="2.0" step="0.05" value="1.0" style="flex:1;cursor:pointer;min-width:30px">
       <span id="txtPresetGain" style="font-size:.5rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:0px;text-align:right;">1.00</span>
     </div>
   </div>
@@ -335,11 +317,11 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-card">
       <div class="modal-header">
-        <span class="modal-title">🔊 Audio Settings</span>
+        <span class="modal-title">🔊 Audio & Physics Research Settings</span>
         <button class="btn" id="btnCloseSettings">✕</button>
       </div>
       <div style="font-size:.72rem;font-weight:700;color:#38bdf8;border-bottom:1px solid #252b3d;padding-bottom:4px;margin-top:6px;">
-        🎵 Timbre
+        🎵 Timbre & Physics Core
       </div>
       <div class="control-group">
         <span class="control-label">AUDIO MODE (STEREO/MONO)</span>
@@ -370,11 +352,19 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
           <button class="segmented-btn" data-pnoise="off">OFF</button>
         </div>
       </div>
+
       <div class="control-group">
         <span class="control-label">NONLINEAR HARMONIC DECAY</span>
         <div class="segmented-btn-group" id="nonlinearDecayToggle">
           <button class="segmented-btn active" data-ndecay="on">ON (Acoustic Decay)</button>
           <button class="segmented-btn" data-ndecay="off">OFF</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="control-label">NONLINEAR DECAY POWER</span>
+        <div style="display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-end;">
+          <input type="range" id="inputDecayPower" class="gain-slider" min="0" max="4" step="1" value="2" style="width:140px;cursor:pointer;">
+          <span id="txtDecayPowerVal" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:120px;text-align:right;">0.50 (Standard)</span>
         </div>
       </div>
 
@@ -383,6 +373,20 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
         <div class="segmented-btn-group" id="initialChirpToggle">
           <button class="segmented-btn active" data-chirp="on">ON (Attack Sharpened)</button>
           <button class="segmented-btn" data-chirp="off">OFF</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="control-label">CHIRP DEPTH (%)</span>
+        <div style="display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-end;">
+          <input type="range" id="inputChirpDepth" class="gain-slider" min="0.0" max="3.0" step="0.1" value="1.5" style="width:140px;cursor:pointer;">
+          <span id="txtChirpDepthVal" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:45px;text-align:right;">1.5%</span>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="control-label">CHIRP DURATION (ms)</span>
+        <div style="display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-end;">
+          <input type="range" id="inputChirpDuration" class="gain-slider" min="2" max="30" step="1" value="8" style="width:140px;cursor:pointer;">
+          <span id="txtChirpDurationVal" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:45px;text-align:right;">8ms</span>
         </div>
       </div>
 
@@ -494,7 +498,6 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
               <option value="7limitarchytas_17.scl">7limitarchytas_17.scl</option>
               <option value="23limitharmonics_8.scl">23limitharmonics_8.scl</option>
               <option value="23limitharmonics_17.scl">23limitharmonics_17.scl</option>
-
             </select>
             <button class="btn btn-primary" id="btnLoadServerScl">🌐 Load Server SCL</button>
           </div>
@@ -674,7 +677,7 @@ const DEFAULT_PRESETS = [
     baseTonicFreq: 512.0, tonicNum: 1, tonicDen: 1, tonicOctave: 0,
     presetPan: 0.0, presetGain: 1.0,
     tonicRatios: JSON.parse(JSON.stringify(DEFAULT_12_RATIOS)),
-    timbre: { attackTime: 0.004, decayTime: 2.5, sustainLevel: 0.0, releaseTime: 0.012, harmonicMode: 'inharm', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400 },
+    timbre: { attackTime: 0.004, decayTime: 2.5, sustainLevel: 0.0, releaseTime: 0.012, harmonicMode: 'inharm', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400, decayPower: 0.50, chirpDepth: 0.015, chirpDuration: 0.008 },
     ...JSON.parse(JSON.stringify(BUILTIN_SCALES.harmonics))
   },
   {
@@ -682,7 +685,7 @@ const DEFAULT_PRESETS = [
     baseTonicFreq: 440.0, tonicNum: 1, tonicDen: 1, tonicOctave: 0,
     presetPan: 0.0, presetGain: 1.0,
     tonicRatios: JSON.parse(JSON.stringify(DEFAULT_12_RATIOS)),
-    timbre: { attackTime: 0.004, decayTime: 2.5, sustainLevel: 0.0, releaseTime: 0.012, harmonicMode: 'inharm', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400 },
+    timbre: { attackTime: 0.004, decayTime: 2.5, sustainLevel: 0.0, releaseTime: 0.012, harmonicMode: 'inharm', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400, decayPower: 0.50, chirpDepth: 0.015, chirpDuration: 0.008 },
     ...JSON.parse(JSON.stringify(BUILTIN_SCALES.nearlytet19))
   },
   {
@@ -690,7 +693,7 @@ const DEFAULT_PRESETS = [
     baseTonicFreq: 3569.48, tonicNum: 1, tonicDen: 1, tonicOctave: 0,
     presetPan: 0.0, presetGain: 1.0,
     tonicRatios: JSON.parse(JSON.stringify(DEFAULT_12_RATIOS)),
-    timbre: { attackTime: 0.004, decayTime: 2.5, sustainLevel: 0.0, releaseTime: 0.012, harmonicMode: 'cricket', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400 },
+    timbre: { attackTime: 0.004, decayTime: 2.5, sustainLevel: 0.0, releaseTime: 0.012, harmonicMode: 'cricket', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400, decayPower: 0.40, chirpDepth: 0.020, chirpDuration: 0.006 },
     ...JSON.parse(JSON.stringify(BUILTIN_SCALES.cricket))
   }
 ];
@@ -729,15 +732,30 @@ const TYPICAL_INHARM_RATIOS = [
   { val: 3.650, label: "3.650 (Metallic Bell)" }
 ];
 
+const TYPICAL_DECAY_POWERS = [
+  { val: 0.20, label: "0.20 (Low Damping / Long High-Harmonics)" },
+  { val: 0.35, label: "0.35 (Glass / Crystal)" },
+  { val: 0.50, label: "0.50 (Standard Metal Bar / Default)" },
+  { val: 0.70, label: "0.70 (Stiff Material / High Friction)" },
+  { val: 1.00, label: "1.00 (Square Law Damping)" }
+];
+
 function findRatioIndex(val) {
   let closestIdx = 4;
   let minDiff = Infinity;
   TYPICAL_INHARM_RATIOS.forEach((item, idx) => {
     const diff = Math.abs(item.val - val);
-    if (diff < minDiff) {
-      minDiff = diff;
-      closestIdx = idx;
-    }
+    if (diff < minDiff) { minDiff = diff; closestIdx = idx; }
+  });
+  return closestIdx;
+}
+
+function findDecayPowerIndex(val) {
+  let closestIdx = 2;
+  let minDiff = Infinity;
+  TYPICAL_DECAY_POWERS.forEach((item, idx) => {
+    const diff = Math.abs(item.val - val);
+    if (diff < minDiff) { minDiff = diff; closestIdx = idx; }
   });
   return closestIdx;
 }
@@ -759,6 +777,9 @@ function loadPresetsWithMigration() {
         if (p.timbre.decayTime === undefined) p.timbre.decayTime = 2.5;
         if (p.timbre.sustainLevel === undefined) p.timbre.sustainLevel = 0.0;
         if (p.timbre.releaseTime === undefined) p.timbre.releaseTime = 0.012;
+        if (p.timbre.decayPower === undefined) p.timbre.decayPower = 0.50;
+        if (p.timbre.chirpDepth === undefined) p.timbre.chirpDepth = 0.015;
+        if (p.timbre.chirpDuration === undefined) p.timbre.chirpDuration = 0.008;
       });
       return loaded;
     }
@@ -1174,18 +1195,23 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
   let baseDecay = Math.max(0.05, parseFloat(t.decayTime) || 2.5);
   const sustainLevel = Math.min(1.0, Math.max(0.0, parseFloat(t.sustainLevel) || 0.0));
   const releaseTime = Math.max(0.001, parseFloat(t.releaseTime) || 0.012);
+  const decayPower = t.decayPower !== undefined ? parseFloat(t.decayPower) : 0.50;
 
   if (isLongPress) baseDecay *= 1.2;
   const maxAllowedFreq = Math.min(20000, audioCtx.sampleRate * 0.45);
 
   function applyFrequencyChirp(oscNode, targetFreq) {
     if (isInitialChirpEnabled) {
-      const startFreq = targetFreq * 1.015;
-      oscNode.frequency.setValueAtTime(startFreq, now);
-      oscNode.frequency.exponentialRampToValueAtTime(targetFreq, now + 0.008);
-    } else {
-      oscNode.frequency.setValueAtTime(targetFreq, now);
+      const depth = t.chirpDepth !== undefined ? parseFloat(t.chirpDepth) : 0.015;
+      const duration = t.chirpDuration !== undefined ? parseFloat(t.chirpDuration) : 0.008;
+      if (depth > 0 && duration > 0) {
+        const startFreq = targetFreq * (1.0 + depth);
+        oscNode.frequency.setValueAtTime(startFreq, now);
+        oscNode.frequency.exponentialRampToValueAtTime(targetFreq, now + duration);
+        return;
+      }
     }
+    oscNode.frequency.setValueAtTime(targetFreq, now);
   }
 
   function applyEnvelopeAndPlay(osc, gainNode, peakGain, decayDuration, customFreq = freq) {
@@ -1205,6 +1231,7 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
     gainNode.gain.setValueAtTime(0.00001, now);
     gainNode.gain.linearRampToValueAtTime(peakGain, tAttackEnd);
 
+    // 古い仕様（peakGain 基準のサステイン計算）に戻す
     if (sustainLevel > 0) {
       const susGain = Math.max(0.00001, peakGain * sustainLevel);
       gainNode.gain.exponentialRampToValueAtTime(susGain, tDecayEnd);
@@ -1221,6 +1248,8 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
     osc.connect(gainNode);
     gainNode.connect(dest);
     osc.start(now);
+    
+    // 古い仕様の確実な osc.stop() に戻す
     osc.stop(tReleaseEnd + 0.005);
   }
 
@@ -1292,7 +1321,7 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
             const peakG = parseFloat(t.harmonicGain) * h.gainMult;
             let dMult = h.decayMult;
             if (isNonlinearDecayEnabled) {
-              const orderFactor = Math.pow(h.ratio, 0.4);
+              const orderFactor = Math.pow(h.ratio, decayPower);
               dMult = Math.max(0.05, h.decayMult / orderFactor);
             }
             applyEnvelopeAndPlay(osc, g, peakG, baseDecay * dMult, hFreq);
@@ -1317,7 +1346,7 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
               const peakG = hGain * h.gainMult;
               let dMult = h.decayMult;
               if (isNonlinearDecayEnabled) {
-                const orderFactor = Math.pow(h.ratio, 0.5);
+                const orderFactor = Math.pow(h.ratio, decayPower);
                 dMult = Math.max(0.05, h.decayMult / orderFactor);
               }
               applyEnvelopeAndPlay(osc, g, peakG, baseDecay * dMult, hFreq);
@@ -1340,7 +1369,7 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
               osc.type = 'sine';
               let dMult = h.decayMult;
               if (isNonlinearDecayEnabled) {
-                const orderFactor = Math.pow(h.ratio, 0.5);
+                const orderFactor = Math.pow(h.ratio, decayPower);
                 dMult = Math.max(0.03, h.decayMult / orderFactor);
               }
               applyEnvelopeAndPlay(osc, g, hGain * h.gainMult, baseDecay * dMult, hFreq);
@@ -1375,7 +1404,7 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
 
             let decayMult = Math.max(0.1, 0.95 / Math.pow(h, 0.6));
             if (isNonlinearDecayEnabled) {
-              const orderFactor = Math.pow(h, 0.7);
+              const orderFactor = Math.pow(h, decayPower);
               decayMult = Math.max(0.02, decayMult / orderFactor);
             }
             const dur = baseDecay * decayMult;
@@ -1399,14 +1428,14 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
 
       png.gain.setValueAtTime(0.00001, now);
       png.gain.linearRampToValueAtTime(0.12, now + 0.001);
-      png.gain.exponentialRampToValueAtTime(0.0001, now + 0.008);
-      png.gain.linearRampToValueAtTime(0, now + 0.010);
+      png.gain.exponentialRampToValueAtTime(0.0001, now + 0.012);
+      png.gain.linearRampToValueAtTime(0, now + 0.018);
 
       pNoise.connect(pFilter);
       pFilter.connect(png);
       png.connect(dest);
       pNoise.start(now);
-      pNoise.stop(now + 0.012);
+      pNoise.stop(now + 0.035);
     }
 
     if (randNoise && t.noiseGain > 0 && sharedNoiseBuffer) {
@@ -1414,10 +1443,11 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
       noise.buffer = sharedNoiseBuffer;
       const ng = audioCtx.createGain();
       const peakNoise = parseFloat(t.noiseGain) || 0.1;
+
       ng.gain.setValueAtTime(0.00001, now);
       ng.gain.linearRampToValueAtTime(peakNoise, now + 0.001);
-      ng.gain.exponentialRampToValueAtTime(0.0001, now + 0.015);
-      ng.gain.linearRampToValueAtTime(0, now + 0.018);
+      ng.gain.exponentialRampToValueAtTime(0.0001, now + 0.022);
+      ng.gain.linearRampToValueAtTime(0, now + 0.028);
 
       if (noiseFilter) {
         const filter = audioCtx.createBiquadFilter();
@@ -1430,10 +1460,11 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
       }
       ng.connect(dest);
       noise.start(now);
-      noise.stop(now + 0.02);
+      noise.stop(now + 0.045);
     }
   }
 }
+
 
 async function toggleRecording() {
   await initAudio();
@@ -1682,9 +1713,10 @@ function stopHold(keyId) {
   }
 }
 
-function openSettingsModal() {
-  const t = activePreset.timbre || { decayTime: 2.5, harmonicMode: 'harm3', harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400 };
+function updateSettingsModalUI() {
+  const t = activePreset.timbre || { decayTime: 2.5, harmonicMode: 'harm3', harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400, decayPower: 0.50, chirpDepth: 0.015, chirpDuration: 0.008 };
   if (!t.harmonicMode) t.harmonicMode = 'harm3';
+
   document.querySelectorAll('#longPressToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.longpress === longPressBehavior));
   document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.noise === 'on') === isRandomNoiseEnabled));
   document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.filter === 'on') === isNoiseFilterEnabled));
@@ -1706,11 +1738,33 @@ function openSettingsModal() {
   document.getElementById('txtNoiseGainVal').textContent = (t.noiseGain !== undefined ? t.noiseGain : 0.10).toString();
   document.getElementById('inputNoiseCutoff').value = t.noiseCutoff !== undefined ? t.noiseCutoff : 1400;
 
+  // Decay Power UI
+  const dpVal = t.decayPower !== undefined ? parseFloat(t.decayPower) : 0.50;
+  const dpIdx = findDecayPowerIndex(dpVal);
+  document.getElementById('inputDecayPower').value = dpIdx;
+  document.getElementById('txtDecayPowerVal').textContent = TYPICAL_DECAY_POWERS[dpIdx].label;
+
+  // Chirp Depth UI
+  const cdVal = t.chirpDepth !== undefined ? parseFloat(t.chirpDepth) : 0.015;
+  const cdPct = (cdVal * 100).toFixed(1);
+  document.getElementById('inputChirpDepth').value = cdPct;
+  document.getElementById('txtChirpDepthVal').textContent = cdPct + '%';
+
+  // Chirp Duration UI
+  const cDurVal = t.chirpDuration !== undefined ? parseFloat(t.chirpDuration) : 0.008;
+  const cDurMs = Math.round(cDurVal * 1000);
+  document.getElementById('inputChirpDuration').value = cDurMs;
+  document.getElementById('txtChirpDurationVal').textContent = cDurMs + 'ms';
+
   const savedRecFormat = localStorage.getItem('cfg_recFormat');
   if (savedRecFormat) {
     const recFormatEl = document.getElementById('selectRecFormat');
     if (recFormatEl) recFormatEl.value = savedRecFormat;
   }
+}
+
+function openSettingsModal() {
+  updateSettingsModalUI();
   document.getElementById('settingsModal').classList.add('open');
 }
 
@@ -2162,6 +2216,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  document.getElementById('inputDecayPower').addEventListener('input', (e) => {
+    const idx = parseInt(e.target.value);
+    const selected = TYPICAL_DECAY_POWERS[idx] || TYPICAL_DECAY_POWERS[2];
+    if (!activePreset.timbre) activePreset.timbre = {};
+    activePreset.timbre.decayPower = selected.val;
+    document.getElementById('txtDecayPowerVal').textContent = selected.label;
+  });
+
+  document.getElementById('inputChirpDepth').addEventListener('input', (e) => {
+    const pct = parseFloat(e.target.value);
+    if (!activePreset.timbre) activePreset.timbre = {};
+    activePreset.timbre.chirpDepth = pct / 100.0;
+    document.getElementById('txtChirpDepthVal').textContent = pct.toFixed(1) + '%';
+  });
+
+  document.getElementById('inputChirpDuration').addEventListener('input', (e) => {
+    const ms = parseInt(e.target.value);
+    if (!activePreset.timbre) activePreset.timbre = {};
+    activePreset.timbre.chirpDuration = ms / 1000.0;
+    document.getElementById('txtChirpDurationVal').textContent = ms + 'ms';
+  });
+
   document.getElementById('inputPresetPan').addEventListener('input', (e) => {
     const val = parseFloat(e.target.value);
     activePreset.presetPan = val;
@@ -2453,13 +2529,13 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnPerfClear').addEventListener('click', clearPerfData);
 
   document.getElementById('btnFullscreen').addEventListener('click', () => {
-    const card = document.getElementById('appCard');
-    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-      card.requestFullscreen?.() || card.webkitRequestFullscreen?.();
-    } else {
-      document.exitFullscreen?.() || document.exitFullscreen?.();
-    }
-  });
+  const card = document.getElementById('appCard');
+  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+    card.requestFullscreen?.() || card.webkitRequestFullscreen?.();
+  } else {
+    document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+  }
+});
 
   document.addEventListener('fullscreenchange', updateFullscreenButtonText);
   document.addEventListener('webkitfullscreenchange', updateFullscreenButtonText);
