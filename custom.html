@@ -471,7 +471,8 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
         <span class="control-label">LONG PRESS MODE</span>
         <div class="segmented-btn-group" id="longPressToggle">
           <button class="segmented-btn active" data-longpress="long">Long Tone</button>
-          <button class="segmented-btn" data-longpress="repeat">Rapid Fire (Experimental)</button>
+          <button class="segmented-btn" data-longpress="repeat">Rapid Fire</button>
+          <button class="segmented-btn" data-longpress="off">OFF</button>
         </div>
       </div>
 
@@ -1850,6 +1851,14 @@ function clearPerfData() {
 
 function startHold(keyId, tine, wrapper) {
   if (activeHoldTrackers.has(keyId)) return;
+
+  // ▼ 【追加】LongpressがOFFの場合は、タイマーを待たずに即座に音を鳴らす
+  if (longPressBehavior === 'off') {
+    triggerPluck(tine, wrapper, false);
+    activeHoldTrackers.set(keyId, { holdTimer: null, repeatInterval: null, tine, wrapper, triggeredLong: true });
+    return;
+  }
+
   const holdTimer = setTimeout(() => {
     if (longPressBehavior === 'repeat') {
       triggerPluck(tine, wrapper, false);
