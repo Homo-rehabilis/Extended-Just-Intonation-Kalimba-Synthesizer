@@ -16,7 +16,7 @@ A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built wi
 
 https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/custom.html
 
-#### An advanced custom extension designed for exploring tuning systems using custom frequency ratios. It features 4 highly customizable preset slots (`localStorage`), acoustic-inspired harmonic modes (*Syrinx*, *Cricket*, and instrument inharmonics), acoustic parameters (LFO Vibrato, Initial Pitch Chirp, ADSR, Nonlinear Decay), high-definition WAV recording (up to 32-bit Float / 192 kHz via `AudioWorklet`), HPF/LPF filters, a compressor, real-time performance looping, and full **Scala (`.scl`)** file import/export support.
+An advanced custom extension designed for exploring tuning systems using custom frequency ratios. It features 4 highly customizable preset slots (`localStorage`), acoustic-inspired harmonic modes (*Syrinx*, *Cricket*, and instrument inharmonics), acoustic parameters (LFO Vibrato, Initial Pitch Chirp, ADSR, Nonlinear Decay), high-definition WAV recording (up to 32-bit Float / 192 kHz via `AudioWorklet`), HPF/LPF filters, a compressor, real-time performance looping, and full **Scala (`.scl`)** file import/export support.
 
 1. **Preset Management, Base Tonic & Tuning Layout**
    * **4 Individual Preset Slots:** Save, Load, and Reset to Default for 4 independent preset slots using `localStorage` (Preset 1–4).
@@ -171,7 +171,7 @@ If you prefer to run or modify the code locally:
 
 https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/custom.html
 
-#### 細部まで調整可能な4つの個別プリセット、生体音響や音響物理の特性を応用した倍音モード（シリンクス・コオロギ・各種楽器の非調和倍音など）、音響パラメータ（LFOビブラート・ピッチチャープ・ADSR・非線形減衰特性）、ハイレゾWAV録音（最大32-bit Float/192kHz）、HPF/LPFフィルター、コンプレッサー、リアルタイムループ録音、および **Scala (`.scl`) ファイル** のインポート/エクスポート機能を備えた、ユーザー独自の比率を用いた音律を探求できるカスタム拡張モードです。
+細部まで調整可能な4つの個別プリセット、生体音響や音響物理の特性を応用した倍音モード（シリンクス・コオロギ・各種楽器の非調和倍音など）、音響パラメータ（LFOビブラート・ピッチチャープ・ADSR・非線形減衰特性）、ハイレゾWAV録音（最大32-bit Float/192kHz）、HPF/LPFフィルター、コンプレッサー、リアルタイムループ録音、および **Scala (`.scl`) ファイル** のインポート/エクスポート機能を備えた、ユーザー独自の比率を用いた音律を探求できるカスタム拡張モードです。
 
 1. **プリセット管理 & 基音・音律レイアウト**
    * **4つのプリセットスロット:** `localStorage` を活用した個別の保存（Save）、読込、デフォルトリセット（Reset）機能（Preset 1〜4）。
