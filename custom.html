@@ -125,6 +125,9 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
   opacity: 0;
   transition: opacity 0.3s ease;
 }
+.toast-notification.success {
+  border: 1px solid #22c55e;
+}
 </style>
 </head>
 <body>
@@ -142,7 +145,7 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
       <div class="tonic-badge">
         <div class="col-right" id="badgeTonicFreq">512.0 Hz</div>
       </div>
-          <button class="fullscreen-btn" id="btnOpenSettings" title="Audio & Recording Settings" style="padding:3px 6px;font-size:.8rem;margin-left:0px;">⚙️</button>
+      <button class="fullscreen-btn" id="btnOpenSettings" title="Audio & Recording Settings" style="padding:3px 6px;font-size:.8rem;margin-left:0px;">⚙️</button>
       <a href="index.html" class="btn" style="text-decoration: none;">To Std</a>
     </div>
   </div>
@@ -151,14 +154,16 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
     <div class="controls-card">
       <div class="control-group">
         <div class="segmented-btn-group" id="presetSlotsGroup">
-          <button class="segmented-btn active" data-slot="0">Preset 1</button>
-          <button class="segmented-btn" data-slot="1">Preset 2</button>
-          <button class="segmented-btn" data-slot="2">Preset 3</button>
-          <button class="segmented-btn" data-slot="3">Preset 4</button>
+          <button class="segmented-btn active" data-slot="0">PSET 1</button>
+          <button class="segmented-btn" data-slot="1">PSET 2</button>
+          <button class="segmented-btn" data-slot="2">PSET 3</button>
+          <button class="segmented-btn" data-slot="3">PSET 4</button>
         </div>
         <div style="display:flex;gap:3px;align-items:center;">
-          <button class="btn btn-primary" id="btnOpenEditor" style="padding:2px 5px;font-size:.59rem;border-radius:6px;">⚙ Edit</button>
+          <button class="btn btn-primary" id="btnOpenEditor" style="padding:3px 5px;font-size:.59rem;border-radius:6px;">Edit</button>
           <button class="btn" id="btnSavePreset" style="padding:3px 5px;font-size:.59rem;border-radius:6px;">Save</button>
+          <button class="btn" id="btnLoadPreset" style="padding:3px 5px;font-size:.59rem;border-radius:6px;">Load</button>
+          <input type="file" id="inputPresetFile" accept=".json" style="display:none;">
           <button class="rec-btn" id="btnResetPreset" style="padding:3px 5px;font-size:.59rem;border-radius:6px;">Reset</button>
         </div>
       </div>
@@ -166,7 +171,6 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
       <div class="control-group">
         <div style="display:flex;align-items:center;gap:4px;">
           <span class="control-label">MASTER GAIN</span>
-
         </div>
         <div style="display:flex;align-items:center;gap:8px;padding:2px;flex:1;justify-content:flex-end;">
           <input type="range" id="inputMasterGain" class="gain-slider" min="0.01" max="0.25" step="0.01" value="0.05" style="flex:1;cursor:pointer;">
@@ -203,22 +207,19 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
       </div>
 
       <div class="control-group" style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
-        <!-- 左側：ボタングループ -->
         <div class="segmented-btn-group" id="harmParamSelectGroup" style="flex-shrink:0;">
           <button class="segmented-btn active" data-harmparam="vol">Harm Vol</button>
           <button class="segmented-btn" data-harmparam="ratio">Inharm Ratio</button>
         </div>
 
-        <!-- 右側：Harm Vol用 (1行表示) -->
         <div id="harmVolRow" style="display:flex;align-items:center;gap:4px;flex:1;justify-content:flex-end;min-width:0;">
           <input type="range" id="inputHarmVol" class="gain-slider" min="0.0" max="0.5" step="0.01" value="0.18" style="flex:1;cursor:pointer;min-width:40px;">
           <span id="txtHarmVolVal" style="font-size:.6rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:35px;text-align:right;">0.18</span>
         </div>
 
-        <!-- 右側：Inharm Ratio用 -->
         <div id="harmRatioRow" style="display:none;align-items:center;gap:4px;flex:1;justify-content:flex-end;min-width:0;">
           <input type="range" id="inputHarmRatio" class="gain-slider" min="0" max="7" step="1" value="4" style="width:100px;flex-shrink:0;cursor:pointer;">
-          <span id="txtHarmRatioVal" style="font-size:.50rem;color:#38bdf8;font-family:monospace;font-weight:700;width:100px;text-align:right;line-height:1.1;white-space:normal;word-break:break-word;display:inline-block;">2.756 (Free-Free Bar Mode 2)</span>
+          <span id="txtHarmRatioVal" style="font-size:.50rem;color:#38bdf8;font-family:monospace;font-weight:700;width:100px;text-align:right;line-height:1.1;word-break:break-word;display:inline-block;">2.756 (Free-Free Bar Mode 2)</span>
         </div>
       </div>
 
@@ -281,13 +282,15 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
         </div>
       </div>
 
+      <!-- Timbreパネル（複数フィルター個別対応版） -->
       <div id="timbreView" style="grid-column:1/-1;display:none;flex-direction:column;gap:3px;height:74px;overflow-y:hidden;padding-right:2px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1px;">
           <div class="segmented-btn-group" id="timbreParamSelectGroup" style="gap:1px;">
-            <button class="segmented-btn active" data-tparam="vibrato">Vibrato</button>
+            <button class="segmented-btn active" data-tparam="vibrato">Vib</button>
             <button class="segmented-btn" data-tparam="decay">Decay</button>
             <button class="segmented-btn" data-tparam="chirp">Chirp</button>
             <button class="segmented-btn" data-tparam="noise">Noise</button>
+            <button class="segmented-btn" data-tparam="filter">Filter</button>
           </div>
           <div class="segmented-btn-group display-mode-group">
             <button class="segmented-btn" data-display="telemetry">INFO</button>
@@ -373,7 +376,39 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
               <button class="segmented-btn active" data-nfilt="off">OFF</button>
             </div>
             <input type="number" id="inputNoiseCutoff" class="freq-input" value="1400" min="100" max="10000" step="50">
-              <span style="font-size:.55rem;color:#38bdf8;font-family:monospace;">Hz</span>
+            <span style="font-size:.55rem;color:#38bdf8;font-family:monospace;">Hz</span>
+          </div>
+        </div>
+
+        <!-- Filterサブビュー（LPF/HPF/BPF個別サブタブ切り替え対応） -->
+        <div class="timbre-sub-view" id="tview-filter" style="display:none;flex-direction:column;gap:3px;font-size:.55rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1px;">
+            <div class="segmented-btn-group" id="filterSubTabGroup" style="gap:1px;">
+              <button class="segmented-btn active" data-fsub="lpf">Low Pass Filter</button>
+              <button class="segmented-btn" data-fsub="hpf">High Pass Filter</button>
+              <button class="segmented-btn" data-fsub="bpf">Band Pass Filter</button>
+            </div>
+            <div class="segmented-btn-group" id="activeFilterToggle">
+              <button class="segmented-btn active" data-fen="on">ON</button>
+              <button class="segmented-btn" data-fen="off">OFF</button>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
+            <div style="display:flex;align-items:center;gap:2px;">
+              <span style="color:#8b92a5;">Freq:</span>
+              <input type="number" id="inputActiveFilterFreq" class="freq-input" value="4000" min="50" max="20000" step="50" style="width:52px;text-align:right;">
+              <span style="color:#6b7280;">Hz</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:2px;flex:1;justify-content:flex-end;">
+              <span style="color:#8b92a5;">Slope:</span>
+              <select id="selectActiveFilterChar" class="select-input" style="font-size:.52rem;padding:1px;max-width:200px;">
+                <option value="6">6 dB/oct (1-Pole / Ultra-Gentle)</option>
+                <option value="12_smooth">12 dB/oct (Smooth Q0.5)</option>
+                <option value="12_std" selected>12 dB/oct (Standard Q0.7)</option>
+                <option value="24">24 dB/oct (4-Pole / Sharp Steep)</option>
+                <option value="36">36 dB/oct (6-Pole / Brickwall Max)</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -443,7 +478,7 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
     </div>
   </div>
 
-  <!-- モーダルウィンドウ群 (Settings / Editor) -->
+  <!-- Audio Settings モーダル -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-card">
       <div class="modal-header">
@@ -474,26 +509,6 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
           <button class="segmented-btn" data-longpress="repeat">Rapid Fire</button>
           <button class="segmented-btn" data-longpress="off">OFF</button>
         </div>
-      </div>
-
-      <div class="control-group">
-        <span class="control-label">HIGH-PASS FILTER</span>
-        <div class="segmented-btn-group" id="hpfToggle">
-          <button class="segmented-btn active" data-hpf="on">ON</button>
-          <button class="segmented-btn" data-hpf="off">OFF</button>
-        </div>
-        <span class="control-label">HPF Cutoff (Hz):</span>
-        <input type="number" id="inputHpfCutoff" class="freq-input" value="120" min="10" max="10000" step="10">
-      </div>
-
-      <div class="control-group">
-        <span class="control-label">LOW-PASS FILTER</span>
-        <div class="segmented-btn-group" id="lpfToggle">
-          <button class="segmented-btn" data-lpf="on">ON</button>
-          <button class="segmented-btn active" data-lpf="off">OFF</button>
-        </div>
-        <span class="control-label">LPF Cutoff (Hz):</span>
-        <input type="number" id="inputLpfCutoff" class="freq-input" value="22000" min="100" max="48000" step="100">
       </div>
 
       <div class="control-group">
@@ -612,6 +627,29 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 </div>
 
 <script>
+const CURRENT_PRESET_SCHEMA_VERSION = 1;
+
+function migratePreset(rawPreset) {
+  const version = rawPreset.version || 0;
+  let p = JSON.parse(JSON.stringify(rawPreset));
+
+  if (version < 1) {
+    if (!p.timbre) p.timbre = {};
+    if (!p.timbre.filters) {
+      p.timbre.filters = {
+        lpf: { isEnabled: false, frequency: 12000, characteristic: '12_std' },
+        hpf: { isEnabled: false, frequency: 100, characteristic: '12_std' },
+        bpf: { isEnabled: false, frequency: 1000, characteristic: '12_std' }
+      };
+    }
+    if (p.presetPan === undefined) p.presetPan = 0.0;
+    if (p.presetGain === undefined) p.presetGain = 1.0;
+  }
+
+  p.version = CURRENT_PRESET_SCHEMA_VERSION;
+  return p;
+}
+
 const BUILTIN_SCALES = {
   'cricket': {
     title: '17-Limit Cricket JI',
@@ -779,6 +817,7 @@ const DEFAULT_12_RATIOS = [
 
 const DEFAULT_PRESETS = [
   {
+    version: 1,
     title: "Preset 1: 23-limit Natural Harmonics",
     baseTonicFreq: 417.6, tonicNum: 1, tonicDen: 1, tonicOctave: 0,
     presetPan: 0.0, presetGain: 1.0,
@@ -788,11 +827,17 @@ const DEFAULT_PRESETS = [
       harmonicMode: 'inharm', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400, 
       decayPower: 0.50, chirpDepth: 0.015, chirpDuration: 0.008,
       isPhysicalNoiseEnabled: false, isNonlinearDecayEnabled: true, isInitialChirpEnabled: true,
-      isVibratoEnabled: false, vibratoRate: 6.0, vibratoDepth: 0.025
+      isVibratoEnabled: false, vibratoRate: 6.0, vibratoDepth: 0.025,
+      filters: {
+        lpf: { isEnabled: false, frequency: 12000, characteristic: '12_std' },
+        hpf: { isEnabled: false, frequency: 100, characteristic: '12_std' },
+        bpf: { isEnabled: false, frequency: 1000, characteristic: '12_std' }
+      }
     },
     ...JSON.parse(JSON.stringify(BUILTIN_SCALES.harmonics))
   },
   {
+    version: 1,
     title: "Preset 2: Pipe Organ",
     baseTonicFreq: 417.6, tonicNum: 1, tonicDen: 1, tonicOctave: 0,
     presetPan: 0.0, presetGain: 0.25,
@@ -802,11 +847,17 @@ const DEFAULT_PRESETS = [
       harmonicMode: 'harm3', harmonicRatio: 2.756, harmonicGain: 0.12, noiseGain: 0.02, noiseCutoff: 3000, 
       decayPower: 0.30, chirpDepth: 0.0, chirpDuration: 0.0,
       isPhysicalNoiseEnabled: false, isNonlinearDecayEnabled: false, isInitialChirpEnabled: false,
-      isVibratoEnabled: false, vibratoRate: 5.5, vibratoDepth: 0.012
+      isVibratoEnabled: false, vibratoRate: 5.5, vibratoDepth: 0.012,
+      filters: {
+        lpf: { isEnabled: false, frequency: 16000, characteristic: '12_std' },
+        hpf: { isEnabled: false, frequency: 100, characteristic: '12_std' },
+        bpf: { isEnabled: false, frequency: 1000, characteristic: '12_std' }
+      }
     },
     ...JSON.parse(JSON.stringify(BUILTIN_SCALES.nearlytet19))
   },
   {
+    version: 1,
     title: "Preset 3: 17-limit Cricket",
     baseTonicFreq: 3569.48, tonicNum: 1, tonicDen: 1, tonicOctave: 0,
     presetPan: 0.0, presetGain: 0.2,
@@ -816,11 +867,17 @@ const DEFAULT_PRESETS = [
       harmonicMode: 'cricket', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400, 
       decayPower: 0.40, chirpDepth: 0.050, chirpDuration: 0.030,
       isPhysicalNoiseEnabled: true, isNonlinearDecayEnabled: true, isInitialChirpEnabled: true,
-      isVibratoEnabled: true, vibratoRate: 2.0, vibratoDepth: 0.025
+      isVibratoEnabled: true, vibratoRate: 2.0, vibratoDepth: 0.025,
+      filters: {
+        lpf: { isEnabled: true, frequency: 10000, characteristic: '12_std' },
+        hpf: { isEnabled: false, frequency: 100, characteristic: '12_std' },
+        bpf: { isEnabled: false, frequency: 1000, characteristic: '12_std' }
+      }
     },
     ...JSON.parse(JSON.stringify(BUILTIN_SCALES.cricket))
   },
   {
+    version: 1,
     title: "Preset 4: 23-limit Uguisu (Bird Call)",
     baseTonicFreq: 1875.2, tonicNum: 1, tonicDen: 1, tonicOctave: 0,
     presetPan: 0.0, presetGain: 0.2,
@@ -830,11 +887,35 @@ const DEFAULT_PRESETS = [
       harmonicMode: 'syrinx', harmonicRatio: 2.756, harmonicGain: 0.22, noiseGain: 0.05, noiseCutoff: 4000, 
       decayPower: 0.35, chirpDepth: 0.070, chirpDuration: 0.045,
       isPhysicalNoiseEnabled: false, isNonlinearDecayEnabled: true, isInitialChirpEnabled: true,
-      isVibratoEnabled: true, vibratoRate: 7.0, vibratoDepth: 0.012
+      isVibratoEnabled: true, vibratoRate: 7.0, vibratoDepth: 0.012,
+      filters: {
+        lpf: { isEnabled: true, frequency: 14000, characteristic: '12_std' },
+        hpf: { isEnabled: false, frequency: 100, characteristic: '12_std' },
+        bpf: { isEnabled: false, frequency: 1000, characteristic: '12_std' }
+      }
     },
     ...JSON.parse(JSON.stringify(BUILTIN_SCALES.uguisu))
   }
 ];
+
+function loadPresetsWithMigration() {
+  try {
+    let loaded = JSON.parse(localStorage.getItem('kalimba_custom_master_presets'));
+    if (Array.isArray(loaded) && loaded.length === 4) {
+      loaded.forEach((p, idx) => {
+        let migrated = migratePreset(p);
+        if (p.Keys17 && !migrated.keys17) { migrated.keys17 = p.Keys17; delete migrated.Keys17; }
+        if (!migrated.keys17 || !Array.isArray(migrated.keys17)) migrated.keys17 = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].keys17));
+        if (!migrated.chords17 || !Array.isArray(migrated.chords17)) migrated.chords17 = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].chords17));
+        if (!migrated.chords8 || !Array.isArray(migrated.chords8)) migrated.chords8 = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].chords8));
+        if (!migrated.tonicRatios || !Array.isArray(migrated.tonicRatios)) migrated.tonicRatios = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].tonicRatios));
+        Object.assign(p, migrated);
+      });
+      return loaded;
+    }
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_PRESETS));
+}
 const vSlot8 = [7, 5, 3, 1, 0, 2, 4, 6];
 const vSlot17 = [15,13,11,9,7,5,3,1,0,2,4,6,8,10,12,14,16];
 const shortcuts8 = ['1','2','3','4','5','6','7','8'];
@@ -845,6 +926,7 @@ let longPressBehavior = 'long';
 let currentEnvParam = 'decay';
 let currentTimbreParam = 'vibrato';
 let currentHarmParam = 'vol';
+let currentFilterSubTab = 'lpf';
 let isStereoEnabled = false;
 let isKeyStereoSpreadEnabled = true;
 const activeHoldTrackers = new Map();
@@ -895,43 +977,8 @@ function findDecayPowerIndex(val) {
   return closestIdx;
 }
 
-function loadPresetsWithMigration() {
-  try {
-    let loaded = JSON.parse(localStorage.getItem('kalimba_custom_master_presets'));
-    if (Array.isArray(loaded) && loaded.length === 4) {
-      loaded.forEach((p, idx) => {
-        if (p.Keys17 && !p.keys17) { p.keys17 = p.Keys17; delete p.Keys17; }
-        if (!p.keys17 || !Array.isArray(p.keys17)) p.keys17 = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].keys17));
-        if (!p.chords17 || !Array.isArray(p.chords17)) p.chords17 = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].chords17));
-        if (!p.chords8 || !Array.isArray(p.chords8)) p.chords8 = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].chords8));
-        if (!p.tonicRatios || !Array.isArray(p.tonicRatios)) p.tonicRatios = JSON.parse(JSON.stringify(DEFAULT_PRESETS[idx].tonicRatios));
-        if (p.presetPan === undefined) p.presetPan = 0.0;
-        if (p.presetGain === undefined) p.presetGain = 1.0;
-        if (!p.timbre) p.timbre = {};
-        if (p.timbre.attackTime === undefined) p.timbre.attackTime = 0.004;
-        if (p.timbre.decayTime === undefined) p.timbre.decayTime = 2.5;
-        if (p.timbre.sustainLevel === undefined) p.timbre.sustainLevel = 0.0;
-        if (p.timbre.releaseTime === undefined) p.timbre.releaseTime = 0.012;
-        if (p.timbre.decayPower === undefined) p.timbre.decayPower = 0.50;
-        if (p.timbre.chirpDepth === undefined) p.timbre.chirpDepth = 0.015;
-        if (p.timbre.chirpDuration === undefined) p.timbre.chirpDuration = 0.008;
-
-        if (p.timbre.isPhysicalNoiseEnabled === undefined) p.timbre.isPhysicalNoiseEnabled = true;
-        if (p.timbre.isNonlinearDecayEnabled === undefined) p.timbre.isNonlinearDecayEnabled = true;
-        if (p.timbre.isInitialChirpEnabled === undefined) p.timbre.isInitialChirpEnabled = true;
-        if (p.timbre.isVibratoEnabled === undefined) p.timbre.isVibratoEnabled = false;
-        if (p.timbre.vibratoRate === undefined) p.timbre.vibratoRate = 6.0;
-        if (p.timbre.vibratoDepth === undefined) p.timbre.vibratoDepth = 0.025;
-      });
-      return loaded;
-    }
-  } catch (e) {}
-  return JSON.parse(JSON.stringify(DEFAULT_PRESETS));
-}
-
 let presets = loadPresetsWithMigration(), activePreset = presets[activeSlotIndex];
-let audioCtx = null, masterGain = null, hpf = null, lpf = null, compressor = null, sharedNoiseBuffer = null;
-let isHpfEnabled = true, isLpfEnabled = false, hpfCutoff = 120, lpfCutoff = 22000, hpfQ = 0.707, lpfQ = 0.707;
+let audioCtx = null, masterGain = null, compressor = null, sharedNoiseBuffer = null;
 let analyser = null, fftDataArray = null, animationFrameId = null, currentDisplayMode = 'fft';
 let isNoiseFilterEnabled = false, isRandomNoiseEnabled = false, isCompressorRoutingEnabled = true;
 let computedTonicFreq = 512.0, activeTinesData = [], lastTine = null, currentTine = null;
@@ -999,6 +1046,44 @@ function gcd(a,b) { a=Math.abs(a); b=Math.abs(b); while(b){ const t=b; b=a%b; a=
 function calcCents(num, den) { return (1200 * Math.log2(num / den)).toFixed(1); }
 function savePresetsToStorage() { localStorage.setItem('kalimba_custom_master_presets', JSON.stringify(presets)); }
 
+function saveAndDownloadPreset() {
+  activePreset.version = CURRENT_PRESET_SCHEMA_VERSION;
+  presets[activeSlotIndex] = JSON.parse(JSON.stringify(activePreset));
+  savePresetsToStorage();
+
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(activePreset, null, 2));
+  const downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute("href", dataStr);
+  downloadAnchor.setAttribute("download", `EJI_preset_${activeSlotIndex + 1}_v${CURRENT_PRESET_SCHEMA_VERSION}.json`);
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+
+  showToast(`💾 Preset ${activeSlotIndex + 1} saved & downloaded!`);
+}
+
+function handlePresetFileImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    try {
+      const rawData = JSON.parse(evt.target.result);
+      const migrated = migratePreset(rawData);
+      
+      presets[activeSlotIndex] = migrated;
+      savePresetsToStorage();
+      renderApp();
+      showToast(`📂 Preset ${activeSlotIndex + 1} loaded successfully!`, 'success');
+    } catch (err) {
+      console.error(err);
+      showToast("⚠️ Failed to parse preset JSON file.");
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
 function calcIntervalRatio(tineA, tineB) {
   if (!tineA || !tineB) return { ratioStr: "1/1", cents: 0.0 };
   let num = tineB.num * tineA.den, den = tineB.den * tineA.num;
@@ -1056,30 +1141,18 @@ function checkOrientationAutoKeyMode() {
 }
 
 function getAudioEntryNode() {
-  if (isHpfEnabled && hpf) return hpf;
-  if (isLpfEnabled && lpf) return lpf;
   if (isCompressorRoutingEnabled && compressor && compressorMode !== 'off') return compressor;
   return masterGain;
 }
 
 function updateAudioRouting() {
-  if (!audioCtx || !hpf || !lpf || !compressor || !masterGain) return;
+  if (!audioCtx || !compressor || !masterGain) return;
   try {
-    hpf.disconnect();
-    lpf.disconnect();
     compressor.disconnect();
   } catch(e){}
 
-  let chain = [];
-  if (isHpfEnabled) chain.push(hpf);
-  if (isLpfEnabled) chain.push(lpf);
-  if (isCompressorRoutingEnabled && compressorMode !== 'off') chain.push(compressor);
-
-  for (let i = 0; i < chain.length - 1; i++) {
-    chain[i].connect(chain[i + 1]);
-  }
-  if (chain.length > 0) {
-    chain[chain.length - 1].connect(masterGain);
+  if (isCompressorRoutingEnabled && compressorMode !== 'off') {
+    compressor.connect(masterGain);
   }
 }
 
@@ -1141,16 +1214,6 @@ async function initAudio() {
   if (!audioCtx) {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     audioCtx = new AudioContextClass({ sampleRate: targetSampleRate });
-
-    hpf = audioCtx.createBiquadFilter();
-    hpf.type = 'highpass';
-    hpf.frequency.setValueAtTime(hpfCutoff, audioCtx.currentTime);
-    hpf.Q.setValueAtTime(hpfQ, audioCtx.currentTime);
-
-    lpf = audioCtx.createBiquadFilter();
-    lpf.type = 'lowpass';
-    lpf.frequency.setValueAtTime(lpfCutoff, audioCtx.currentTime);
-    lpf.Q.setValueAtTime(lpfQ, audioCtx.currentTime);
 
     compressor = audioCtx.createDynamicsCompressor();
     applyCompressorSettings();
@@ -1339,6 +1402,39 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
     panner.connect(dest);
     dest = panner;
   }
+
+  const filtersCfg = t.filters || {
+    lpf: { isEnabled: false, frequency: 12000, characteristic: '12_std' },
+    hpf: { isEnabled: false, frequency: 100, characteristic: '12_std' },
+    bpf: { isEnabled: false, frequency: 1000, characteristic: '12_std' }
+  };
+
+  ['lpf', 'hpf', 'bpf'].forEach(fKey => {
+    const fData = filtersCfg[fKey];
+    if (fData && fData.isEnabled) {
+      const fType = fKey === 'lpf' ? 'lowpass' : (fKey === 'hpf' ? 'highpass' : 'bandpass');
+      const fFreq = parseFloat(fData.frequency) || (fKey === 'hpf' ? 100 : 4000);
+      const char = fData.characteristic || '12_std';
+
+      let qVal = 0.707;
+      let cascadeCount = 1;
+      if (char === '6' || char === '12_smooth') { qVal = 0.5; cascadeCount = 1; }
+      else if (char === '12_std') { qVal = 0.707; cascadeCount = 1; }
+      else if (char === '24') { qVal = 0.707; cascadeCount = 2; }
+      else if (char === '36') { qVal = 0.707; cascadeCount = 3; }
+
+      let prevNode = dest;
+      for (let i = 0; i < cascadeCount; i++) {
+        const filterNode = audioCtx.createBiquadFilter();
+        filterNode.type = fType;
+        filterNode.frequency.setValueAtTime(fFreq, now);
+        filterNode.Q.setValueAtTime(qVal, now);
+        filterNode.connect(prevNode);
+        prevNode = filterNode;
+      }
+      dest = prevNode;
+    }
+  });
 
   const mode = t.harmonicMode || 'harm3';
   const attackTime = Math.max(0.001, parseFloat(t.attackTime) || 0.004);
@@ -1852,7 +1948,6 @@ function clearPerfData() {
 function startHold(keyId, tine, wrapper) {
   if (activeHoldTrackers.has(keyId)) return;
 
-  // ▼ 【追加】LongpressがOFFの場合は、タイマーを待たずに即座に音を鳴らす
   if (longPressBehavior === 'off') {
     triggerPluck(tine, wrapper, false);
     activeHoldTrackers.set(keyId, { holdTimer: null, repeatInterval: null, tine, wrapper, triggeredLong: true });
@@ -1900,6 +1995,26 @@ function updateTimbrePanelUI() {
   document.querySelectorAll('#initialChirpToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.chirp === 'on') === !!t.isInitialChirpEnabled));
   document.querySelectorAll('#vibratoToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.vib === 'on') === !!t.isVibratoEnabled));
 
+  const filtersCfg = t.filters || {
+    lpf: { isEnabled: false, frequency: 12000, characteristic: '12_std' },
+    hpf: { isEnabled: false, frequency: 100, characteristic: '12_std' },
+    bpf: { isEnabled: false, frequency: 1000, characteristic: '12_std' }
+  };
+  const currentF = filtersCfg[currentFilterSubTab] || { isEnabled: false, frequency: 4000, characteristic: '12_std' };
+
+  document.querySelectorAll('#activeFilterToggle .segmented-btn').forEach(b => {
+    b.classList.toggle('active', (b.dataset.fen === 'on') === !!currentF.isEnabled);
+  });
+  document.querySelectorAll('#filterSubTabGroup .segmented-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.fsub === currentFilterSubTab);
+  });
+
+  const inputActiveFilterFreq = document.getElementById('inputActiveFilterFreq');
+  if (inputActiveFilterFreq) inputActiveFilterFreq.value = currentF.frequency !== undefined ? currentF.frequency : 4000;
+  
+  const selectActiveFilterChar = document.getElementById('selectActiveFilterChar');
+  if (selectActiveFilterChar) selectActiveFilterChar.value = currentF.characteristic || '12_std';
+
   const dpVal = t.decayPower !== undefined ? parseFloat(t.decayPower) : 0.50;
   const dpIdx = findDecayPowerIndex(dpVal);
   document.getElementById('inputDecayPower').value = dpIdx;
@@ -1930,12 +2045,6 @@ function updateSettingsModalUI() {
   document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.engine === selectedRecEngine));
   document.querySelectorAll('#stereoModeToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.stereo === 'on') === isStereoEnabled));
   document.querySelectorAll('#keyStereoSpreadToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.kspread === 'on') === isKeyStereoSpreadEnabled));
-
-  document.querySelectorAll('#hpfToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.hpf === 'on') === isHpfEnabled));
-  document.getElementById('inputHpfCutoff').value = hpfCutoff;
-
-  document.querySelectorAll('#lpfToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.lpf === 'on') === isLpfEnabled));
-  document.getElementById('inputLpfCutoff').value = lpfCutoff;
 
   const savedRecFormat = localStorage.getItem('cfg_recFormat');
   if (savedRecFormat) {
@@ -2368,10 +2477,6 @@ document.addEventListener('DOMContentLoaded', () => {
   longPressBehavior = localStorage.getItem('cfg_longPress') || longPressBehavior;
   isRandomNoiseEnabled = localStorage.getItem('cfg_noise') === 'true';
   isKeyStereoSpreadEnabled = (localStorage.getItem('cfg_kspread') ?? 'true') === 'true';
-  isHpfEnabled = (localStorage.getItem('cfg_hpf') ?? 'true') === 'true';
-  hpfCutoff = parseFloat(localStorage.getItem('cfg_hpfCut')) || hpfCutoff;
-  isLpfEnabled = localStorage.getItem('cfg_lpf') === 'true';
-  lpfCutoff = parseFloat(localStorage.getItem('cfg_lpfCut')) || lpfCutoff;
   compressorMode = localStorage.getItem('cfg_comp') || compressorMode;
   selectedRecEngine = localStorage.getItem('cfg_recEng') || selectedRecEngine;
   isStereoEnabled = localStorage.getItem('cfg_stereo') === 'true';
@@ -2423,12 +2528,59 @@ document.addEventListener('DOMContentLoaded', () => {
       e.target.classList.add('active');
       currentTimbreParam = e.target.dataset.tparam;
 
-      ['vibrato', 'decay', 'chirp', 'noise'].forEach(p => {
+      ['vibrato', 'decay', 'chirp', 'noise', 'filter'].forEach(p => {
         const view = document.getElementById(`tview-${p}`);
         if (view) view.style.display = (p === currentTimbreParam) ? 'flex' : 'none';
       });
     });
   });
+
+  document.querySelectorAll('#filterSubTabGroup .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#filterSubTabGroup .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      currentFilterSubTab = e.target.dataset.fsub;
+      updateTimbrePanelUI();
+    });
+  });
+
+  document.querySelectorAll('#activeFilterToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#activeFilterToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      if (!activePreset.timbre) activePreset.timbre = {};
+      if (!activePreset.timbre.filters) activePreset.timbre.filters = {};
+      if (!activePreset.timbre.filters[currentFilterSubTab]) {
+        activePreset.timbre.filters[currentFilterSubTab] = { isEnabled: false, frequency: 4000, characteristic: '12_std' };
+      }
+      activePreset.timbre.filters[currentFilterSubTab].isEnabled = (e.target.dataset.fen === 'on');
+    });
+  });
+
+  const inputActiveFilterFreq = document.getElementById('inputActiveFilterFreq');
+  if (inputActiveFilterFreq) {
+    inputActiveFilterFreq.addEventListener('change', (e) => {
+      const val = parseFloat(e.target.value) || 4000;
+      if (!activePreset.timbre) activePreset.timbre = {};
+      if (!activePreset.timbre.filters) activePreset.timbre.filters = {};
+      if (!activePreset.timbre.filters[currentFilterSubTab]) {
+        activePreset.timbre.filters[currentFilterSubTab] = { isEnabled: false, frequency: 4000, characteristic: '12_std' };
+      }
+      activePreset.timbre.filters[currentFilterSubTab].frequency = val;
+    });
+  }
+
+  const selectActiveFilterChar = document.getElementById('selectActiveFilterChar');
+  if (selectActiveFilterChar) {
+    selectActiveFilterChar.addEventListener('change', (e) => {
+      if (!activePreset.timbre) activePreset.timbre = {};
+      if (!activePreset.timbre.filters) activePreset.timbre.filters = {};
+      if (!activePreset.timbre.filters[currentFilterSubTab]) {
+        activePreset.timbre.filters[currentFilterSubTab] = { isEnabled: false, frequency: 4000, characteristic: '12_std' };
+      }
+      activePreset.timbre.filters[currentFilterSubTab].characteristic = e.target.value;
+    });
+  }
 
   document.querySelectorAll('#nonlinearDecayToggle .segmented-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -2556,42 +2708,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  document.querySelectorAll('#hpfToggle .segmented-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      document.querySelectorAll('#hpfToggle .segmented-btn').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      isHpfEnabled = (e.target.dataset.hpf === 'on');
-      localStorage.setItem('cfg_hpf', isHpfEnabled);
-      updateAudioRouting();
-    });
-  });
-
-  document.getElementById('inputHpfCutoff').addEventListener('change', (e) => {
-    hpfCutoff = parseFloat(e.target.value) || 120;
-    localStorage.setItem('cfg_hpfCut', hpfCutoff);
-    if (hpf && audioCtx) {
-      hpf.frequency.setValueAtTime(hpfCutoff, audioCtx.currentTime);
-    }
-  });
-
-  document.querySelectorAll('#lpfToggle .segmented-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      document.querySelectorAll('#lpfToggle .segmented-btn').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      isLpfEnabled = (e.target.dataset.lpf === 'on');
-      localStorage.setItem('cfg_lpf', isLpfEnabled);
-      updateAudioRouting();
-    });
-  });
-
-  document.getElementById('inputLpfCutoff').addEventListener('change', (e) => {
-    lpfCutoff = parseFloat(e.target.value) || 8000;
-    localStorage.setItem('cfg_lpfCut', lpfCutoff);
-    if (lpf && audioCtx) {
-      lpf.frequency.setValueAtTime(lpfCutoff, audioCtx.currentTime);
-    }
-  });
-
   document.querySelectorAll('.display-mode-group .segmented-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       currentDisplayMode = btn.dataset.display;
@@ -2637,9 +2753,9 @@ document.addEventListener('DOMContentLoaded', () => {
       masterGain.gain.setValueAtTime(masterGain.gain.value, now);
       masterGain.gain.linearRampToValueAtTime(val, now + 0.015);
     }
-      const safeVal = Math.max(0.0001, val);
-  document.getElementById('txtMasterGain').textContent = `${val.toFixed(2)} (${(20 * Math.log10(safeVal)).toFixed(0)}dB)`;
-});
+    const safeVal = Math.max(0.0001, val);
+    document.getElementById('txtMasterGain').textContent = `${val.toFixed(2)} (${(20 * Math.log10(safeVal)).toFixed(0)}dB)`;
+  });
 
   document.querySelectorAll('#envParamSelectGroup .segmented-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -2702,10 +2818,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  document.getElementById('btnSavePreset').addEventListener('click', () => {
-    savePresetsToStorage();
-    alert(`Preset ${activeSlotIndex + 1} saved!`);
+  document.getElementById('btnSavePreset').addEventListener('click', saveAndDownloadPreset);
+
+  document.getElementById('btnLoadPreset').addEventListener('click', () => {
+    document.getElementById('inputPresetFile').click();
   });
+
+  document.getElementById('inputPresetFile').addEventListener('change', handlePresetFileImport);
 
   document.getElementById('btnResetPreset').addEventListener('click', () => {
     if (confirm(`Reset Preset ${activeSlotIndex + 1} to default?`)) {
@@ -2954,11 +3073,18 @@ function showUpdateNotification(registration){
   }
 }
 
-function showToast(message, duration = 3000) {
+function showToast(message, type = 'error', duration = 3000) {
   const toast = document.getElementById('toastNotification');
   const msgEl = document.getElementById('toastMessage');
   if (toast && msgEl) {
     msgEl.textContent = message;
+    
+    if (type === 'success') {
+      toast.classList.add('success');
+    } else {
+      toast.classList.remove('success');
+    }
+
     toast.style.display = 'flex';
     setTimeout(() => { toast.style.opacity = '1'; }, 10);
     
