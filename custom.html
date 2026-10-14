@@ -644,6 +644,8 @@ function migratePreset(rawPreset) {
     }
     if (p.presetPan === undefined) p.presetPan = 0.0;
     if (p.presetGain === undefined) p.presetGain = 1.0;
+    if (p.timbre.isRandomNoiseEnabled === undefined) p.timbre.isRandomNoiseEnabled = false;
+    if (p.timbre.isNoiseFilterEnabled === undefined) p.timbre.isNoiseFilterEnabled = false;
   }
 
   p.version = CURRENT_PRESET_SCHEMA_VERSION;
@@ -828,6 +830,8 @@ const DEFAULT_PRESETS = [
       decayPower: 0.50, chirpDepth: 0.015, chirpDuration: 0.008,
       isPhysicalNoiseEnabled: false, isNonlinearDecayEnabled: true, isInitialChirpEnabled: true,
       isVibratoEnabled: false, vibratoRate: 6.0, vibratoDepth: 0.025,
+      isRandomNoiseEnabled: false, 
+      isNoiseFilterEnabled: false,
       filters: {
         lpf: { isEnabled: false, frequency: 12000, characteristic: '12_std' },
         hpf: { isEnabled: false, frequency: 100, characteristic: '12_std' },
@@ -848,6 +852,8 @@ const DEFAULT_PRESETS = [
       decayPower: 0.30, chirpDepth: 0.0, chirpDuration: 0.0,
       isPhysicalNoiseEnabled: false, isNonlinearDecayEnabled: false, isInitialChirpEnabled: false,
       isVibratoEnabled: false, vibratoRate: 5.5, vibratoDepth: 0.012,
+      isRandomNoiseEnabled: false, 
+      isNoiseFilterEnabled: false,
       filters: {
         lpf: { isEnabled: false, frequency: 16000, characteristic: '12_std' },
         hpf: { isEnabled: false, frequency: 100, characteristic: '12_std' },
@@ -868,6 +874,8 @@ const DEFAULT_PRESETS = [
       decayPower: 0.40, chirpDepth: 0.050, chirpDuration: 0.030,
       isPhysicalNoiseEnabled: true, isNonlinearDecayEnabled: true, isInitialChirpEnabled: true,
       isVibratoEnabled: true, vibratoRate: 2.0, vibratoDepth: 0.025,
+      isRandomNoiseEnabled: false, 
+      isNoiseFilterEnabled: false,
       filters: {
         lpf: { isEnabled: true, frequency: 10000, characteristic: '12_std' },
         hpf: { isEnabled: false, frequency: 100, characteristic: '12_std' },
@@ -888,6 +896,8 @@ const DEFAULT_PRESETS = [
       decayPower: 0.35, chirpDepth: 0.070, chirpDuration: 0.045,
       isPhysicalNoiseEnabled: false, isNonlinearDecayEnabled: true, isInitialChirpEnabled: true,
       isVibratoEnabled: true, vibratoRate: 7.0, vibratoDepth: 0.012,
+      isRandomNoiseEnabled: false, 
+      isNoiseFilterEnabled: false,
       filters: {
         lpf: { isEnabled: true, frequency: 14000, characteristic: '12_std' },
         hpf: { isEnabled: false, frequency: 100, characteristic: '12_std' },
@@ -980,7 +990,7 @@ function findDecayPowerIndex(val) {
 let presets = loadPresetsWithMigration(), activePreset = presets[activeSlotIndex];
 let audioCtx = null, masterGain = null, compressor = null, sharedNoiseBuffer = null;
 let analyser = null, fftDataArray = null, animationFrameId = null, currentDisplayMode = 'fft';
-let isNoiseFilterEnabled = false, isRandomNoiseEnabled = false, isCompressorRoutingEnabled = true;
+let isCompressorRoutingEnabled = true;
 let computedTonicFreq = 512.0, activeTinesData = [], lastTine = null, currentTine = null;
 let recorderNode = null, selectedRecEngine = 'worklet', recordedBuffers = [], isRecording = false, recTimerInterval = null, lastRecordedBlobUrl = null;
 const loadedWorkletContexts = new WeakSet();
@@ -1370,14 +1380,14 @@ function drawFFT() {
   ctx.restore();
 }
 
-async function playTone(freq, isLongPress = false, overrideTimbre = null, overrideNoiseEnabled = null, overrideNoiseFilterEnabled = null, overridePan = null, overrideGain = null) {
+async function playTone(freq, isLongPress = false, overrideTimbre = null, overridePan = null, overrideGain = null) {
   await initAudio();
   if (!audioCtx) return;
 
   const now = audioCtx.currentTime;
   const t = overrideTimbre || activePreset.timbre;
-  const randNoise = overrideNoiseEnabled !== null ? overrideNoiseEnabled : isRandomNoiseEnabled;
-  const noiseFilter = overrideNoiseFilterEnabled !== null ? overrideNoiseFilterEnabled : isNoiseFilterEnabled;
+  const randNoise = t.isRandomNoiseEnabled !== undefined ? t.isRandomNoiseEnabled : false;
+  const noiseFilter = t.isNoiseFilterEnabled !== undefined ? t.isNoiseFilterEnabled : false;
 
   const isPhysicalNoiseEnabled = t.isPhysicalNoiseEnabled !== undefined ? t.isPhysicalNoiseEnabled : true;
   const isNonlinearDecayEnabled = t.isNonlinearDecayEnabled !== undefined ? t.isNonlinearDecayEnabled : true;
@@ -1827,7 +1837,7 @@ function triggerPluck(tine, wrapper, isLongPress = false) {
   const totalKeys = activeTinesData.length || 8;
   const calcPan = getCalculatedPan(tine.slotIdx, totalKeys);
 
-  playTone(tine.freq, isLongPress, null, null, null, calcPan);
+playTone(tine.freq, isLongPress, null, null, null, calcPan);
   
   if (perfIsRecording) {
     const elapsed = performance.now() - perfStartTime;
@@ -1838,9 +1848,7 @@ function triggerPluck(tine, wrapper, isLongPress = false) {
       freq: tine.freq,
       timbre: JSON.parse(JSON.stringify(activePreset.timbre)),
       presetPan: calcPan,
-      presetGain: activePreset.presetGain !== undefined ? activePreset.presetGain : 1.0,
-      isRandomNoiseEnabled: isRandomNoiseEnabled,
-      isNoiseFilterEnabled: isNoiseFilterEnabled
+      presetGain: activePreset.presetGain !== undefined ? activePreset.presetGain : 1.0
     });
   }
 
@@ -1903,7 +1911,6 @@ function stopPerfPlay() {
   btn.textContent = "Play: OFF";
   btn.style.color = "#9ca3af";
 }
-
 function runPerfLoop() {
   if (!perfIsPlaying || perfRecordedEvents.length === 0) return;
   const loopStart = performance.now();
@@ -1928,7 +1935,7 @@ function runPerfLoop() {
 
     perfTimeoutId = setTimeout(() => {
       if (!perfIsPlaying) return;
-      playTone(ev.freq, false, ev.timbre, ev.isRandomNoiseEnabled, ev.isNoiseFilterEnabled, ev.presetPan, ev.presetGain);
+      playTone(ev.freq, false, ev.timbre, ev.presetPan, ev.presetGain);
       document.getElementById('valLastPlucked').innerHTML = `<span class="line">Loop Playback</span><span class="line">(${ev.freq.toFixed(1)}Hz)</span>`;
       eventIdx++;
       scheduleNext();
@@ -1983,9 +1990,9 @@ function updateTimbrePanelUI() {
   const t = activePreset.timbre || {};
 
   document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.pnoise === 'on') === !!t.isPhysicalNoiseEnabled));
- 
-  document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.noise === 'on') === !!isRandomNoiseEnabled));
-  document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.nfilt === 'on') === !!isNoiseFilterEnabled));
+  document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.noise === 'on') === !!t.isRandomNoiseEnabled));
+  document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.nfilt === 'on') === !!t.isNoiseFilterEnabled));
+  
   const noiseCutoffInput = document.getElementById('inputNoiseCutoff');
   if (noiseCutoffInput && activePreset.timbre) {
     noiseCutoffInput.value = activePreset.timbre.noiseCutoff !== undefined ? activePreset.timbre.noiseCutoff : 1400;
@@ -2040,7 +2047,6 @@ function updateTimbrePanelUI() {
 
 function updateSettingsModalUI() {
   document.querySelectorAll('#longPressToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.longpress === longPressBehavior));
-  document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.noise === 'on') === isRandomNoiseEnabled));
   document.querySelectorAll('#compressorModeToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.comp === compressorMode));
   document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.engine === selectedRecEngine));
   document.querySelectorAll('#stereoModeToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.stereo === 'on') === isStereoEnabled));
@@ -2475,7 +2481,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   longPressBehavior = localStorage.getItem('cfg_longPress') || longPressBehavior;
-  isRandomNoiseEnabled = localStorage.getItem('cfg_noise') === 'true';
   isKeyStereoSpreadEnabled = (localStorage.getItem('cfg_kspread') ?? 'true') === 'true';
   compressorMode = localStorage.getItem('cfg_comp') || compressorMode;
   selectedRecEngine = localStorage.getItem('cfg_recEng') || selectedRecEngine;
@@ -2487,21 +2492,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (recFormatEl) recFormatEl.value = savedRecFormat;
   }
 
-  document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      if (!activePreset.timbre) activePreset.timbre = {};
-      activePreset.timbre.isPhysicalNoiseEnabled = (e.target.dataset.pnoise === 'on');
-    });
+document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    if (!activePreset.timbre) activePreset.timbre = {};
+    activePreset.timbre.isPhysicalNoiseEnabled = (e.target.dataset.pnoise === 'on');
+    savePresetsToStorage();
   });
+});
 
   document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
-      isRandomNoiseEnabled = (e.target.dataset.noise === 'on');
-      localStorage.setItem('cfg_noise', isRandomNoiseEnabled);
+      if (!activePreset.timbre) activePreset.timbre = {};
+      activePreset.timbre.isRandomNoiseEnabled = (e.target.dataset.noise === 'on');
+      savePresetsToStorage();
     });
   });
 
@@ -2509,7 +2516,9 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', (e) => {
       document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
-      isNoiseFilterEnabled = (e.target.dataset.nfilt === 'on');
+      if (!activePreset.timbre) activePreset.timbre = {};
+      activePreset.timbre.isNoiseFilterEnabled = (e.target.dataset.nfilt === 'on');
+      savePresetsToStorage();
     });
   });
 
@@ -2519,6 +2528,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const val = parseFloat(e.target.value) || 1400;
       if (!activePreset.timbre) activePreset.timbre = {};
       activePreset.timbre.noiseCutoff = val;
+      savePresetsToStorage();
     });
   }
 
@@ -2554,6 +2564,7 @@ document.addEventListener('DOMContentLoaded', () => {
         activePreset.timbre.filters[currentFilterSubTab] = { isEnabled: false, frequency: 4000, characteristic: '12_std' };
       }
       activePreset.timbre.filters[currentFilterSubTab].isEnabled = (e.target.dataset.fen === 'on');
+      savePresetsToStorage();
     });
   });
 
@@ -2567,6 +2578,7 @@ document.addEventListener('DOMContentLoaded', () => {
         activePreset.timbre.filters[currentFilterSubTab] = { isEnabled: false, frequency: 4000, characteristic: '12_std' };
       }
       activePreset.timbre.filters[currentFilterSubTab].frequency = val;
+      savePresetsToStorage();
     });
   }
 
@@ -2579,6 +2591,7 @@ document.addEventListener('DOMContentLoaded', () => {
         activePreset.timbre.filters[currentFilterSubTab] = { isEnabled: false, frequency: 4000, characteristic: '12_std' };
       }
       activePreset.timbre.filters[currentFilterSubTab].characteristic = e.target.value;
+      savePresetsToStorage();
     });
   }
 
