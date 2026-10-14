@@ -11,7 +11,8 @@ A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built wi
 
 ---
 
-## 🌟 What's New (Custom Mode): Extended Just Intonation Custom Synthesizer β
+## 🌟 What's New
+Custom Mode: Extended Just Intonation Custom Synthesizer β
 
 1. **Preset Management, Base Tonic & Tuning Layout**
    * **4 Individual Preset Slots:** Save, Load, and Reset to Default for 4 independent preset slots using `localStorage` (Preset 1–4).
@@ -161,7 +162,8 @@ If you prefer to run or modify the code locally:
 
 ---
 
-## 🌟 新機能（Custom Mode）：Extended Just Intonation Custom Synthesizer β
+## 🌟 新機能
+Custom Mode：Extended Just Intonation Custom Synthesizer β
 
 1. **プリセット管理 & 基音・音律レイアウト**
    * **4つのプリセットスロット:** `localStorage` を活用した個別の保存（Save）、読込、デフォルトリセット（Reset）機能（Preset 1〜4）。
