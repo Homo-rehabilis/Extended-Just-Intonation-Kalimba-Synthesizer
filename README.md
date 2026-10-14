@@ -11,6 +11,69 @@ A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built wi
 
 ---
 
+## 🌟 What's New (Custom Mode): Extended Just Intonation Custom Synthesizer β
+
+1. **Preset Management, Base Tonic & Tuning Layout**
+   * **4 Individual Preset Slots:** Save, Load, and Reset to Default for 4 independent preset slots using `localStorage` (Preset 1–4).
+   * **Base Frequency Configuration:** Select preset values (417.6 Hz, 432 Hz, 440 Hz, 512 Hz, or 3569.48 Hz for cricket-based tuning) or enter custom values (100–6000 Hz).
+   * **Ratio Multipliers & Octave Shift:** Apply exact fraction multipliers (Numerator/Denominator from 1–99), shift octaves (±N), and utilize 12 customizable quick Just Intonation ratio shortcut buttons.
+   * **Key Layout:** Switch between 8-key and 17-key layouts (with automatic switching based on screen orientation/aspect ratio).
+
+2. **Harmonic Modes & Physical Modeling**
+   * **Rich Harmonic Modes:**
+     * `Sine`: Pure fundamental sine wave.
+     * `1, 2, 3`: Adds 2nd and 3rd natural harmonics.
+     * `Inharmonic` / `Inharm2`: Inharmonic overtones (1 or 2 extra inharmonic components).
+     * `Syrinx`: Complex resonance series inspired by Pan's flute / avian vocal organs.
+     * `Cricket`: Insect-like tone combining 45 Hz Amplitude Modulation (AM) with inharmonic overtones.
+   * **Harmonic Controls:**
+     * `Harm Vol`: Continuous harmonic gain adjustment (0.0–0.5).
+     * `Inharm Ratio`: Select physical ratios (Fundamental 1.000, Circular Membrane Modes 1.594/2.136, Golden Ratio 1.618, π 3.142, Stiff String 3.400, Metallic Bell 3.650, Free-Free Bar 2.756, etc.).
+
+3. **Timbre Panel (Advanced Acoustic Settings)**
+   * **Vibrato (LFO):** Toggle ON/OFF, rate control (2.0–15.0 Hz), and depth control (0–10%).
+   * **Nonlinear Harmonic Decay:** Toggle ON/OFF with 5 selectable decay curves (Low Damping, Glass/Crystal, Standard Metal Bar, Stiff Material/High Friction, or Square Law Damping).
+   * **Initial Pitch Chirp:** Transient pitch drop/rise on attack (Depth: 0.0–3.0%, Duration: 2–30 ms).
+   * **Physical Attack Noise:** Toggle between Metallic Touch and Fast Attack modes.
+   * **Random Noise & Filter:** Adjustable random noise gain and bandpass filter cutoff frequency.
+
+4. **ADSR Envelope, Spatial & Master Settings**
+   * **Independent ADSR Envelope:** Slider controls for Attack, Decay, Sustain, and Release parameters.
+   * **Master & Spatial Controls:**
+     * Master gain slider (-40 dB to -12 dB).
+     * Stereo / Mono toggle with individual Pan (L1.00–R1.00) and Preset Gain (0.10–2.00) controls in stereo mode.
+     * **Key-Position Stereo Spread:** Automatically spreads notes across the stereo field based on key placement (ON/OFF).
+     * **Long Press Mode:** Toggle between sustained long tones (Long Tone) and rapid repeated triggers (Rapid Fire).
+
+5. **Effects & Filters**
+   * **High-Pass Filter (HPF):** Toggle ON/OFF, cutoff frequency (10–10000 Hz).
+   * **Low-Pass Filter (LPF):** Toggle ON/OFF, cutoff frequency (100–48000 Hz).
+   * **Compressor:** Switch between Standard (Threshold -24 dB), Hard (Threshold -12 dB), and OFF (Bypass).
+
+6. **Performance & Playback Functions**
+   * **Triggering Inputs:** Touch / Mouse triggering (with long-press support) and QWERTY keyboard shortcuts.
+   * **Chord Arpeggiator:** One-click chord triggering, BPM control (1–500), loop playback toggle, and stop button.
+   * **Real-time Performance Loop:** Record user keystrokes in real-time (REC), loop playback, and clear.
+
+7. **High-Definition Recording & WAV Export**
+   * **Formats:** 32-bit Float / 16-bit PCM at 192 kHz, 96 kHz, or 48 kHz (6 total format configurations).
+   * **Recording Engine:** AudioWorklet (primary) with ScriptProcessor fallback.
+   * **File Export:** Live recording timer with automatic timestamped filename download (.wav).
+
+8. **Visual Interface & Scale/Chord Editor (Scala Support)**
+   * **Display Switcher (3 Modes):**
+     * `INFO`: Telemetry display (last note played, inter-note ratio, cent differences).
+     * `FFT`: Real-time FFT frequency visualizer (logarithmic frequency scale).
+     * `Timbre`: Deep acoustic timbre adjustment panel.
+   * **Fullscreen Mode:** Toggle full-screen display for the synthesizer card.
+   * **Scala (.scl) Compatibility:**
+     * Scale and Chord Editor for 8-key and 17-key layouts.
+     * One-click loading of server `.scl` preset files (Chinese, Pythagorean, Classic, 7-limit, 23-limit, etc.).
+     * Local `.scl` file import and custom scale `.scl` export.
+   * **Progressive Web App (PWA):** Offline capability via Service Worker with automatic update notifications.
+
+---
+
 ## Key Features
 
 *   **Adaptive Key Layouts:** Automatically switches between an **8-Key mode** (ideal for portrait or mobile views) and a **13-Key or 17-Key mode** (for landscape views).
@@ -95,6 +158,71 @@ If you prefer to run or modify the code locally:
 # 拡張純正律カリンバシンセサイザー (Extended Just Intonation Kalimba Synthesizer)
 
 バニラHTML5、CSS3、Web Audio APIで構築された、ブラウザベースの**純正律カリンバ・シンセサイザー**です。楽器演奏者、数比に基づく微小音程（マイクロトーン）に興味をもつ人が、直感的な親指ピアノインターフェースを通じて歴史的および未来的な音律システムを探索、学習するために考案されました。
+
+---
+
+## 🌟 新機能（Custom Mode）：Extended Just Intonation Custom Synthesizer β
+
+1. **プリセット管理 & 基音・音律レイアウト**
+   * **4つのプリセットスロット:** `localStorage` を活用した個別の保存（Save）、読込、デフォルトリセット（Reset）機能（Preset 1〜4）。
+   * **基準周波数（Base Frequency）:** 417.6Hz、432Hz、440Hz、512Hz、3569.48Hz（コオロギ基準等）のプリセット選択、または100〜6000Hzのカスタム数値入力。
+   * **比率乗数 & オクターブ:** 分子/分母（1〜99）による乗算、オクターブシフト（±N）。さらに12種類のカスタマイズ可能な純正比率ショートカットボタンを装備。
+   * **鍵盤レイアウト:** 8キー／17キーの切り替え（画面の縦横比に応じた自動判定・切替にも対応）。
+
+2. **倍音モード（Harmonic Modes）と物理モデリング**
+   * **多彩なモード選択:**
+     * `Sine`: 純音（サイン波）。
+     * `1,2,3`: 第2・第3自然倍音を加えた響き。
+     * `Inharmonic` / `Inharm2`: 非調和倍音（1系統または2系統を追加）。
+     * `Syrinx`: シリンクス（ギリシャ神話のパンの笛／鳥類の鳴声器官に由来する複雑な共鳴倍音列）。
+     * `Cricket`: 45Hzの振幅変調（AM）と非調和倍音を組み合わせたコオロギの鳴き声風音色。
+   * **倍音・非調和パラメータ:**
+     * `Harm Vol`: 倍音ボリューム（0.0〜0.5）。
+     * `Inharm Ratio`: プリセット切替（基音1.000、円形膜モード1.594/2.136、黄金比1.618、π 3.142、弦剛性3.400、ベル音3.650、自由端バー2.756等）。
+
+3. **Timbre（音色）パネル**
+   * **Vibrato (LFO):** ON/OFF、速度（2.0〜15.0 Hz）、深度（0〜10%）。
+   * **Nonlinear Harmonic Decay:** ON/OFF、減衰特性（Decay Power 5段階切替：低減衰・ガラス調・標準金属バー・剛性素材・急激な二乗則）。
+   * **Initial Pitch Chirp:** 打鍵初期のピッチチャープ（深度0.0〜3.0%、持続時間2〜30ms）。
+   * **Physical Attack Noise:** メタリックタッチ / 高速アタックの切替。
+   * **Random Noise & Filter:** ランダムノイズの音量調整およびバンドパスフィルター（カットオフ周波数設定）。
+
+4. **ADSRエンベロープ & 空間・マスター設定**
+   * **ADSR 個別調整:** Attack、Decay、Sustain、Release をスライダーで精密に設定。
+   * **ボリューム・空間設定:**
+     * マスターゲインスライダー（-40dB〜-12dB）。
+     * ステレオ / モノラル切替、ステレオ時の個別パン（L1.00〜R1.00）およびゲイン（0.10〜2.00）。
+     * **Key-Position Stereo Spread:** 鍵盤位置に応じた自動パン配置（ON/OFF）。
+     * **ロングプレス動作:** 長音維持（Long Tone）か連打（Rapid Fire）の切替。
+
+5. **エフェクト・フィルター**
+   * **HPF（ハイパスフィルター）:** ON/OFF、カットオフ周波数（10〜10000 Hz）。
+   * **LPF（ローパスフィルター）:** ON/OFF、カットオフ周波数（100〜48000 Hz）。
+   * **コンプレッサー:** Standard（閾値-24dB）、Hard（閾値-12dB）、OFF（バイパス）の切替。
+
+6. **演奏・パフォーマンス機能**
+   * **打鍵トリガー:** マウス／タッチ（長押し・連打対応）、QWERTYキーボードによる演奏。
+   * **コード自動演奏（Arpeggio）:** コードボタン選択、BPM設定（1〜500）、ループ再生ON/OFF、ストップ。
+   * **リアルタイムパフォーマンス録音:** 打鍵のリアルタイム録音（REC）、ループ再生、消去。
+
+7. **ハイレゾオーディオ録音 & WAVエクスポート**
+   * **フォーマット:** 32-bit Float / 16-bit PCM × 192kHz / 96kHz / 48kHz（全6種）。
+   * **録音エンジン:** AudioWorklet（メイン）とScriptProcessor（フォールバック）の選択。
+   * **ファイル管理:** タイマー表示付き録音と、日時スタンプ付きファイル名のWAVダウンロード。
+
+8. **ビジュアル・UI機能 & スケールエディター（Scala対応）**
+   * **表示切替（3モード）:**
+     * `INFO`: テレメトリ（最後に弾いた音・音程比率・セント差）。
+     * `FFT`: リアルタイムFFT周波数アナライザー（対数スケール）。
+     * `Timbre`: 音色詳細設定パネル。
+   * **フルスクリーンモード:** アプリ全体の全画面表示切替。
+   * **Scala (.scl) 完全対応:**
+     * 8キー／17キーのカスタム鍵盤・コードエディター。
+     * サーバー上の多彩な `.scl` ファイル（Chinese, Pythagorean, Classic, 7-limit, 23-limitなど）のワンクリック読み込み。
+     * ローカル `.scl` ファイルのインポートおよびカスタムスケールのエクスポート。
+   * **Web App機能:** Service Workerによるオフライン対応と自動更新通知。
+
+---
 
 ## 主な機能
 
