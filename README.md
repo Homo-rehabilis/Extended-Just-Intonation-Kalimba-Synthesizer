@@ -36,9 +36,9 @@ An advanced custom extension designed for exploring tuning systems using custom 
      * `Inharm Ratio`: Select physical ratios (Fundamental 1.000, Circular Membrane Modes 1.594/2.136, Golden Ratio 1.618, π 3.142, Stiff String 3.400, Metallic Bell 3.650, Free-Free Bar 2.756, etc.).
 
 3. **Timbre Panel (Advanced Acoustic Settings)**
-   * **Vibrato (LFO):** Toggle ON/OFF, rate control (2.0–15.0 Hz), and depth control (0–10%).
+   * **Vibrato (LFO):** Toggle ON/OFF, rate control (1.0–15.0 Hz), and depth control (0–10%).
    * **Nonlinear Harmonic Decay:** Toggle ON/OFF with 5 selectable decay curves (Low Damping, Glass/Crystal, Standard Metal Bar, Stiff Material/High Friction, or Square Law Damping).
-   * **Initial Pitch Chirp:** Transient pitch drop/rise on attack (Depth: 0.0–3.0%, Duration: 2–30 ms).
+   * **Initial Pitch Chirp:** Transient pitch drop/rise on attack (Depth: 0.0–7.0%, Duration: 2–45 ms).
    * **Physical Attack Noise:** Toggle between Metallic Touch and Fast Attack modes.
    * **Random Noise & Filter:** Adjustable random noise gain and bandpass filter cutoff frequency.
 
@@ -191,9 +191,9 @@ https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/cu
      * `Inharm Ratio`: プリセット切替（基音1.000、円形膜モード1.594/2.136、黄金比1.618、π 3.142、弦剛性3.400、ベル音3.650、自由端バー2.756等）。
 
 3. **Timbre（音色）パネル**
-   * **Vibrato (LFO):** ON/OFF、速度（2.0〜15.0 Hz）、深度（0〜10%）。
+   * **Vibrato (LFO):** ON/OFF、速度（1.0〜15.0 Hz）、深度（0〜10%）。
    * **Nonlinear Harmonic Decay:** ON/OFF、減衰特性（Decay Power 5段階切替：低減衰・ガラス調・標準金属バー・剛性素材・急激な二乗則）。
-   * **Initial Pitch Chirp:** 打鍵初期のピッチチャープ（深度0.0〜3.0%、持続時間2〜30ms）。
+   * **Initial Pitch Chirp:** 打鍵初期のピッチチャープ（深度0.0〜7.0%、持続時間2〜45ms）。
    * **Physical Attack Noise:** メタリックタッチ / 高速アタックの切替。
    * **Random Noise & Filter:** ランダムノイズの音量調整およびバンドパスフィルター（カットオフ周波数設定）。
 
