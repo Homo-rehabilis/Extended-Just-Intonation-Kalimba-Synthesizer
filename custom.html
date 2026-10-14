@@ -1837,7 +1837,7 @@ function triggerPluck(tine, wrapper, isLongPress = false) {
   const totalKeys = activeTinesData.length || 8;
   const calcPan = getCalculatedPan(tine.slotIdx, totalKeys);
 
-playTone(tine.freq, isLongPress, null, null, null, calcPan);
+playTone(tine.freq, isLongPress, null, calcPan, null);
   
   if (perfIsRecording) {
     const elapsed = performance.now() - perfStartTime;
