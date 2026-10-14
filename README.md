@@ -14,6 +14,8 @@ A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built wi
 ## 🌟 What's New
 ### Custom Mode: Extended Just Intonation Custom Synthesizer β
 
+An advanced custom extension designed for exploring tuning systems using custom frequency ratios. It features 4 highly customizable preset slots (`localStorage`), physical modeling harmonic modes (*Syrinx*, *Cricket*, and inharmonic overtones of physical instruments), acoustic parameters (LFO Vibrato, Initial Pitch Chirp, ADSR, Nonlinear Decay), high-definition WAV recording (up to 32-bit Float / 192 kHz via `AudioWorklet`), HPF/LPF filters, a compressor, real-time performance looping, and full **Scala (`.scl`)** file import/export support.
+
 1. **Preset Management, Base Tonic & Tuning Layout**
    * **4 Individual Preset Slots:** Save, Load, and Reset to Default for 4 independent preset slots using `localStorage` (Preset 1–4).
    * **Base Frequency Configuration:** Select preset values (417.6 Hz, 432 Hz, 440 Hz, 512 Hz, or 3569.48 Hz for cricket-based tuning) or enter custom values (100–6000 Hz).
@@ -164,6 +166,8 @@ If you prefer to run or modify the code locally:
 
 ## 🌟 新機能
 ### Custom Mode：Extended Just Intonation Custom Synthesizer β
+
+細部まで調整可能な4つの個別プリセット、物理モデリングによる倍音モード（Syrinx・Cricket・実際の楽器がもつ非調和倍音特性など）、音響パラメータ（LFOビブラート・ピッチチャープ・ADSR・非線形減衰特性）、ハイレゾWAV録音（最大32-bit Float/192kHz）、HPF/LPFフィルター、コンプレッサー、リアルタイムループ録音、および **Scala (`.scl`) ファイル** のインポート/エクスポート機能を備えた、ユーザー独自の比率を用いた音律を探求できるカスタム拡張モードです。
 
 1. **プリセット管理 & 基音・音律レイアウト**
    * **4つのプリセットスロット:** `localStorage` を活用した個別の保存（Save）、読込、デフォルトリセット（Reset）機能（Preset 1〜4）。
