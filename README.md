@@ -16,7 +16,7 @@ A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built wi
 
 https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/custom.html
 
-An advanced custom extension designed for exploring tuning systems using custom frequency ratios. It features 4 highly customizable preset slots (`localStorage`), physical modeling harmonic modes (*Syrinx*, *Cricket*, and inharmonic overtones of physical instruments), acoustic parameters (LFO Vibrato, Initial Pitch Chirp, ADSR, Nonlinear Decay), high-definition WAV recording (up to 32-bit Float / 192 kHz via `AudioWorklet`), HPF/LPF filters, a compressor, real-time performance looping, and full **Scala (`.scl`)** file import/export support.
+#### An advanced custom extension designed for exploring tuning systems using custom frequency ratios. It features 4 highly customizable preset slots (`localStorage`), acoustic-inspired harmonic modes (*Syrinx*, *Cricket*, and instrument inharmonics), acoustic parameters (LFO Vibrato, Initial Pitch Chirp, ADSR, Nonlinear Decay), high-definition WAV recording (up to 32-bit Float / 192 kHz via `AudioWorklet`), HPF/LPF filters, a compressor, real-time performance looping, and full **Scala (`.scl`)** file import/export support.
 
 1. **Preset Management, Base Tonic & Tuning Layout**
    * **4 Individual Preset Slots:** Save, Load, and Reset to Default for 4 independent preset slots using `localStorage` (Preset 1–4).
@@ -79,7 +79,7 @@ An advanced custom extension designed for exploring tuning systems using custom 
 
 ---
 
-## Key Features
+## Standard Key Features
 
 *   **Adaptive Key Layouts:** Automatically switches between an **8-Key mode** (ideal for portrait or mobile views) and a **13-Key or 17-Key mode** (for landscape views).
 *   **7 Distinct Scale Systems:** Switch instantly between 7 microtonal and historical just intonation tuning presets, including 7-Limit Soul Jazz Blues, 23-Limit Natural Harmonics, Chinese 3-Limit JI, Pythagorean 3-Limit JI, Archytas's 7-Limit JI, Classic 5-Limit JI, and Nearly TET 19-limit JI.
@@ -171,7 +171,7 @@ If you prefer to run or modify the code locally:
 
 https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/custom.html
 
-細部まで調整可能な4つの個別プリセット、物理モデリングによる倍音モード（Syrinx・Cricket・実際の楽器がもつ非調和倍音特性など）、音響パラメータ（LFOビブラート・ピッチチャープ・ADSR・非線形減衰特性）、ハイレゾWAV録音（最大32-bit Float/192kHz）、HPF/LPFフィルター、コンプレッサー、リアルタイムループ録音、および **Scala (`.scl`) ファイル** のインポート/エクスポート機能を備えた、ユーザー独自の比率を用いた音律を探求できるカスタム拡張モードです。
+#### 細部まで調整可能な4つの個別プリセット、生体音響や音響物理の特性を応用した倍音モード（シリンクス・コオロギ・各種楽器の非調和倍音など）、音響パラメータ（LFOビブラート・ピッチチャープ・ADSR・非線形減衰特性）、ハイレゾWAV録音（最大32-bit Float/192kHz）、HPF/LPFフィルター、コンプレッサー、リアルタイムループ録音、および **Scala (`.scl`) ファイル** のインポート/エクスポート機能を備えた、ユーザー独自の比率を用いた音律を探求できるカスタム拡張モードです。
 
 1. **プリセット管理 & 基音・音律レイアウト**
    * **4つのプリセットスロット:** `localStorage` を活用した個別の保存（Save）、読込、デフォルトリセット（Reset）機能（Preset 1〜4）。
