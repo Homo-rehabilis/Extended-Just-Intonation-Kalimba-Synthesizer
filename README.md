@@ -16,7 +16,7 @@ A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built wi
 
 https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/custom.html
 
-An advanced custom extension designed for exploring tuning systems using custom frequency ratios. It features 4 highly customizable preset slots (`localStorage`), acoustic-inspired harmonic modes (*Syrinx*, *Cricket*, and instrument inharmonics), acoustic parameters (LFO Vibrato, Initial Pitch Chirp, ADSR, Nonlinear Decay), high-definition WAV recording (up to 32-bit Float / 192 kHz via `AudioWorklet`), HPF/LPF filters, a compressor, real-time performance looping, and full **Scala (`.scl`)** file import/export support.
+An advanced custom extension designed for exploring tuning systems using custom frequency ratios. It features 4 highly customizable preset slots (`localStorage`), harmonic modes inspired by physical and biological acoustics (*Syrinx*, *Cricket*, and instrument inharmonics), acoustic parameters (LFO Vibrato, Initial Pitch Chirp, ADSR, Nonlinear Decay), high-definition WAV recording (up to 32-bit Float / 192 kHz via `AudioWorklet`), HPF/LPF filters, a compressor, real-time performance looping, and full **Scala (`.scl`)** file import/export support.
 
 1. **Preset Management, Base Tonic & Tuning Layout**
    * **4 Individual Preset Slots:** Save, Load, and Reset to Default for 4 independent preset slots using `localStorage` (Preset 1–4).
