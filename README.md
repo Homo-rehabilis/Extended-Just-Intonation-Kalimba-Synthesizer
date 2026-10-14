@@ -19,7 +19,7 @@ https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/cu
 An advanced custom extension designed for exploring tuning systems using custom frequency ratios. It features 4 highly customizable preset slots, harmonic modes inspired by physical and biological acoustics (*Syrinx*, *Cricket*, and instrument inharmonics), acoustic parameters (LFO Vibrato, Initial Pitch Chirp, ADSR, Nonlinear Decay), high-definition WAV recording (up to 32-bit Float / 192 kHz), HPF/LPF filters, a compressor, real-time performance looping, and full **Scala (`.scl`)** file import/export support.
 
 1. **Preset Management, Base Tonic & Tuning Layout**
-   * **4 Individual Preset Slots:** Save, Load, and Reset to Default for 4 independent preset slots using `localStorage` (Preset 1–4).
+   * **4 Individual Preset Slots:** Save, Load, and Reset to Default for 4 independent preset slots using `localStorage` (Preset 1–4) with download support.
    * **Base Frequency Configuration:** Select preset values (417.6 Hz, 432 Hz, 440 Hz, 512 Hz, or 3569.48 Hz for cricket-based tuning) or enter custom values (100–6000 Hz).
    * **Ratio Multipliers & Octave Shift:** Apply exact fraction multipliers (Numerator/Denominator from 1–99), shift octaves (±N), and utilize 12 customizable quick Just Intonation ratio shortcut buttons.
    * **Key Layout:** Switch between 8-key and 17-key layouts (with automatic switching based on screen orientation/aspect ratio).
@@ -41,6 +41,8 @@ An advanced custom extension designed for exploring tuning systems using custom 
    * **Initial Pitch Chirp:** Transient pitch drop/rise on attack (Depth: 0.0–7.0%, Duration: 2–45 ms).
    * **Physical Attack Noise:** Toggle between Metallic Touch and Fast Attack modes.
    * **Random Noise & Filter:** Adjustable random noise gain and bandpass filter cutoff frequency.
+   * **LPF / HPF / BPF Filters:** Individual sub-tab configuration with adjustable cutoff frequencies and slope characteristics (6 to 36 dB/oct).
+
 
 4. **ADSR Envelope, Spatial & Master Settings**
    * **Independent ADSR Envelope:** Slider controls for Attack, Decay, Sustain, and Release parameters.
@@ -49,23 +51,19 @@ An advanced custom extension designed for exploring tuning systems using custom 
      * Stereo / Mono toggle with individual Pan (L1.00–R1.00) and Preset Gain (0.10–2.00) controls in stereo mode.
      * **Key-Position Stereo Spread:** Automatically spreads notes across the stereo field based on key placement (ON/OFF).
      * **Long Press Mode:** Toggle between sustained long tones (Long Tone) and rapid repeated triggers (Rapid Fire).
-
-5. **Effects & Filters**
-   * **High-Pass Filter (HPF):** Toggle ON/OFF, cutoff frequency (10–10000 Hz).
-   * **Low-Pass Filter (LPF):** Toggle ON/OFF, cutoff frequency (100–48000 Hz).
    * **Compressor:** Switch between Standard (Threshold -24 dB), Hard (Threshold -12 dB), and OFF (Bypass).
 
-6. **Performance & Playback Functions**
+5. **Performance & Playback Functions**
    * **Triggering Inputs:** Touch / Mouse triggering (with long-press support) and QWERTY keyboard shortcuts.
    * **Chord Arpeggiator:** One-click chord triggering, BPM control (1–500), loop playback toggle, and stop button.
    * **Real-time Performance Loop:** Record user keystrokes in real-time (REC), loop playback, and clear.
 
-7. **High-Definition Recording & WAV Export**
+6. **High-Definition Recording & WAV Export**
    * **Formats:** 32-bit Float / 16-bit PCM at 192 kHz, 96 kHz, or 48 kHz (6 total format configurations).
    * **Recording Engine:** AudioWorklet (primary) with ScriptProcessor fallback.
    * **File Export:** Live recording timer with automatic timestamped filename download (.wav).
 
-8. **Visual Interface & Scale/Chord Editor (Scala Support)**
+7. **Visual Interface & Scale/Chord Editor (Scala Support)**
    * **Display Switcher (3 Modes):**
      * `INFO`: Telemetry display (last note played, inter-note ratio, cent differences).
      * `FFT`: Real-time FFT frequency visualizer (logarithmic frequency scale).
@@ -174,7 +172,7 @@ https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/cu
 細部まで調整可能な4つの個別プリセット、生体音響や音響物理の特性を応用した倍音モード（シリンクス・コオロギ・各種楽器の非調和倍音など）、音響パラメータ（LFOビブラート・ピッチチャープ・ADSR・非線形減衰特性）、ハイレゾWAV録音（最大32-bit Float/192kHz）、HPF/LPFフィルター、コンプレッサー、リアルタイムループ録音、および **Scala (`.scl`) ファイル** のインポート/エクスポート機能を備えた、ユーザー独自の比率を用いた音律を探求できるカスタム拡張モードです。
 
 1. **プリセット管理 & 基音・音律レイアウト**
-   * **4つのプリセットスロット:** `localStorage` を活用した個別の保存（Save）、読込、デフォルトリセット（Reset）機能（Preset 1〜4）。
+   * **4つのプリセットスロット:** `localStorage` を活用した個別の保存（Save）、読込（Load）、デフォルトリセット（Reset）機能（Preset 1〜4）。最新版ではDownloadフォルダへの保存と読込が可能に。
    * **基準周波数（Base Frequency）:** 417.6Hz、432Hz、440Hz、512Hz、3569.48Hz（コオロギ基準等）のプリセット選択、または100〜6000Hzのカスタム数値入力。
    * **比率乗数 & オクターブ:** 分子/分母（1〜99）による乗算、オクターブシフト（±N）。さらに12種類のカスタマイズ可能な純正比率ショートカットボタンを装備。
    * **鍵盤レイアウト:** 8キー／17キーの切り替え（画面の縦横比に応じた自動判定・切替にも対応）。
@@ -196,6 +194,7 @@ https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/cu
    * **Initial Pitch Chirp:** 打鍵初期のピッチチャープ（深度0.0〜7.0%、持続時間2〜45ms）。
    * **Physical Attack Noise:** メタリックタッチ / 高速アタックの切替。
    * **Random Noise & Filter:** ランダムノイズの音量調整およびバンドパスフィルター（カットオフ周波数設定）。
+   * **LPF / HPF / BPF フィルター:** 個別周波数設定とスロープ特性（6〜36 dB/oct）が選択可能。
 
 4. **ADSRエンベロープ & 空間・マスター設定**
    * **ADSR 個別調整:** Attack、Decay、Sustain、Release をスライダーで精密に設定。
@@ -204,23 +203,19 @@ https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/cu
      * ステレオ / モノラル切替、ステレオ時の個別パン（L1.00〜R1.00）およびゲイン（0.10〜2.00）。
      * **Key-Position Stereo Spread:** 鍵盤位置に応じた自動パン配置（ON/OFF）。
      * **ロングプレス動作:** 長音維持（Long Tone）か連打（Rapid Fire）の切替。
-
-5. **エフェクト・フィルター**
-   * **HPF（ハイパスフィルター）:** ON/OFF、カットオフ周波数（10〜10000 Hz）。
-   * **LPF（ローパスフィルター）:** ON/OFF、カットオフ周波数（100〜48000 Hz）。
    * **コンプレッサー:** Standard（閾値-24dB）、Hard（閾値-12dB）、OFF（バイパス）の切替。
 
-6. **演奏・パフォーマンス機能**
+5. **演奏・パフォーマンス機能**
    * **打鍵トリガー:** マウス／タッチ（長押し・連打対応）、QWERTYキーボードによる演奏。
    * **コード自動演奏（Arpeggio）:** コードボタン選択、BPM設定（1〜500）、ループ再生ON/OFF、ストップ。
    * **リアルタイムパフォーマンス録音:** 打鍵のリアルタイム録音（REC）、ループ再生、消去。
 
-7. **ハイレゾオーディオ録音 & WAVエクスポート**
+6. **ハイレゾオーディオ録音 & WAVエクスポート**
    * **フォーマット:** 32-bit Float / 16-bit PCM × 192kHz / 96kHz / 48kHz（全6種）。
    * **録音エンジン:** AudioWorklet（メイン）とScriptProcessor（フォールバック）の選択。
    * **ファイル管理:** タイマー表示付き録音と、日時スタンプ付きファイル名のWAVダウンロード。
 
-8. **ビジュアル・UI機能 & スケールエディター（Scala対応）**
+7. **ビジュアル・UI機能 & スケールエディター（Scala対応）**
    * **表示切替（3モード）:**
      * `INFO`: テレメトリ（最後に弾いた音・音程比率・セント差）。
      * `FFT`: リアルタイムFFT周波数アナライザー（対数スケール）。
