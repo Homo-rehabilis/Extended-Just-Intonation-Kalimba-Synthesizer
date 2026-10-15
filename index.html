@@ -149,6 +149,16 @@
             <button class="segmented-btn" data-engine="script">ScriptProcessor</button>
           </div>
         </div>
+        <div class="control-group">
+          <span class="control-label">ACOUSTIC REALISM (Chirp & Decay)</span>
+          <div class="segmented-btn-group" id="acousticRealismToggle">
+            <button class="segmented-btn active" data-realism="on">ON (Organic Tine)</button>
+            <button class="segmented-btn" data-realism="off">OFF (Pure Tone)</button>
+          </div>
+        </div>
+        <div class="control-group" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
+          <button id="btnResetAllSettings" class="segmented-btn" style="width: 100%; color: #ef4444; border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.12); font-weight: 700; padding: 8px 0; justify-content: center;">Reset All Settings to Default</button>
+        </div>
       </div>
     </div>
 
@@ -637,7 +647,8 @@ chords17: [
 
     let currentScaleKey='souljazz',baseTonicFreq=417.6,tonicNum=1,tonicDen=1,tonicOctave=0,currentTonicFreq=417.6,masterGainValue=0.05,is8KeyMode=true,landscapeKeyCount=13,currentTines=[];
     let audioCtx=null,compressor=null,hpf=null,masterGain=null,sharedNoiseBuffer=null;
-    let isNoiseFilterEnabled=true,isRandomNoiseEnabled=true,isHarmonicEffectEnabled=true,isCompressorRoutingEnabled=true;
+    let isNoiseFilterEnabled=true,isRandomNoiseEnabled=true,isHarmonicEffectEnabled=true,isCompressorRoutingEnabled=true,isAcousticRealismEnabled=true;
+    let lastChordStepTime=0;
     let lastTine=null,currentTine=null,recorderNode=null,selectedRecEngine='worklet',recordedBuffers=[],isRecording=false,recTimerInterval=null,lastRecordedBlobUrl=null,audioInitPromise=null;
     const loadedWorkletContexts=new WeakSet();
     let chordBpm=87,chordPlayTimer=null,isChordLooping=false,activeChordSequence=null,activeChordIndex=0;
@@ -820,7 +831,7 @@ registerProcessor('recorder-processor', RecorderProcessor);
             loadedWorkletContexts.add(ctx);
           }
           recorderNode=new AudioWorkletNode(ctx,'recorder-processor');
-          recorderNode.port.onmessage=(e)=>{if(isRecording)recordedBuffers.push(new Float32Array(e.data));};
+          recorderNode.port.onmessage=(e)=>{if(e.data)recordedBuffers.push(new Float32Array(e.data));};
           const muteGain=ctx.createGain();muteGain.gain.setValueAtTime(0,ctx.currentTime);
           masterGain.connect(recorderNode);recorderNode.connect(muteGain);muteGain.connect(ctx.destination);
         }catch(err){console.error('AudioWorklet setup failed:',err);}
@@ -863,17 +874,34 @@ registerProcessor('recorder-processor', RecorderProcessor);
       const now=audioCtx.currentTime,routingTarget=isCompressorRoutingEnabled?compressor:hpf;
 
       const osc1=audioCtx.createOscillator(),gain1=audioCtx.createGain();
-      osc1.type='sine';osc1.frequency.setValueAtTime(freq,now);
+      osc1.type='sine';
+      if(isAcousticRealismEnabled){
+        osc1.frequency.setValueAtTime(freq*1.015,now);
+        osc1.frequency.exponentialRampToValueAtTime(freq,now+0.008);
+      }else{
+        osc1.frequency.setValueAtTime(freq,now);
+      }
       gain1.gain.setValueAtTime(0.5,now);gain1.gain.exponentialRampToValueAtTime(0.0001,now+2.5);
       osc1.connect(gain1);gain1.connect(routingTarget);
       osc1.start(now);osc1.stop(now+2.6);
 
       if(isHarmonicEffectEnabled){
         const osc2=audioCtx.createOscillator(),gain2=audioCtx.createGain();
-        osc2.type='sine';osc2.frequency.setValueAtTime(freq*2.756,now);
-        gain2.gain.setValueAtTime(0.18,now);gain2.gain.exponentialRampToValueAtTime(0.0001,now+0.28);
+        osc2.type='sine';
+        if(isAcousticRealismEnabled){
+          osc2.frequency.setValueAtTime(freq*2.756*1.015,now);
+          osc2.frequency.exponentialRampToValueAtTime(freq*2.756,now+0.008);
+        }else{
+          osc2.frequency.setValueAtTime(freq*2.756,now);
+        }
+        let decayDur=0.28;
+        if(isAcousticRealismEnabled){
+          const orderFactor=Math.pow(2.756,0.45);
+          decayDur=Math.max(0.05,0.28/orderFactor);
+        }
+        gain2.gain.setValueAtTime(0.18,now);gain2.gain.exponentialRampToValueAtTime(0.0001,now+decayDur);
         osc2.connect(gain2);gain2.connect(routingTarget);
-        osc2.start(now);osc2.stop(now+0.3);
+        osc2.start(now);osc2.stop(now+decayDur+0.02);
       }
 
       if(isRandomNoiseEnabled&&sharedNoiseBuffer){
@@ -898,7 +926,8 @@ registerProcessor('recorder-processor', RecorderProcessor);
     const btnLandscapeKeyToggle=document.getElementById('btnLandscapeKeyToggle'),settingsModal=document.getElementById('settingsModal');
     const btnOpenSettings=document.getElementById('btnOpenSettings'),btnCloseModal=document.getElementById('btnCloseModal');
 
-    btnOpenSettings.addEventListener('click',()=>settingsModal.classList.add('open'));
+    btnOpenSettings.addEventListener('click',()=>{updateSettingsModalUI();settingsModal.classList.add('open');});
+    loadIndexSettings();
     btnCloseModal.addEventListener('click',()=>settingsModal.classList.remove('open'));
     settingsModal.addEventListener('click',(e)=>{if(e.target===settingsModal)settingsModal.classList.remove('open');});
 
@@ -924,15 +953,15 @@ registerProcessor('recorder-processor', RecorderProcessor);
 
     inputChordBpm.addEventListener('input',(e)=>{
       const val=parseFloat(e.target.value);
-      if(val>=1&&val<=500){chordBpm=val;if(chordPlayTimer)startChordPlayback(activeChordSequence,true);}
+      if(val>=1&&val<=500){chordBpm=val;saveIndexSettings();updateBpmAndRefreshChord();}
     });
     btnChordBpmMinus.addEventListener('click',()=>{
       let val=parseFloat(inputChordBpm.value)-1;if(isNaN(val))val=87;if(val<1)val=1;
-      chordBpm=val;inputChordBpm.value=chordBpm;if(chordPlayTimer)startChordPlayback(activeChordSequence,true);
+      chordBpm=val;inputChordBpm.value=chordBpm;saveIndexSettings();updateBpmAndRefreshChord();
     });
     btnChordBpmPlus.addEventListener('click',()=>{
       let val=parseFloat(inputChordBpm.value)+1;if(isNaN(val))val=87;if(val>500)val=500;
-      chordBpm=val;inputChordBpm.value=chordBpm;if(chordPlayTimer)startChordPlayback(activeChordSequence,true);
+      chordBpm=val;inputChordBpm.value=chordBpm;saveIndexSettings();updateBpmAndRefreshChord();
     });
 
     btnChordLoopToggle.addEventListener('click',()=>{
@@ -942,32 +971,54 @@ registerProcessor('recorder-processor', RecorderProcessor);
       btnChordLoopToggle.style.backgroundColor=isChordLooping?'#2563eb':'#0d0f17';
       btnChordLoopToggle.style.color=isChordLooping?'#ffffff':'#9ca3af';
       btnChordLoopToggle.style.border=isChordLooping?'none':'1px solid #232838';
+      saveIndexSettings();
     });
     btnChordStop.addEventListener('click',stopChordPlayback);
 
-    function stopChordPlayback(){if(chordPlayTimer){clearInterval(chordPlayTimer);chordPlayTimer=null;}activeChordSequence=null;activeChordIndex=0;}
+    function stopChordPlayback(){
+      if(chordPlayTimer){clearTimeout(chordPlayTimer);clearInterval(chordPlayTimer);chordPlayTimer=null;}
+      activeChordSequence=null;
+      activeChordIndex=0;
+      lastChordStepTime=0;
+    }
 
-    function startChordPlayback(chordObj,resetIndex=true){
-      stopChordPlayback();
-      activeChordSequence=chordObj;
-      if(resetIndex)activeChordIndex=0;
-      const items=is8KeyMode?chordObj.slotIndices:chordObj.pitchIndices;
+    function playNextChordStep(){
+      if(!activeChordSequence)return;
+      const items=is8KeyMode?activeChordSequence.slotIndices:activeChordSequence.pitchIndices;
       if(!items||items.length===0)return;
 
-      function playStep(){
-        if(activeChordIndex>=items.length){
-          if(isChordLooping)activeChordIndex=0;
-          else{stopChordPlayback();return;}
-        }
-        const targetInd=items[activeChordIndex];
-        if(targetInd!==null&&targetInd!==undefined){
-          const targetTine=is8KeyMode?currentTines[targetInd]:currentTines.find(t=>t.pitchIndex===targetInd);
-          if(targetTine)triggerTine(targetTine);
-        }
-        activeChordIndex++;
+      if(activeChordIndex>=items.length){
+        if(isChordLooping)activeChordIndex=0;
+        else{stopChordPlayback();return;}
       }
-      playStep();
-      chordPlayTimer=setInterval(playStep,(60/chordBpm)*1000);
+      const targetInd=items[activeChordIndex];
+      if(targetInd!==null&&targetInd!==undefined){
+        const targetTine=is8KeyMode?currentTines[targetInd]:currentTines.find(t=>t.pitchIndex===targetInd);
+        if(targetTine)triggerTine(targetTine);
+      }
+      activeChordIndex++;
+      lastChordStepTime=performance.now();
+
+      const interval=(60/chordBpm)*1000;
+      if(chordPlayTimer)clearTimeout(chordPlayTimer);
+      chordPlayTimer=setTimeout(playNextChordStep,interval);
+    }
+
+    function startChordPlayback(chordObj){
+      stopChordPlayback();
+      activeChordSequence=chordObj;
+      activeChordIndex=0;
+      playNextChordStep();
+    }
+
+    function updateBpmAndRefreshChord(){
+      if(chordPlayTimer&&activeChordSequence){
+        const interval=(60/chordBpm)*1000;
+        const elapsed=performance.now()-lastChordStepTime;
+        const remaining=Math.max(0,interval-elapsed);
+        if(chordPlayTimer)clearTimeout(chordPlayTimer);
+        chordPlayTimer=setTimeout(playNextChordStep,remaining);
+      }
     }
 
     function renderApp(){
@@ -1137,26 +1188,107 @@ registerProcessor('recorder-processor', RecorderProcessor);
       if(masterGain&&audioCtx)masterGain.gain.setValueAtTime(masterGainValue,audioCtx.currentTime);
     });
 
+    function saveIndexSettings(){
+      try{
+        const cfg={
+          baseTonicFreq,tonicNum,tonicDen,tonicOctave,
+          masterGainValue,currentScaleKey,landscapeKeyCount,
+          isNoiseFilterEnabled,isRandomNoiseEnabled,isHarmonicEffectEnabled,
+          isCompressorRoutingEnabled,isAcousticRealismEnabled,
+          selectedRecEngine,
+          recFormat:document.getElementById('selectRecFormat')?.value||'32float-48k',
+          chordBpm,isChordLooping
+        };
+        localStorage.setItem('ji_kalimba_index_config',JSON.stringify(cfg));
+      }catch(e){}
+    }
+
+    function loadIndexSettings(){
+      try{
+        const raw=localStorage.getItem('ji_kalimba_index_config');
+        if(!raw)return;
+        const cfg=JSON.parse(raw);
+        if(cfg.baseTonicFreq!==undefined)baseTonicFreq=cfg.baseTonicFreq;
+        if(cfg.tonicNum!==undefined)tonicNum=cfg.tonicNum;
+        if(cfg.tonicDen!==undefined)tonicDen=cfg.tonicDen;
+        if(cfg.tonicOctave!==undefined)tonicOctave=cfg.tonicOctave;
+        if(cfg.masterGainValue!==undefined)masterGainValue=cfg.masterGainValue;
+        if(cfg.currentScaleKey!==undefined&&scalesData[cfg.currentScaleKey])currentScaleKey=cfg.currentScaleKey;
+        if(cfg.landscapeKeyCount!==undefined)landscapeKeyCount=cfg.landscapeKeyCount;
+        if(cfg.isNoiseFilterEnabled!==undefined)isNoiseFilterEnabled=cfg.isNoiseFilterEnabled;
+        if(cfg.isRandomNoiseEnabled!==undefined)isRandomNoiseEnabled=cfg.isRandomNoiseEnabled;
+        if(cfg.isHarmonicEffectEnabled!==undefined)isHarmonicEffectEnabled=cfg.isHarmonicEffectEnabled;
+        if(cfg.isCompressorRoutingEnabled!==undefined)isCompressorRoutingEnabled=cfg.isCompressorRoutingEnabled;
+        if(cfg.isAcousticRealismEnabled!==undefined)isAcousticRealismEnabled=cfg.isAcousticRealismEnabled;
+        if(cfg.selectedRecEngine!==undefined)selectedRecEngine=cfg.selectedRecEngine;
+        if(cfg.chordBpm!==undefined)chordBpm=cfg.chordBpm;
+        if(cfg.isChordLooping!==undefined)isChordLooping=cfg.isChordLooping;
+
+        if(cfg.recFormat&&document.getElementById('selectRecFormat')){
+          document.getElementById('selectRecFormat').value=cfg.recFormat;
+        }
+      }catch(e){}
+    }
+
+    function updateSettingsModalUI(){
+      const setBtnActive=(containerId,activeCondition)=>{
+        const container=document.getElementById(containerId);
+        if(container){
+          container.querySelectorAll('.segmented-btn').forEach(btn=>{
+            btn.classList.toggle('active',activeCondition(btn));
+          });
+        }
+      };
+      setBtnActive('randomNoiseToggle',b=>(b.dataset.noise==='on')===isRandomNoiseEnabled);
+      setBtnActive('noiseFilterToggle',b=>(b.dataset.filter==='on')===isNoiseFilterEnabled);
+      setBtnActive('harmonicEffectToggle',b=>(b.dataset.harmonic==='on')===isHarmonicEffectEnabled);
+      setBtnActive('compressorRoutingToggle',b=>(b.dataset.compressor==='on')===isCompressorRoutingEnabled);
+      setBtnActive('acousticRealismToggle',b=>(b.dataset.realism==='on')===isAcousticRealismEnabled);
+      setBtnActive('recEngineToggle',b=>b.dataset.engine===selectedRecEngine);
+    }
+
+    function resetAllIndexSettings(){
+      if(confirm('Reset all settings to default?')){
+        localStorage.removeItem('ji_kalimba_index_config');
+        baseTonicFreq=417.6;tonicNum=1;tonicDen=1;tonicOctave=0;
+        masterGainValue=0.05;currentScaleKey='pythagorean';landscapeKeyCount=13;
+        isNoiseFilterEnabled=true;isRandomNoiseEnabled=true;isHarmonicEffectEnabled=true;
+        isCompressorRoutingEnabled=true;isAcousticRealismEnabled=true;
+        selectedRecEngine='worklet';chordBpm=87;isChordLooping=false;
+        if(document.getElementById('selectRecFormat'))document.getElementById('selectRecFormat').value='32float-48k';
+        if(document.getElementById('inputMasterGain'))document.getElementById('inputMasterGain').value=0.05;
+        if(document.getElementById('inputChordBpm'))document.getElementById('inputChordBpm').value=87;
+        updateSettingsModalUI();
+        renderApp();
+      }
+    }
+
     document.getElementById('randomNoiseToggle').addEventListener('click',(e)=>{
       const btn=e.target.closest('.segmented-btn');if(!btn)return;
       document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');isRandomNoiseEnabled=(btn.dataset.noise==='on');
+      btn.classList.add('active');isRandomNoiseEnabled=(btn.dataset.noise==='on');saveIndexSettings();
     });
     document.getElementById('noiseFilterToggle').addEventListener('click',(e)=>{
       const btn=e.target.closest('.segmented-btn');if(!btn)return;
       document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');isNoiseFilterEnabled=(btn.dataset.filter==='on');
+      btn.classList.add('active');isNoiseFilterEnabled=(btn.dataset.filter==='on');saveIndexSettings();
     });
     document.getElementById('harmonicEffectToggle').addEventListener('click',(e)=>{
       const btn=e.target.closest('.segmented-btn');if(!btn)return;
       document.querySelectorAll('#harmonicEffectToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');isHarmonicEffectEnabled=(btn.dataset.harmonic==='on');
+      btn.classList.add('active');isHarmonicEffectEnabled=(btn.dataset.harmonic==='on');saveIndexSettings();
     });
     document.getElementById('compressorRoutingToggle').addEventListener('click',(e)=>{
       const btn=e.target.closest('.segmented-btn');if(!btn)return;
       document.querySelectorAll('#compressorRoutingToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');isCompressorRoutingEnabled=(btn.dataset.compressor==='on');
+      btn.classList.add('active');isCompressorRoutingEnabled=(btn.dataset.compressor==='on');saveIndexSettings();
     });
+    document.getElementById('acousticRealismToggle').addEventListener('click',(e)=>{
+      const btn=e.target.closest('.segmented-btn');if(!btn)return;
+      document.querySelectorAll('#acousticRealismToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');isAcousticRealismEnabled=(btn.dataset.realism==='on');saveIndexSettings();
+    });
+    document.getElementById('btnResetAllSettings').addEventListener('click',resetAllIndexSettings);
 
     document.getElementById('tonicPresetBtns').addEventListener('click',(e)=>{
       const btn=e.target.closest('.segmented-btn');if(!btn)return;
