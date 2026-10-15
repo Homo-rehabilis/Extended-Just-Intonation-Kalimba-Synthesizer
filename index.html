@@ -1021,8 +1021,49 @@ registerProcessor('recorder-processor', RecorderProcessor);
       }
     }
 
-    function renderApp(){
+    
+    function syncMainUI(){
+      document.querySelectorAll('#scaleToggle .segmented-btn').forEach(btn=>{
+        btn.classList.toggle('active',btn.dataset.scale===currentScaleKey);
+      });
+      document.querySelectorAll('#tonicPresetBtns .segmented-btn').forEach(btn=>{
+        btn.classList.toggle('active',parseFloat(btn.dataset.freq)===baseTonicFreq);
+      });
+      const customFreqEl=document.getElementById('inputCustomFreq');
+      if(customFreqEl)customFreqEl.value=baseTonicFreq;
+
+      const numEl=document.getElementById('inputTonicNum'),denEl=document.getElementById('inputTonicDen');
+      if(numEl)numEl.value=tonicNum;
+      if(denEl)denEl.value=tonicDen;
+      document.querySelectorAll('#tonicRatioBtns .segmented-btn').forEach(btn=>{
+        btn.classList.toggle('active',parseInt(btn.dataset.num,10)===tonicNum&&parseInt(btn.dataset.den,10)===tonicDen);
+      });
+
+      const gainEl=document.getElementById('inputMasterGain'),gainTxtEl=document.getElementById('txtMasterGain');
+      if(gainEl)gainEl.value=masterGainValue;
+      if(gainTxtEl){
+        const safeGain=Math.max(0.0001,masterGainValue);
+        gainTxtEl.textContent=`${masterGainValue.toFixed(2)} (${(20*Math.log10(safeGain)).toFixed(0)}dB)`;
+      }
+
+      const bpmEl=document.getElementById('inputChordBpm');
+      if(bpmEl)bpmEl.value=chordBpm;
+
+      const loopBtn=document.getElementById('btnChordLoopToggle');
+      if(loopBtn){
+        loopBtn.className=`segmented-btn ${isChordLooping?'active':''}`;
+        loopBtn.textContent=isChordLooping?'Loop: ON':'Loop: OFF';
+        loopBtn.style.backgroundColor=isChordLooping?'#2563eb':'#0d0f17';
+        loopBtn.style.color=isChordLooping?'#ffffff':'#9ca3af';
+        loopBtn.style.border=isChordLooping?'none':'1px solid #232838';
+      }
+
+      updateSettingsModalUI();
+    }
+
+function renderApp(){
       updateTonicFreq();rebuildTinesData();updateOctaveUI();
+      syncMainUI();
       const scaleDef=scalesData[currentScaleKey];
       if(is8KeyMode){
         document.getElementById('badgeKeyMode').textContent='8-Key';
@@ -1235,6 +1276,7 @@ registerProcessor('recorder-processor', RecorderProcessor);
         if(document.getElementById('inputChordBpm')){
           document.getElementById('inputChordBpm').value=chordBpm;
         }
+        syncMainUI();
       }catch(e){}
     }
 
