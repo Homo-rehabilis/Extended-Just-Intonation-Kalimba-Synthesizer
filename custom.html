@@ -239,7 +239,6 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
       </div>
     </div>
 
-    <!-- テレメトリおよびビジュアライザ・Timbreパネル部分 -->
     <div class="telemetry-card">
       <div id="telemetryView" style="grid-column:1/-1;display:none;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
@@ -282,7 +281,6 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
         </div>
       </div>
 
-      <!-- Timbreパネル（複数フィルター個別対応版） -->
       <div id="timbreView" style="grid-column:1/-1;display:none;flex-direction:column;gap:3px;height:74px;overflow-y:hidden;padding-right:2px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1px;">
           <div class="segmented-btn-group" id="timbreParamSelectGroup" style="gap:1px;">
@@ -380,7 +378,6 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
           </div>
         </div>
 
-        <!-- Filterサブビュー（LPF/HPF/BPF個別サブタブ切り替え対応） -->
         <div class="timbre-sub-view" id="tview-filter" style="display:none;flex-direction:column;gap:3px;font-size:.55rem;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1px;">
             <div class="segmented-btn-group" id="filterSubTabGroup" style="gap:1px;">
@@ -478,7 +475,6 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
     </div>
   </div>
 
-  <!-- Audio Settings モーダル -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-card">
       <div class="modal-header">
@@ -994,7 +990,7 @@ let isCompressorRoutingEnabled = true;
 let computedTonicFreq = 512.0, activeTinesData = [], lastTine = null, currentTine = null;
 let recorderNode = null, selectedRecEngine = 'worklet', recordedBuffers = [], isRecording = false, recTimerInterval = null, lastRecordedBlobUrl = null;
 const loadedWorkletContexts = new WeakSet();
-let chordTimer = null, chordIndex = 0, isLooping = false, currentActiveChord = null;
+let chordTimer = null, chordIndex = 0, isLooping = false, currentActiveChord = null, lastChordStepTime = 0;
 let editorTargetKeyMode = "8", editorTargetChordMode = "8";
 
 const recorderWorkletCode = `
@@ -1271,7 +1267,7 @@ async function setupRecorderNode(ctx) {
         numberOfOutputs: 1,
         outputChannelCount: [2]
       });
-      recorderNode.port.onmessage = (e) => { if (isRecording) recordedBuffers.push(new Float32Array(e.data)); };
+      recorderNode.port.onmessage = (e) => { if (e.data) recordedBuffers.push(new Float32Array(e.data)); };
       const muteGain = ctx.createGain();
       muteGain.gain.setValueAtTime(0, ctx.currentTime);
       masterGain.connect(recorderNode);
@@ -2279,53 +2275,51 @@ function renderApp() {
 }
 
 function stopChord() {
-  if (chordTimer) { clearInterval(chordTimer); chordTimer = null; }
+  if (chordTimer) { clearTimeout(chordTimer); clearInterval(chordTimer); chordTimer = null; }
   currentActiveChord = null;
   chordIndex = 0;
+  lastChordStepTime = 0;
+}
+
+function playNextChordStep() {
+  if (!currentActiveChord) return;
+  if (chordIndex >= currentActiveChord.indices.length) {
+    if (isLooping) {
+      chordIndex = 0;
+    } else {
+      stopChord();
+      return;
+    }
+  }
+  const keyIdx = currentActiveChord.indices[chordIndex];
+  const targetTine = activeTinesData.find(t => t.idx === keyIdx) || activeTinesData[keyIdx];
+  if (targetTine) {
+    triggerPluck(targetTine, document.getElementById(`tine-wrapper-${targetTine.slotIdx}`));
+  }
+  chordIndex++;
+  lastChordStepTime = performance.now();
+
+  const bpm = parseFloat(document.getElementById('inputChordBpm').value) || 90;
+  const interval = (60 / bpm) * 1000;
+  if (chordTimer) clearTimeout(chordTimer);
+  chordTimer = setTimeout(playNextChordStep, interval);
 }
 
 function startChord(chordObj) {
-  if (chordTimer) { clearInterval(chordTimer); chordTimer = null; }
+  stopChord();
   currentActiveChord = chordObj;
-  const interval = (60 / (parseFloat(document.getElementById('inputChordBpm').value) || 90)) * 1000;
-
-  function step() {
-    if (!currentActiveChord) return;
-    if (chordIndex >= currentActiveChord.indices.length) {
-      if (isLooping) chordIndex = 0;
-      else { stopChord(); return; }
-    }
-    const keyIdx = currentActiveChord.indices[chordIndex];
-    const targetTine = activeTinesData.find(t => t.idx === keyIdx) || activeTinesData[keyIdx];
-    if (targetTine) {
-      triggerPluck(targetTine, document.getElementById(`tine-wrapper-${targetTine.slotIdx}`));
-    }
-    chordIndex++;
-  }
-  step();
-  chordTimer = setInterval(step, interval);
+  chordIndex = 0;
+  playNextChordStep();
 }
 
 function updateBpmAndRefreshChord() {
   if (chordTimer && currentActiveChord) {
-    clearInterval(chordTimer);
-    chordTimer = null;
-    const interval = (60 / (parseFloat(document.getElementById('inputChordBpm').value) || 90)) * 1000;
-    
-    function step() {
-      if (!currentActiveChord) return;
-      if (chordIndex >= currentActiveChord.indices.length) {
-        if (isLooping) chordIndex = 0;
-        else { stopChord(); return; }
-      }
-      const keyIdx = currentActiveChord.indices[chordIndex];
-      const targetTine = activeTinesData.find(t => t.idx === keyIdx) || activeTinesData[keyIdx];
-      if (targetTine) {
-        triggerPluck(targetTine, document.getElementById(`tine-wrapper-${targetTine.slotIdx}`));
-      }
-      chordIndex++;
-    }
-    chordTimer = setInterval(step, interval);
+    const bpm = parseFloat(document.getElementById('inputChordBpm').value) || 90;
+    const interval = (60 / bpm) * 1000;
+    const elapsed = performance.now() - lastChordStepTime;
+    const remaining = Math.max(0, interval - elapsed);
+    if (chordTimer) clearTimeout(chordTimer);
+    chordTimer = setTimeout(playNextChordStep, remaining);
   }
 }
 
@@ -2718,6 +2712,7 @@ document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(btn => 
       compressorMode = e.target.dataset.comp;
       localStorage.setItem('cfg_comp', compressorMode);
       applyCompressorSettings();
+      updateAudioRouting();
     });
   });
 
@@ -3029,6 +3024,7 @@ document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(btn => 
       e.target.classList.add('active');
       selectedRecEngine = e.target.dataset.engine;
       localStorage.setItem('cfg_recEng', selectedRecEngine);
+      if (audioCtx) setupRecorderNode(audioCtx);
     });
   });
 
