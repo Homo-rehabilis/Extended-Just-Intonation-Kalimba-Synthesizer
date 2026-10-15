@@ -55,8 +55,8 @@
     .tel-value{font-family:ui-monospace,monospace;font-size:.7rem;font-weight:600;color:#f3f4f6;line-height:1.2;display:flex;flex-direction:column;justify-content:center;min-height:3.1em}
     .tel-value .line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
     .tel-value.highlight{color:#38bdf8}
-    .stage-card{background-color:#181b26;border-radius:14px;padding:10px 8px;margin-bottom:8px;border:1px solid #252b3d;flex-grow:1;display:flex;align-items:center;min-height:0}
-    .tines-container{position:relative;height:320px;max-height:100%;display:flex;justify-content:space-between;align-items:flex-start;padding-top:8px;width:100%}
+    .stage-card{background-color:#181b26;border-radius:14px;padding:6px 8px;margin-bottom:6px;border:1px solid #252b3d;flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center}
+    .tines-container{position:relative;height:auto;max-height:100%;display:flex;justify-content:space-between;align-items:flex-start;padding-top:8px;width:100%}
     .bridge-bar{position:absolute;top:0;left:0;right:0;height:10px;background:linear-gradient(180deg,#4a2e1b 0%,#2a180e 100%);border-radius:5px;box-shadow:0 2px 6px rgba(0,0,0,.6);z-index:1}
     .tine-wrapper{flex:1;display:flex;flex-direction:column;align-items:center;z-index:2;margin:0 1px;min-width:0;height:100%;justify-content:flex-start}
     .tine{width:100%;max-width:44px;min-width:16px;background:linear-gradient(180deg,#4b5263 0%,#2b2f3a 100%);border-radius:0 0 8px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:6px 2px;transition:height .2s ease,background .08s ease,transform .08s ease;box-shadow:0 4px 10px rgba(0,0,0,.5);user-select:none;overflow:hidden}
@@ -768,11 +768,17 @@ registerProcessor('recorder-processor', RecorderProcessor);
       const scaleDef=scalesData[currentScaleKey];
       if(!scaleDef)return;
       is8KeyMode=detectKeyMode();
-      const isShortEnv=(window.innerHeight<580&&!is8KeyMode);
-      let baseMaxHeight,heightDiffScale;
-      if(isShortEnv){baseMaxHeight=190;heightDiffScale=57;}
-      else if(is8KeyMode){baseMaxHeight=280;heightDiffScale=85;}
-      else{baseMaxHeight=250;heightDiffScale=75;}
+      const availH = window.innerHeight;
+      let baseMaxHeight, heightDiffScale;
+      if (window.innerWidth > window.innerHeight) {
+        if (availH < 500) { baseMaxHeight = 160; heightDiffScale = 45; }
+        else if (availH < 650) { baseMaxHeight = 190; heightDiffScale = 55; }
+        else { baseMaxHeight = 230; heightDiffScale = 70; }
+      } else {
+        if (availH < 680) { baseMaxHeight = 210; heightDiffScale = 60; }
+        else if (availH < 760) { baseMaxHeight = 240; heightDiffScale = 70; }
+        else { baseMaxHeight = 280; heightDiffScale = 85; }
+      }
 
       if(is8KeyMode){
         const sortedPitches=[...scaleDef.keys8].sort((a,b)=>a.cents-b.cents);
@@ -1214,6 +1220,8 @@ function renderApp(){
     document.addEventListener('webkitfullscreenchange',updateFullscreenButton);
     btnFullscreen.addEventListener('click',toggleFullscreen);
     window.addEventListener('resize',renderApp);
+    window.addEventListener('orientationchange',()=>{setTimeout(renderApp,100);setTimeout(renderApp,300);});
+    window.addEventListener('load',()=>{renderApp();setTimeout(renderApp,100);setTimeout(renderApp,300);setTimeout(renderApp,500);});
 
     document.getElementById('scaleToggle').addEventListener('click',(e)=>{
       const btn=e.target.closest('.segmented-btn');if(!btn)return;
