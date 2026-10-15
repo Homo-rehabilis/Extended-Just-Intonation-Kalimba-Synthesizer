@@ -55,8 +55,8 @@
     .tel-value{font-family:ui-monospace,monospace;font-size:.7rem;font-weight:600;color:#f3f4f6;line-height:1.2;display:flex;flex-direction:column;justify-content:center;min-height:3.1em}
     .tel-value .line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
     .tel-value.highlight{color:#38bdf8}
-    .stage-card{background-color:#181b26;border-radius:14px;padding:6px 8px;margin-bottom:6px;border:1px solid #252b3d;flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center}
-    .tines-container{position:relative;height:auto;max-height:100%;display:flex;justify-content:space-between;align-items:flex-start;padding-top:8px;width:100%}
+    .stage-card{background-color:#181b26;border-radius:14px;padding:10px 8px;margin-bottom:8px;border:1px solid #252b3d;flex-grow:1;display:flex;align-items:center;min-height:0}
+    .tines-container{position:relative;height:320px;max-height:100%;display:flex;justify-content:space-between;align-items:flex-start;padding-top:8px;width:100%}
     .bridge-bar{position:absolute;top:0;left:0;right:0;height:10px;background:linear-gradient(180deg,#4a2e1b 0%,#2a180e 100%);border-radius:5px;box-shadow:0 2px 6px rgba(0,0,0,.6);z-index:1}
     .tine-wrapper{flex:1;display:flex;flex-direction:column;align-items:center;z-index:2;margin:0 1px;min-width:0;height:100%;justify-content:flex-start}
     .tine{width:100%;max-width:44px;min-width:16px;background:linear-gradient(180deg,#4b5263 0%,#2b2f3a 100%);border-radius:0 0 8px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:6px 2px;transition:height .2s ease,background .08s ease,transform .08s ease;box-shadow:0 4px 10px rgba(0,0,0,.5);user-select:none;overflow:hidden}
@@ -106,13 +106,6 @@
           <button class="modal-close-btn" id="btnCloseModal">✕</button>
         </div>
         <div class="control-group">
-          <span class="control-label">ACOUSTIC REALISM</span>
-          <div class="segmented-btn-group" id="acousticRealismToggle">
-            <button class="segmented-btn active" data-realism="on">ON</button>
-            <button class="segmented-btn" data-realism="off">OFF</button>
-          </div>
-        </div>
-        <div class="control-group">
           <span class="control-label">RANDOM NOISE for Texture</span>
           <div class="segmented-btn-group" id="randomNoiseToggle">
             <button class="segmented-btn active" data-noise="on">ON</button>
@@ -155,9 +148,6 @@
             <button class="segmented-btn active" data-engine="worklet">AudioWorklet (Fast / May not REC)</button>
             <button class="segmented-btn" data-engine="script">ScriptProcessor</button>
           </div>
-        </div>
-        <div class="control-group" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
-          <button id="btnResetAllSettings" class="segmented-btn" style="width: 100%; color: #ef4444; border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.12); font-weight: 700; padding: 8px 0; justify-content: center;">Reset All Settings to Default</button>
         </div>
       </div>
     </div>
@@ -647,8 +637,7 @@ chords17: [
 
     let currentScaleKey='souljazz',baseTonicFreq=417.6,tonicNum=1,tonicDen=1,tonicOctave=0,currentTonicFreq=417.6,masterGainValue=0.05,is8KeyMode=true,landscapeKeyCount=13,currentTines=[];
     let audioCtx=null,compressor=null,hpf=null,masterGain=null,sharedNoiseBuffer=null;
-    let isNoiseFilterEnabled=true,isRandomNoiseEnabled=true,isHarmonicEffectEnabled=true,isCompressorRoutingEnabled=true,isAcousticRealismEnabled=true;
-    let lastChordStepTime=0;
+    let isNoiseFilterEnabled=true,isRandomNoiseEnabled=true,isHarmonicEffectEnabled=true,isCompressorRoutingEnabled=true;
     let lastTine=null,currentTine=null,recorderNode=null,selectedRecEngine='worklet',recordedBuffers=[],isRecording=false,recTimerInterval=null,lastRecordedBlobUrl=null,audioInitPromise=null;
     const loadedWorkletContexts=new WeakSet();
     let chordBpm=87,chordPlayTimer=null,isChordLooping=false,activeChordSequence=null,activeChordIndex=0;
@@ -768,17 +757,11 @@ registerProcessor('recorder-processor', RecorderProcessor);
       const scaleDef=scalesData[currentScaleKey];
       if(!scaleDef)return;
       is8KeyMode=detectKeyMode();
-      const availH = window.innerHeight;
-      let baseMaxHeight, heightDiffScale;
-      if (window.innerWidth > window.innerHeight) {
-        if (availH < 500) { baseMaxHeight = 160; heightDiffScale = 45; }
-        else if (availH < 650) { baseMaxHeight = 190; heightDiffScale = 55; }
-        else { baseMaxHeight = 230; heightDiffScale = 70; }
-      } else {
-        if (availH < 680) { baseMaxHeight = 210; heightDiffScale = 60; }
-        else if (availH < 760) { baseMaxHeight = 240; heightDiffScale = 70; }
-        else { baseMaxHeight = 280; heightDiffScale = 85; }
-      }
+      const isShortEnv=(window.innerHeight<580&&!is8KeyMode);
+      let baseMaxHeight,heightDiffScale;
+      if(isShortEnv){baseMaxHeight=190;heightDiffScale=57;}
+      else if(is8KeyMode){baseMaxHeight=280;heightDiffScale=85;}
+      else{baseMaxHeight=250;heightDiffScale=75;}
 
       if(is8KeyMode){
         const sortedPitches=[...scaleDef.keys8].sort((a,b)=>a.cents-b.cents);
@@ -837,7 +820,7 @@ registerProcessor('recorder-processor', RecorderProcessor);
             loadedWorkletContexts.add(ctx);
           }
           recorderNode=new AudioWorkletNode(ctx,'recorder-processor');
-          recorderNode.port.onmessage=(e)=>{if(e.data)recordedBuffers.push(new Float32Array(e.data));};
+          recorderNode.port.onmessage=(e)=>{if(isRecording)recordedBuffers.push(new Float32Array(e.data));};
           const muteGain=ctx.createGain();muteGain.gain.setValueAtTime(0,ctx.currentTime);
           masterGain.connect(recorderNode);recorderNode.connect(muteGain);muteGain.connect(ctx.destination);
         }catch(err){console.error('AudioWorklet setup failed:',err);}
@@ -880,34 +863,17 @@ registerProcessor('recorder-processor', RecorderProcessor);
       const now=audioCtx.currentTime,routingTarget=isCompressorRoutingEnabled?compressor:hpf;
 
       const osc1=audioCtx.createOscillator(),gain1=audioCtx.createGain();
-      osc1.type='sine';
-      if(isAcousticRealismEnabled){
-        osc1.frequency.setValueAtTime(freq*1.015,now);
-        osc1.frequency.exponentialRampToValueAtTime(freq,now+0.008);
-      }else{
-        osc1.frequency.setValueAtTime(freq,now);
-      }
+      osc1.type='sine';osc1.frequency.setValueAtTime(freq,now);
       gain1.gain.setValueAtTime(0.5,now);gain1.gain.exponentialRampToValueAtTime(0.0001,now+2.5);
       osc1.connect(gain1);gain1.connect(routingTarget);
       osc1.start(now);osc1.stop(now+2.6);
 
       if(isHarmonicEffectEnabled){
         const osc2=audioCtx.createOscillator(),gain2=audioCtx.createGain();
-        osc2.type='sine';
-        if(isAcousticRealismEnabled){
-          osc2.frequency.setValueAtTime(freq*2.756*1.015,now);
-          osc2.frequency.exponentialRampToValueAtTime(freq*2.756,now+0.008);
-        }else{
-          osc2.frequency.setValueAtTime(freq*2.756,now);
-        }
-        let decayDur=0.28;
-        if(isAcousticRealismEnabled){
-          const orderFactor=Math.pow(2.756,0.45);
-          decayDur=Math.max(0.05,0.28/orderFactor);
-        }
-        gain2.gain.setValueAtTime(0.18,now);gain2.gain.exponentialRampToValueAtTime(0.0001,now+decayDur);
+        osc2.type='sine';osc2.frequency.setValueAtTime(freq*2.756,now);
+        gain2.gain.setValueAtTime(0.18,now);gain2.gain.exponentialRampToValueAtTime(0.0001,now+0.28);
         osc2.connect(gain2);gain2.connect(routingTarget);
-        osc2.start(now);osc2.stop(now+decayDur+0.02);
+        osc2.start(now);osc2.stop(now+0.3);
       }
 
       if(isRandomNoiseEnabled&&sharedNoiseBuffer){
@@ -932,8 +898,7 @@ registerProcessor('recorder-processor', RecorderProcessor);
     const btnLandscapeKeyToggle=document.getElementById('btnLandscapeKeyToggle'),settingsModal=document.getElementById('settingsModal');
     const btnOpenSettings=document.getElementById('btnOpenSettings'),btnCloseModal=document.getElementById('btnCloseModal');
 
-    btnOpenSettings.addEventListener('click',()=>{updateSettingsModalUI();settingsModal.classList.add('open');});
-    loadIndexSettings();
+    btnOpenSettings.addEventListener('click',()=>settingsModal.classList.add('open'));
     btnCloseModal.addEventListener('click',()=>settingsModal.classList.remove('open'));
     settingsModal.addEventListener('click',(e)=>{if(e.target===settingsModal)settingsModal.classList.remove('open');});
 
@@ -944,7 +909,7 @@ registerProcessor('recorder-processor', RecorderProcessor);
     btnLandscapeKeyToggle.addEventListener('click',()=>{
       landscapeKeyCount=landscapeKeyCount===13?17:13;
       btnLandscapeKeyToggle.textContent=landscapeKeyCount===13?'Change to 17-key':'Change to 13-key';
-      saveIndexSettings();renderApp();
+      renderApp();
     });
 
     function triggerTine(tineObj){
@@ -959,15 +924,15 @@ registerProcessor('recorder-processor', RecorderProcessor);
 
     inputChordBpm.addEventListener('input',(e)=>{
       const val=parseFloat(e.target.value);
-      if(val>=1&&val<=500){chordBpm=val;saveIndexSettings();updateBpmAndRefreshChord();}
+      if(val>=1&&val<=500){chordBpm=val;if(chordPlayTimer)startChordPlayback(activeChordSequence,true);}
     });
     btnChordBpmMinus.addEventListener('click',()=>{
       let val=parseFloat(inputChordBpm.value)-1;if(isNaN(val))val=87;if(val<1)val=1;
-      chordBpm=val;inputChordBpm.value=chordBpm;saveIndexSettings();updateBpmAndRefreshChord();
+      chordBpm=val;inputChordBpm.value=chordBpm;if(chordPlayTimer)startChordPlayback(activeChordSequence,true);
     });
     btnChordBpmPlus.addEventListener('click',()=>{
       let val=parseFloat(inputChordBpm.value)+1;if(isNaN(val))val=87;if(val>500)val=500;
-      chordBpm=val;inputChordBpm.value=chordBpm;saveIndexSettings();updateBpmAndRefreshChord();
+      chordBpm=val;inputChordBpm.value=chordBpm;if(chordPlayTimer)startChordPlayback(activeChordSequence,true);
     });
 
     btnChordLoopToggle.addEventListener('click',()=>{
@@ -977,99 +942,36 @@ registerProcessor('recorder-processor', RecorderProcessor);
       btnChordLoopToggle.style.backgroundColor=isChordLooping?'#2563eb':'#0d0f17';
       btnChordLoopToggle.style.color=isChordLooping?'#ffffff':'#9ca3af';
       btnChordLoopToggle.style.border=isChordLooping?'none':'1px solid #232838';
-      saveIndexSettings();
     });
     btnChordStop.addEventListener('click',stopChordPlayback);
 
-    function stopChordPlayback(){
-      if(chordPlayTimer){clearTimeout(chordPlayTimer);clearInterval(chordPlayTimer);chordPlayTimer=null;}
-      activeChordSequence=null;
-      activeChordIndex=0;
-      lastChordStepTime=0;
-    }
+    function stopChordPlayback(){if(chordPlayTimer){clearInterval(chordPlayTimer);chordPlayTimer=null;}activeChordSequence=null;activeChordIndex=0;}
 
-    function playNextChordStep(){
-      if(!activeChordSequence)return;
-      const items=is8KeyMode?activeChordSequence.slotIndices:activeChordSequence.pitchIndices;
-      if(!items||items.length===0)return;
-
-      if(activeChordIndex>=items.length){
-        if(isChordLooping)activeChordIndex=0;
-        else{stopChordPlayback();return;}
-      }
-      const targetInd=items[activeChordIndex];
-      if(targetInd!==null&&targetInd!==undefined){
-        const targetTine=is8KeyMode?currentTines[targetInd]:currentTines.find(t=>t.pitchIndex===targetInd);
-        if(targetTine)triggerTine(targetTine);
-      }
-      activeChordIndex++;
-      lastChordStepTime=performance.now();
-
-      const interval=(60/chordBpm)*1000;
-      if(chordPlayTimer)clearTimeout(chordPlayTimer);
-      chordPlayTimer=setTimeout(playNextChordStep,interval);
-    }
-
-    function startChordPlayback(chordObj){
+    function startChordPlayback(chordObj,resetIndex=true){
       stopChordPlayback();
       activeChordSequence=chordObj;
-      activeChordIndex=0;
-      playNextChordStep();
+      if(resetIndex)activeChordIndex=0;
+      const items=is8KeyMode?chordObj.slotIndices:chordObj.pitchIndices;
+      if(!items||items.length===0)return;
+
+      function playStep(){
+        if(activeChordIndex>=items.length){
+          if(isChordLooping)activeChordIndex=0;
+          else{stopChordPlayback();return;}
+        }
+        const targetInd=items[activeChordIndex];
+        if(targetInd!==null&&targetInd!==undefined){
+          const targetTine=is8KeyMode?currentTines[targetInd]:currentTines.find(t=>t.pitchIndex===targetInd);
+          if(targetTine)triggerTine(targetTine);
+        }
+        activeChordIndex++;
+      }
+      playStep();
+      chordPlayTimer=setInterval(playStep,(60/chordBpm)*1000);
     }
 
-    function updateBpmAndRefreshChord(){
-      if(chordPlayTimer&&activeChordSequence){
-        const interval=(60/chordBpm)*1000;
-        const elapsed=performance.now()-lastChordStepTime;
-        const remaining=Math.max(0,interval-elapsed);
-        if(chordPlayTimer)clearTimeout(chordPlayTimer);
-        chordPlayTimer=setTimeout(playNextChordStep,remaining);
-      }
-    }
-
-    
-    function syncMainUI(){
-      document.querySelectorAll('#scaleToggle .segmented-btn').forEach(btn=>{
-        btn.classList.toggle('active',btn.dataset.scale===currentScaleKey);
-      });
-      document.querySelectorAll('#tonicPresetBtns .segmented-btn').forEach(btn=>{
-        btn.classList.toggle('active',parseFloat(btn.dataset.freq)===baseTonicFreq);
-      });
-      const customFreqEl=document.getElementById('inputCustomFreq');
-      if(customFreqEl)customFreqEl.value=baseTonicFreq;
-
-      const numEl=document.getElementById('inputTonicNum'),denEl=document.getElementById('inputTonicDen');
-      if(numEl)numEl.value=tonicNum;
-      if(denEl)denEl.value=tonicDen;
-      document.querySelectorAll('#tonicRatioBtns .segmented-btn').forEach(btn=>{
-        btn.classList.toggle('active',parseInt(btn.dataset.num,10)===tonicNum&&parseInt(btn.dataset.den,10)===tonicDen);
-      });
-
-      const gainEl=document.getElementById('inputMasterGain'),gainTxtEl=document.getElementById('txtMasterGain');
-      if(gainEl)gainEl.value=masterGainValue;
-      if(gainTxtEl){
-        const safeGain=Math.max(0.0001,masterGainValue);
-        gainTxtEl.textContent=`${masterGainValue.toFixed(2)} (${(20*Math.log10(safeGain)).toFixed(0)}dB)`;
-      }
-
-      const bpmEl=document.getElementById('inputChordBpm');
-      if(bpmEl)bpmEl.value=chordBpm;
-
-      const loopBtn=document.getElementById('btnChordLoopToggle');
-      if(loopBtn){
-        loopBtn.className=`segmented-btn ${isChordLooping?'active':''}`;
-        loopBtn.textContent=isChordLooping?'Loop: ON':'Loop: OFF';
-        loopBtn.style.backgroundColor=isChordLooping?'#2563eb':'#0d0f17';
-        loopBtn.style.color=isChordLooping?'#ffffff':'#9ca3af';
-        loopBtn.style.border=isChordLooping?'none':'1px solid #232838';
-      }
-
-      updateSettingsModalUI();
-    }
-
-function renderApp(){
+    function renderApp(){
       updateTonicFreq();rebuildTinesData();updateOctaveUI();
-      syncMainUI();
       const scaleDef=scalesData[currentScaleKey];
       if(is8KeyMode){
         document.getElementById('badgeKeyMode').textContent='8-Key';
@@ -1193,11 +1095,11 @@ function renderApp(){
       setTimeout(()=>document.body.removeChild(a),100);
     });
 
-    selectRecFormat.addEventListener('change',async()=>{saveIndexSettings();if(!isRecording&&audioCtx)await initAudio();});
+    selectRecFormat.addEventListener('change',async()=>{if(!isRecording&&audioCtx)await initAudio();});
     document.getElementById('recEngineToggle').addEventListener('click',async(e)=>{
       const btn=e.target.closest('.segmented-btn');if(!btn)return;
       document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');selectedRecEngine=btn.dataset.engine;saveIndexSettings();
+      btn.classList.add('active');selectedRecEngine=btn.dataset.engine;
       if(audioCtx&&!isRecording)await setupRecorderNode(audioCtx);
     });
 
@@ -1220,13 +1122,11 @@ function renderApp(){
     document.addEventListener('webkitfullscreenchange',updateFullscreenButton);
     btnFullscreen.addEventListener('click',toggleFullscreen);
     window.addEventListener('resize',renderApp);
-    window.addEventListener('orientationchange',()=>{setTimeout(renderApp,100);setTimeout(renderApp,300);});
-    window.addEventListener('load',()=>{renderApp();setTimeout(renderApp,100);setTimeout(renderApp,300);setTimeout(renderApp,500);});
 
     document.getElementById('scaleToggle').addEventListener('click',(e)=>{
       const btn=e.target.closest('.segmented-btn');if(!btn)return;
       document.querySelectorAll('#scaleToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');currentScaleKey=btn.dataset.scale;saveIndexSettings();renderApp();
+      btn.classList.add('active');currentScaleKey=btn.dataset.scale;renderApp();
     });
 
     const inputMasterGain=document.getElementById('inputMasterGain'),txtMasterGain=document.getElementById('txtMasterGain');
@@ -1237,143 +1137,39 @@ function renderApp(){
       if(masterGain&&audioCtx)masterGain.gain.setValueAtTime(masterGainValue,audioCtx.currentTime);
     });
 
-    function saveIndexSettings(){
-      try{
-        const cfg={
-          baseTonicFreq,tonicNum,tonicDen,tonicOctave,
-          masterGainValue,currentScaleKey,landscapeKeyCount,
-          isNoiseFilterEnabled,isRandomNoiseEnabled,isHarmonicEffectEnabled,
-          isCompressorRoutingEnabled,isAcousticRealismEnabled,
-          selectedRecEngine,
-          recFormat:document.getElementById('selectRecFormat')?.value||'32float-48k',
-          chordBpm,isChordLooping
-        };
-        localStorage.setItem('ji_kalimba_index_config',JSON.stringify(cfg));
-      }catch(e){}
-    }
-
-    function loadIndexSettings(){
-      try{
-        const raw=localStorage.getItem('ji_kalimba_index_config');
-        if(!raw)return;
-        const cfg=JSON.parse(raw);
-        if(cfg.baseTonicFreq!==undefined)baseTonicFreq=cfg.baseTonicFreq;
-        if(cfg.tonicNum!==undefined)tonicNum=cfg.tonicNum;
-        if(cfg.tonicDen!==undefined)tonicDen=cfg.tonicDen;
-        if(cfg.tonicOctave!==undefined)tonicOctave=cfg.tonicOctave;
-        if(cfg.masterGainValue!==undefined)masterGainValue=cfg.masterGainValue;
-        if(cfg.currentScaleKey!==undefined&&scalesData[cfg.currentScaleKey])currentScaleKey=cfg.currentScaleKey;
-        if(cfg.landscapeKeyCount!==undefined)landscapeKeyCount=cfg.landscapeKeyCount;
-        if(cfg.isNoiseFilterEnabled!==undefined)isNoiseFilterEnabled=cfg.isNoiseFilterEnabled;
-        if(cfg.isRandomNoiseEnabled!==undefined)isRandomNoiseEnabled=cfg.isRandomNoiseEnabled;
-        if(cfg.isHarmonicEffectEnabled!==undefined)isHarmonicEffectEnabled=cfg.isHarmonicEffectEnabled;
-        if(cfg.isCompressorRoutingEnabled!==undefined)isCompressorRoutingEnabled=cfg.isCompressorRoutingEnabled;
-        if(cfg.isAcousticRealismEnabled!==undefined)isAcousticRealismEnabled=cfg.isAcousticRealismEnabled;
-        if(cfg.selectedRecEngine!==undefined)selectedRecEngine=cfg.selectedRecEngine;
-        if(cfg.chordBpm!==undefined)chordBpm=cfg.chordBpm;
-        if(cfg.isChordLooping!==undefined)isChordLooping=cfg.isChordLooping;
-
-        if(cfg.recFormat&&document.getElementById('selectRecFormat')){
-          document.getElementById('selectRecFormat').value=cfg.recFormat;
-        }
-        if(document.getElementById('inputMasterGain')){
-          document.getElementById('inputMasterGain').value=masterGainValue;
-          const gainTxt=document.getElementById('txtMasterGain');
-          if(gainTxt)gainTxt.textContent=`${masterGainValue.toFixed(2)} (${(20*Math.log10(Math.max(0.0001,masterGainValue))).toFixed(0)}dB)`;
-        }
-        if(document.getElementById('inputChordBpm')){
-          document.getElementById('inputChordBpm').value=chordBpm;
-        }
-        syncMainUI();
-      }catch(e){}
-    }
-
-    function updateSettingsModalUI(){
-      const setBtnActive=(containerId,activeCondition)=>{
-        const container=document.getElementById(containerId);
-        if(container){
-          container.querySelectorAll('.segmented-btn').forEach(btn=>{
-            btn.classList.toggle('active',activeCondition(btn));
-          });
-        }
-      };
-      setBtnActive('acousticRealismToggle',b=>(b.dataset.realism==='on')===isAcousticRealismEnabled);
-      setBtnActive('randomNoiseToggle',b=>(b.dataset.noise==='on')===isRandomNoiseEnabled);
-      setBtnActive('noiseFilterToggle',b=>(b.dataset.filter==='on')===isNoiseFilterEnabled);
-      setBtnActive('harmonicEffectToggle',b=>(b.dataset.harmonic==='on')===isHarmonicEffectEnabled);
-      setBtnActive('compressorRoutingToggle',b=>(b.dataset.compressor==='on')===isCompressorRoutingEnabled);
-      setBtnActive('recEngineToggle',b=>b.dataset.engine===selectedRecEngine);
-    }
-
-    function resetAllIndexSettings(){
-      if(confirm('Reset all settings to default?')){
-        localStorage.removeItem('ji_kalimba_index_config');
-        baseTonicFreq=417.6;tonicNum=1;tonicDen=1;tonicOctave=0;
-        masterGainValue=0.05;currentScaleKey='souljazz';landscapeKeyCount=13;
-        isNoiseFilterEnabled=true;isRandomNoiseEnabled=true;isHarmonicEffectEnabled=true;
-        isCompressorRoutingEnabled=true;isAcousticRealismEnabled=true;
-        selectedRecEngine='worklet';chordBpm=87;isChordLooping=false;
-        
-        if(document.getElementById('selectRecFormat'))document.getElementById('selectRecFormat').value='32float-48k';
-        if(document.getElementById('inputMasterGain'))document.getElementById('inputMasterGain').value=0.05;
-        if(document.getElementById('inputChordBpm'))document.getElementById('inputChordBpm').value=87;
-        if(document.getElementById('inputCustomFreq'))document.getElementById('inputCustomFreq').value=417.6;
-        if(document.getElementById('inputTonicNum'))document.getElementById('inputTonicNum').value=1;
-        if(document.getElementById('inputTonicDen'))document.getElementById('inputTonicDen').value=1;
-        if(masterGain&&audioCtx)masterGain.gain.setValueAtTime(0.05,audioCtx.currentTime);
-        const gainTxt=document.getElementById('txtMasterGain');
-        if(gainTxt)gainTxt.textContent='0.05 (-26dB)';
-        
-        stopChordPlayback();
-        const loopBtn=document.getElementById('btnChordLoopToggle');
-        if(loopBtn){
-          loopBtn.className='segmented-btn';loopBtn.textContent='Loop: OFF';
-          loopBtn.style.backgroundColor='#0d0f17';loopBtn.style.color='#9ca3af';loopBtn.style.border='1px solid #232838';
-        }
-        renderApp();
-        updateSettingsModalUI();
-      }
-    }
-
     document.getElementById('randomNoiseToggle').addEventListener('click',(e)=>{
       const btn=e.target.closest('.segmented-btn');if(!btn)return;
       document.querySelectorAll('#randomNoiseToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');isRandomNoiseEnabled=(btn.dataset.noise==='on');saveIndexSettings();
+      btn.classList.add('active');isRandomNoiseEnabled=(btn.dataset.noise==='on');
     });
     document.getElementById('noiseFilterToggle').addEventListener('click',(e)=>{
       const btn=e.target.closest('.segmented-btn');if(!btn)return;
       document.querySelectorAll('#noiseFilterToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');isNoiseFilterEnabled=(btn.dataset.filter==='on');saveIndexSettings();
+      btn.classList.add('active');isNoiseFilterEnabled=(btn.dataset.filter==='on');
     });
     document.getElementById('harmonicEffectToggle').addEventListener('click',(e)=>{
       const btn=e.target.closest('.segmented-btn');if(!btn)return;
       document.querySelectorAll('#harmonicEffectToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');isHarmonicEffectEnabled=(btn.dataset.harmonic==='on');saveIndexSettings();
+      btn.classList.add('active');isHarmonicEffectEnabled=(btn.dataset.harmonic==='on');
     });
     document.getElementById('compressorRoutingToggle').addEventListener('click',(e)=>{
       const btn=e.target.closest('.segmented-btn');if(!btn)return;
       document.querySelectorAll('#compressorRoutingToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');isCompressorRoutingEnabled=(btn.dataset.compressor==='on');saveIndexSettings();
+      btn.classList.add('active');isCompressorRoutingEnabled=(btn.dataset.compressor==='on');
     });
-    document.getElementById('acousticRealismToggle').addEventListener('click',(e)=>{
-      const btn=e.target.closest('.segmented-btn');if(!btn)return;
-      document.querySelectorAll('#acousticRealismToggle .segmented-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');isAcousticRealismEnabled=(btn.dataset.realism==='on');saveIndexSettings();
-    });
-    document.getElementById('btnResetAllSettings').addEventListener('click',resetAllIndexSettings);
 
     document.getElementById('tonicPresetBtns').addEventListener('click',(e)=>{
       const btn=e.target.closest('.segmented-btn');if(!btn)return;
       document.querySelectorAll('#tonicPresetBtns .segmented-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');baseTonicFreq=parseFloat(btn.dataset.freq);
-      document.getElementById('inputCustomFreq').value=baseTonicFreq;saveIndexSettings();renderApp();
+      document.getElementById('inputCustomFreq').value=baseTonicFreq;renderApp();
     });
     document.getElementById('inputCustomFreq').addEventListener('input',(e)=>{
       const val=parseFloat(e.target.value);
       if(val&&val>=100&&val<=2000){
         baseTonicFreq=val;
         document.querySelectorAll('#tonicPresetBtns .segmented-btn').forEach(b=>b.classList.toggle('active',parseFloat(b.dataset.freq)===baseTonicFreq));
-        saveIndexSettings();renderApp();
+        renderApp();
       }
     });
 
@@ -1383,7 +1179,7 @@ function renderApp(){
       document.querySelectorAll('#tonicRatioBtns .segmented-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       tonicNum=parseInt(btn.dataset.num,10);tonicDen=parseInt(btn.dataset.den,10);
-      inputTonicNum.value=tonicNum;inputTonicDen.value=tonicDen;saveIndexSettings();renderApp();
+      inputTonicNum.value=tonicNum;inputTonicDen.value=tonicDen;renderApp();
     });
 
     function handleCustomRatioInput(){
@@ -1393,7 +1189,7 @@ function renderApp(){
         document.querySelectorAll('#tonicRatioBtns .segmented-btn').forEach(b=>{
           b.classList.toggle('active',parseInt(b.dataset.num,10)===tonicNum&&parseInt(b.dataset.den,10)===tonicDen);
         });
-        saveIndexSettings();renderApp();
+        renderApp();
       }
     }
     inputTonicNum.addEventListener('input',handleCustomRatioInput);
