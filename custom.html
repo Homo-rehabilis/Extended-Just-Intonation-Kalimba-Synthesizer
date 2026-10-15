@@ -129,6 +129,23 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .toast-notification.success {
   border: 1px solid #22c55e;
 }
+body:fullscreen,
+body:-webkit-full-screen {
+  padding: 8px !important;
+  box-sizing: border-box !important;
+}
+
+.app-card:fullscreen,
+.app-card:-webkit-full-screen {
+  width: calc(100vw - 16px) !important;
+  height: calc(100vh - 16px) !important;
+  max-width: calc(100vw - 16px) !important;
+  max-height: calc(100vh - 16px) !important;
+  border: 1px solid #1f2433 !important;
+  border-radius: 20px !important;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.9) !important;
+  margin: auto !important;
+}
 </style>
 </head>
 <body>
