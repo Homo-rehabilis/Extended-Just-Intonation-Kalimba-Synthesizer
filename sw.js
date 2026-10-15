@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ji-kalimba-ver.1.0.5.3.5.2.2.3.10.0';
+const CACHE_NAME = 'ji-kalimba-ver.1.0.5.3.5.2.2.3.9.0';
 const urlsToCache = [
   './',
   './index.html',
