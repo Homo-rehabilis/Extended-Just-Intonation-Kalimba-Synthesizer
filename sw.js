@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ji-kalimba-ver.1.0.5.3.5.2.2.3.9.7'; // アプリ更新時はここを v3, v4... とインクリメントします
+const CACHE_NAME = 'ji-kalimba-ver.1.0.5.3.5.2.2.3.10.0';
 const urlsToCache = [
   './',
   './index.html',
@@ -6,15 +6,23 @@ const urlsToCache = [
   './manifest.json'
 ];
 
-// インストール時に新しいファイルをキャッシュ
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
+    caches.open(CACHE_NAME).then((cache) => {
+      return Promise.all(
+        urlsToCache.map((url) => {
+          return fetch(new Request(url, { cache: 'reload' })).then((response) => {
+            if (!response.ok) {
+              throw new Error();
+            }
+            return cache.put(url, response);
+          });
+        })
+      );
+    })
   );
 });
 
-// 古いキャッシュの自動削除
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -30,7 +38,6 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// キャッシュまたはネットワークから取得
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
@@ -38,7 +45,6 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// 画面側から更新の指示（SKIP_WAITING）を受け取った場合
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
