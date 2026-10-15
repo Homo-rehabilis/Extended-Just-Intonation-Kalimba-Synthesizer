@@ -7,40 +7,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
   <title>Extended Just Intonation Kalimba Synthesizer</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:12px;overflow-x:hidden;overflow-y:auto}
-    
-    @media (display-mode: fullscreen) {
-      body {
-        padding: 0 !important;
-        overflow: hidden !important;
-        height: 100vh !important;
-        height: 100dvh !important;
-        align-items: stretch !important;
-        justify-content: stretch !important;
-      }
-      .app-card {
-        width: 100vw !important;
-        height: 100vh !important;
-        height: 100dvh !important;
-        max-width: 100vw !important;
-        max-height: 100vh !important;
-        max-height: 100dvh !important;
-        border-radius: 0 !important;
-        border: none !important;
-        padding: 6px 14px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-between !important;
-        overflow: hidden !important;
-      }
-    }
-
     .app-card{background-color:#12141c;border:1px solid #1f2433;border-radius:20px;padding:16px;width:100%;max-width:540px;box-shadow:0 20px 50px rgba(0,0,0,0.9);transition:max-width .3s ease,padding .3s ease;display:flex;flex-direction:column}
     .app-card:fullscreen,.app-card:-webkit-full-screen{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important;border-radius:0!important;border:none!important;padding:10px 16px!important;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden!important}
     .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;flex-shrink:0}
@@ -1091,16 +1061,7 @@ registerProcessor('recorder-processor', RecorderProcessor);
       updateSettingsModalUI();
     }
 
-
-    function triggerDelayedRenders() {
-      renderApp();
-      setTimeout(renderApp, 100);
-      setTimeout(renderApp, 300);
-      setTimeout(renderApp, 500);
-      setTimeout(renderApp, 1000);
-    }
-
-    function renderApp(){
+function renderApp(){
       updateTonicFreq();rebuildTinesData();updateOctaveUI();
       syncMainUI();
       const scaleDef=scalesData[currentScaleKey];
@@ -1249,13 +1210,10 @@ registerProcessor('recorder-processor', RecorderProcessor);
       txtFullscreen.textContent=(document.fullscreenElement||document.webkitFullscreenElement)?'Off':'Full';
       setTimeout(renderApp,100);
     }
-    document.addEventListener('fullscreenchange', () => { updateFullscreenButton(); triggerDelayedRenders(); });
-    document.addEventListener('webkitfullscreenchange', () => { updateFullscreenButton(); triggerDelayedRenders(); });
+    document.addEventListener('fullscreenchange',updateFullscreenButton);
     document.addEventListener('webkitfullscreenchange',updateFullscreenButton);
     btnFullscreen.addEventListener('click',toggleFullscreen);
-    window.addEventListener('resize', triggerDelayedRenders);
-    window.addEventListener('orientationchange', triggerDelayedRenders);
-    document.addEventListener('DOMContentLoaded', triggerDelayedRenders);
+    window.addEventListener('resize',renderApp);
 
     document.getElementById('scaleToggle').addEventListener('click',(e)=>{
       const btn=e.target.closest('.segmented-btn');if(!btn)return;
