@@ -290,7 +290,7 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
           <button class="btn btn-primary" id="btnOpenEditor" style="padding:3px 5px;font-size:.59rem;border-radius:6px;">Edit</button>
           <button class="btn" id="btnSavePreset" style="padding:3px 5px;font-size:.59rem;border-radius:6px;">Save</button>
           <button class="btn" id="btnLoadPreset" style="padding:3px 5px;font-size:.59rem;border-radius:6px;">Load</button>
-          <input type="file" id="inputPresetFile" accept=".json" style="display:none;">
+          <input type="file" id="inputPresetFile" accept=".json,application/json,text/json,text/plain" style="display:none;">
           <button class="rec-btn" id="btnResetPreset" style="padding:3px 5px;font-size:.59rem;border-radius:6px;">Reset</button>
         </div>
       </div>
@@ -594,7 +594,7 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
         <button class="segmented-btn" id="btnPerfClear" style="padding:2px 3px;font-size:.65rem;color:#ef4444;" title="Clear">🗑️</button>
         <button class="segmented-btn" id="btnPerfSave" style="padding:2px 3px;font-size:.65rem;" title="Save JSON">💾</button>
         <button class="segmented-btn" id="btnPerfLoad" style="padding:2px 6px;font-size:.55rem;" title="Load JSON">📂</button>
-        <input type="file" id="inputPerfFile" accept=".json" style="display:none;">
+        <input type="file" id="inputPerfFile" accept=".json,application/json,text/json,text/plain" style="display:none;">
         <span id="txtPerfStatus" style="color:#8b92a5;font-size:.45rem;margin-left:2px;">Ready (0 notes)</span>
       </div>
     </div>
@@ -1271,8 +1271,14 @@ function handlePresetFileImport(e) {
   reader.onload = (evt) => {
     try {
       const rawData = JSON.parse(evt.target.result);
+
+      // Loop Playback 用 JSON だった場合は自動的に Loop 読み込みへ転送
+      if (rawData && (rawData.events || Array.isArray(rawData))) {
+        loadPerfLoopFromFile(file);
+        return;
+      }
+
       const migrated = migratePreset(rawData);
-      
       presets[activeSlotIndex] = migrated;
       savePresetsToStorage();
       renderApp();
@@ -2222,16 +2228,41 @@ function loadPerfLoopFromFile(file) {
   reader.onload = (e) => {
     try {
       const data = JSON.parse(e.target.result);
-      if (data && Array.isArray(data.events) && data.events.length > 0) {
+      let events = null;
+      let duration = 0;
+
+      // オブジェクト形式 (data.events) または 直列配列形式 (data) の両方に対応
+      if (data && Array.isArray(data.events)) {
+        events = data.events;
+        duration = data.duration || 0;
+      } else if (Array.isArray(data)) {
+        events = data;
+      } else if (data && Array.isArray(data.recordedEvents)) {
+        events = data.recordedEvents;
+        duration = data.duration || 0;
+      }
+
+      if (events && events.length > 0) {
         stopPerfPlay();
-        perfRecordedEvents = data.events;
-        perfLoopDuration = data.duration || 1000;
+        perfRecordedEvents = events;
+        
+        // duration 未設定時の自動補正（最後の打鍵時間 + 余白時間）
+        if (!duration || duration <= 0) {
+          const lastEv = events[events.length - 1];
+          duration = (lastEv && lastEv.time) ? Math.ceil(lastEv.time + 500) : 1000;
+        }
+        perfLoopDuration = duration;
+
+        // localStorage へ復元用データを保存
         try {
           localStorage.setItem('ji_kalimba_phrase_loop', JSON.stringify({ events: perfRecordedEvents, duration: perfLoopDuration }));
         } catch(err){}
+
         const statusEl = document.getElementById('txtPerfStatus');
         if (statusEl) statusEl.textContent = `Loaded (${perfRecordedEvents.length} notes)`;
         if (typeof showToast === 'function') showToast(`Loaded ${perfRecordedEvents.length} notes`, 'success');
+      } else if (data && (data.baseTonicFreq || data.timbre)) {
+        if (typeof showToast === 'function') showToast('⚠️ This is a JSON file for presets. Please use the Load button in the Preset section.');
       } else {
         if (typeof showToast === 'function') showToast('Invalid loop file format.');
       }
