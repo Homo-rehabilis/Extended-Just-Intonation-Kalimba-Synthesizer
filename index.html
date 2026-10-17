@@ -55,7 +55,17 @@
     .tel-value{font-family:ui-monospace,monospace;font-size:.7rem;font-weight:600;color:#f3f4f6;line-height:1.2;display:flex;flex-direction:column;justify-content:center;min-height:3.1em}
     .tel-value .line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
     .tel-value.highlight{color:#38bdf8}
-    .stage-card{background-color:#181b26;border-radius:14px;padding:10px 8px;margin-bottom:8px;border:1px solid #252b3d;flex-grow:1;display:flex;align-items:center;min-height:0}
+    .stage-card{background-color:#181b26;border-radius:14px;padding:10px 8px;margin-bottom:8px;border:1px solid #252b3d;flex-grow:1;display:flex;align-items:center;min-height:0;position:relative}
+    /* --- AUDIO BOOT OVERLAY STYLING (EASILY CUSTOMIZABLE) ---
+       To change overlay position on keyboard:
+       - top: 50% (Center), top: 20% (Top area), top: 80% (Bottom area)
+       - transform: translate(-50%, -50%) centers text relative to top/left
+       - font-size, color (#34d399), background-color can be customized easily
+    ------------------------------------------------------------------ */
+    .audio-boot-overlay{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);z-index:999;pointer-events:none;display:flex;align-items:center;justify-content:center;padding:3px 6px;background-color:rgba(18,20,28,0.88);border:none;box-shadow:none;opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s ease}
+    .audio-boot-overlay.active{opacity:1;visibility:visible}
+    .audio-boot-text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:.72rem;font-weight:700;color:#34d399;letter-spacing:.04em;text-align:center;white-space:nowrap;text-shadow:0 0 6px rgba(52,211,153,0.4)}
+
     .tines-container{position:relative;height:320px;max-height:100%;display:flex;justify-content:space-between;align-items:flex-start;padding-top:8px;width:100%}
     .bridge-bar{position:absolute;top:0;left:0;right:0;height:10px;background:linear-gradient(180deg,#4a2e1b 0%,#2a180e 100%);border-radius:5px;box-shadow:0 2px 6px rgba(0,0,0,.6);z-index:1}
     .tine-wrapper{flex:1;display:flex;flex-direction:column;align-items:center;z-index:2;margin:0 1px;min-width:0;height:100%;justify-content:flex-start}
@@ -254,6 +264,9 @@
 
     <div class="stage-card">
       <div class="tines-container" id="tinesWrapper"><div class="bridge-bar"></div></div>
+      <div id="audioBootOverlay" class="audio-boot-overlay">
+        <span id="audioBootText" class="audio-boot-text"></span>
+      </div>
     </div>
 
     <div class="presets-section">
@@ -412,7 +425,7 @@
         chords13:[
           {id:'cn13_1',label:'Tonic Trio',pitchIndices:[0,3,8,10]},
           {id:'cn13_2',label:'Full 13 Spread',pitchIndices:[0,4,8,12]},
-          {id:'cn13_4',label:'7-tone Spiral of 5ths (0.5x)',pitchIndices:[0,null,8,null,3,null,10,null,5,null,12,null,7]}
+          {id:'cn13_4',label:'7-tone Spiral of 5ths (0.5x)',pitchIndices:[0,null,8,null,3,null,10,null,5,null,12,null,7,null]}
         ],
         chords17:[
           {id:'cn13_1',label:'Tonic Trio',pitchIndices:[0,3,8,10]},
@@ -844,7 +857,27 @@ registerProcessor('recorder-processor', RecorderProcessor);
       }
     }
 
-    async function initAudio(){
+    
+    let isAudioBooted = false;
+    function triggerAudioBootNotification() {
+      if (isAudioBooted) return;
+      isAudioBooted = true;
+      const overlay = document.getElementById('audioBootOverlay');
+      const txt = document.getElementById('audioBootText');
+      if (!overlay || !txt) return;
+
+      txt.textContent = 'Booting Audio Context...';
+      overlay.classList.add('active');
+
+      setTimeout(() => {
+        txt.textContent = 'Ready to play';
+        setTimeout(() => {
+          overlay.classList.remove('active');
+        }, 1400);
+      }, 800);
+    }
+async function initAudio(){
+      triggerAudioBootNotification();
       const {sampleRate:targetSampleRate}=parseRecFormat(document.getElementById('selectRecFormat').value);
       if(audioCtx&&audioCtx.sampleRate!==targetSampleRate){
         await audioCtx.close();audioCtx=null;recorderNode=null;
@@ -862,12 +895,18 @@ registerProcessor('recorder-processor', RecorderProcessor);
         sharedNoiseBuffer=audioCtx.createBuffer(1,bufferSize,audioCtx.sampleRate);
         const data=sharedNoiseBuffer.getChannelData(0);
         for(let i=0;i<bufferSize;i++)data[i]=Math.random()*2-1;
-        audioInitPromise=setupRecorderNode(audioCtx);
-      }else if(!recorderNode){audioInitPromise=setupRecorderNode(audioCtx);}
+        setupRecorderNode(audioCtx).catch(e=>{});
+      }else if(!recorderNode){setupRecorderNode(audioCtx).catch(e=>{});}
 
-      if(audioCtx.state==='suspended')await audioCtx.resume();
-      if(audioInitPromise)await audioInitPromise;
-    }
+      if(audioCtx.state==='suspended'){
+        if(masterGain) masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+
+        try{ await audioCtx.resume(); }catch(e){}
+
+        setTimeout(()=>{
+          if(masterGain) masterGain.gain.setValueAtTime(masterGainValue, audioCtx.currentTime);
+        }, 500);
+      }}
 
     async function playTone(freq){
       await initAudio();if(!audioCtx)return;
