@@ -56,9 +56,36 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .tel-value{font-family:ui-monospace,monospace;font-size:.7rem;font-weight:600;color:#f3f4f6;line-height:1.2;display:flex;flex-direction:column;justify-content:center;min-height:3.1em}
 .tel-value .line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .tel-value.highlight{color:#38bdf8}
-.stereo-control-bar{background-color:#181b26;border-radius:12px;padding:2px 6px;display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:3px;border:1px solid #252b3d;flex-wrap:nowrap;flex-shrink:0;width:100%;overflow:hidden}
-.stereo-control-group{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
-.stage-card{background-color:#181b26;border-radius:14px;padding:6px;margin-bottom:4px;border:1px solid #252b3d;flex-grow:1;display:flex;align-items:center;min-height:110px}
+.stereo-control-bar {
+  background-color: #181b26;
+  border-radius: 12px;
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 3px;
+  border: 1px solid #252b3d;
+  flex-shrink: 0;
+  width: 100%;
+}
+.stereo-control-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+}
+.stage-card{background-color:#181b26;border-radius:14px;padding:6px;margin-bottom:4px;border:1px solid #252b3d;flex-grow:1;display:flex;align-items:center;min-height:110px;position:relative}
+    /* --- AUDIO BOOT OVERLAY STYLING (EASILY CUSTOMIZABLE) ---
+       To change overlay position on keyboard:
+       - top: 50% (Center), top: 20% (Top area), top: 80% (Bottom area)
+       - transform: translate(-50%, -50%) centers text relative to top/left
+       - font-size, color (#34d399), background-color can be customized easily
+    ------------------------------------------------------------------ */
+    .audio-boot-overlay{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);z-index:999;pointer-events:none;display:flex;align-items:center;justify-content:center;padding:3px 6px;background-color:rgba(18,20,28,0.88);border:none;box-shadow:none;opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s ease}
+    .audio-boot-overlay.active{opacity:1;visibility:visible}
+    .audio-boot-text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:.72rem;font-weight:700;color:#34d399;letter-spacing:.04em;text-align:center;white-space:nowrap;text-shadow:0 0 6px rgba(52,211,153,0.4)}
+
 .tines-container{position:relative;height:320px;max-height:100%;display:flex;justify-content:space-between;align-items:flex-start;padding-top:6px;width:100%}
 .bridge-bar{position:absolute;top:0;left:0;right:0;height:10px;background:linear-gradient(180deg,#4a2e1b 0%,#2a180e 100%);border-radius:5px;box-shadow:0 2px 6px rgba(0,0,0,.6);z-index:1}
 .tine-wrapper{flex:1;display:flex;flex-direction:column;align-items:center;z-index:2;margin:0 1px;min-width:0;height:100%;justify-content:flex-start}
@@ -70,10 +97,11 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .tine-ratio-text{font-size:.6rem;font-weight:700;color:#9ca3af;margin-top:4px;text-align:center;white-space:nowrap}
 .tine-cents-text{font-size:.52rem;color:#6b7280;white-space:nowrap}
 .tine-key-shortcut{font-size:.5rem;color:#38bdf8;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.25);padding:1px 4px;border-radius:3px;margin-top:2px;white-space:nowrap;font-family:monospace}
-.presets-section{display:flex;align-items:center;justify-content:space-between;width:100%;gap:6px;flex-shrink:0;background-color:#181b26;border:1px solid #252b3d;border-radius:12px;padding:4px 8px;flex-wrap:nowrap}
-.presets-left{display:flex;align-items:center;gap:1px;flex:1;min-width:0;flex-wrap:wrap}
-.presets-grid{display:flex;gap:1px;align-items:center;flex-wrap:wrap;}
+
+
+.presets-grid{display:flex;gap:2px;align-items:center;flex-wrap:wrap;}
 .chord-bpm-card{display:flex;flex-direction:column;align-items:flex-end;gap:3px;background-color:#0d0f17;border:1px solid #232838;padding:2px 6px;border-radius:10px;flex-shrink:0}
+
 .modal-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background-color:rgba(0,0,0,.75);display:flex;justify-content:center;align-items:center;z-index:10000;opacity:0;pointer-events:none;transition:opacity .2s ease;padding:12px}
 .modal-overlay.open{opacity:1;pointer-events:auto}
 .modal-card{background-color:#12141c;border:1px solid #1f2433;border-radius:16px;padding:16px;width:90%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.9);display:flex;flex-direction:column;gap:10px}
@@ -100,7 +128,14 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .title-group h1{font-size:.85rem}
 .title-group p{font-size:.65rem}
 .chord-bpm-card{flex-direction:row;align-items:center;gap:3px}
-.presets-left{flex-direction:row!important;align-items:center!important;gap:6px!important}
+  .stereo-control-bar {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+  }
+  .stereo-control-group {
+    width: auto !important;
+    flex: 1 !important;
+  }
 }
 @media(orientation:landscape) and (max-height:580px){
 .header{margin-bottom:2px}
@@ -129,6 +164,97 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 .toast-notification.success {
   border: 1px solid #22c55e;
 }
+
+/* Added CSS for Loop Playback & Chord Layout */
+.presets-section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.loop-playback-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  background-color: #0d0f17;
+  border: 1px solid #1f2433;
+  border-radius: 10px;
+  padding: 6px 8px;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+.loop-title {
+  font-size: .65rem;
+  font-weight: 700;
+  color: #38bdf8;
+  white-space: nowrap;
+}
+.loop-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+.chord-arpeggio-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background-color: #0d0f17;
+  border: 1px solid #232838;
+  border-radius: 10px;
+  padding: 4px 8px;
+  width: 100%;
+}
+.chord-card-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+.chord-buttons-grid {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-wrap: wrap;
+  flex: 1;
+}
+.chord-tempo-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+
+@media(orientation:landscape) {
+  .presets-section {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+  }
+  .loop-playback-card {
+    width: auto !important;
+    flex: 0 0 auto !important;
+  }
+  .chord-arpeggio-card {
+    width: auto !important;
+    flex: 1 1 auto !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+  }
+  .chord-tempo-row {
+    width: auto !important;
+    justify-content: flex-end !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -434,12 +560,16 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
 
   <div id="stereoControlBar" class="stereo-control-bar">
     <div class="stereo-control-group" id="panControlGroup">
-      <span class="control-label">PAN</span>
+      <span class="control-label">STEREO PAN</span>
       <input type="range" id="inputPresetPan" class="gain-slider" min="-1.0" max="1.0" step="0.05" value="0.0" style="flex:1;cursor:pointer;min-width:0px">
       <span id="txtPresetPan" style="font-size:.5rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:20px;text-align:left;">C</span>
     </div>
     <div class="stereo-control-group">
-      <span class="control-label" id="gainControlLabel">PRESET GAIN</span>
+      <select id="selectGainTarget" class="select-input" style="font-size:.55rem;font-weight:700;color:#38bdf8;background:#181b26;border:1px solid #252b3d;padding:1px 4px;border-radius:4px;cursor:pointer;">
+        <option value="preset">PRESET GAIN</option>
+        <option value="chord">CHORD GAIN</option>
+        <option value="playback">PLAYBACK GAIN</option>
+      </select>
       <input type="range" id="inputPresetGain" class="gain-slider" min="0.1" max="2.0" step="0.05" value="1.0" style="flex:1;cursor:pointer;min-width:30px">
       <span id="txtPresetGain" style="font-size:.5rem;color:#38bdf8;font-family:monospace;font-weight:700;min-width:0px;text-align:right;">1.00</span>
     </div>
@@ -449,29 +579,42 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
     <div class="tines-container" id="tinesWrapper">
       <div class="bridge-bar"></div>
     </div>
+      <div id="audioBootOverlay" class="audio-boot-overlay">
+        <span id="audioBootText" class="audio-boot-text"></span>
+      </div>
   </div>
 
-  <div class="presets-section">
-    <div class="presets-left" style="flex-direction:column;align-items:flex-start;gap:6px;">
-      <div class="presets-grid" id="chordButtonsContainer"></div>
-      <div style="display:flex;align-items:center;gap:4px;font-size:.5rem;">
-        <span style="color:#38bdf8;font-weight:700;margin-left:5px;">Loop Playback:</span>
-        <button class="rec-btn" id="btnPerfRec" style="padding:4px 5px;font-size:.50rem;"><span class="rec-dot"></span>REC</button>
-        <button class="segmented-btn" id="btnPerfPlay" style="padding:2px 6px;font-size:.55rem;">Play: OFF</button>
-        <button class="segmented-btn" id="btnPerfClear" style="padding:2px 6px;font-size:.55rem;color:#ef4444;">Clear</button>
-        <span id="txtPerfStatus" style="color:#8b92a5;font-size:.45rem;">Ready (0 notes)</span>
+ <div class="presets-section">
+    <!-- Loop Playback Card -->
+    <div class="loop-playback-card">
+      <span class="loop-title">Loop Playback:</span>
+      <div class="loop-controls">
+        <button class="rec-btn" id="btnPerfRec" style="padding:3px 6px;font-size:.55rem;">REC</button>
+        <button class="segmented-btn" id="btnPerfPlay" style="padding:2px 5px;font-size:.65rem;font-weight:700;">▶</button>
+        <button class="segmented-btn" id="btnPerfClear" style="padding:2px 3px;font-size:.65rem;color:#ef4444;" title="Clear">🗑️</button>
+        <button class="segmented-btn" id="btnPerfSave" style="padding:2px 3px;font-size:.65rem;" title="Save JSON">💾</button>
+        <button class="segmented-btn" id="btnPerfLoad" style="padding:2px 6px;font-size:.55rem;" title="Load JSON">📂</button>
+        <input type="file" id="inputPerfFile" accept=".json" style="display:none;">
+        <span id="txtPerfStatus" style="color:#8b92a5;font-size:.45rem;margin-left:2px;">Ready (0 notes)</span>
       </div>
     </div>
-    <div class="chord-bpm-card">
-      <div style="display:flex;align-items:center;gap:4px;">
-        <span style="font-size:.55rem;color:#9ca3af;font-weight:600;">BPM:</span>
-        <button class="segmented-btn" id="btnChordBpmMinus">-</button>
-        <input type="number" id="inputChordBpm" class="freq-input" value="90" min="1" max="500" step="1" style="width:28px;text-align:center;font-size:.55rem;">
-        <button class="segmented-btn" id="btnChordBpmPlus">+</button>
+
+    <!-- Chord Card -->
+    <div class="chord-arpeggio-card">
+      <div class="chord-card-header">
+        <div class="chord-buttons-grid" id="chordButtonsContainer"></div>
       </div>
-      <div style="display:flex;align-items:center;gap:3px;">
-        <button class="segmented-btn" id="btnChordLoopToggle">Loop: OFF</button>
-        <button class="segmented-btn" id="btnChordStop" style="color:#ef4444;">Stop</button>
+      <div class="chord-tempo-row">
+        <div style="display:flex;align-items:center;gap:3px;">
+          <span style="font-size:.52rem;color:#9ca3af;font-weight:600;">BPM:</span>
+          <button class="segmented-btn" id="btnChordBpmMinus" style="padding:3px 8px;font-size:.75rem;border:1px solid #232838;border-radius:4px;">-</button>
+          <input type="number" id="inputChordBpm" class="freq-input" value="87" min="1" max="500" step="1" style="width:28px;text-align:center;font-size:.55rem;padding:5px;">
+          <button class="segmented-btn" id="btnChordBpmPlus" style="padding:3px 7px;font-size:.75rem;border:1px solid #232838;border-radius:4px;">+</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:3px;">
+          <button class="segmented-btn" id="btnChordLoopToggle" style="padding:2px 6px;font-size:.55rem;border:1px solid #232838;border-radius:8px;">Loop: OFF</button>
+          <button class="segmented-btn" id="btnChordStop" style="padding:2px 6px;font-size:.55rem;color:#ef4444;">Stop</button>
+        </div>
       </div>
     </div>
   </div>
@@ -495,25 +638,33 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
       <div class="control-group">
         <span class="control-label">KEY-POSITION STEREO SPREAD</span>
         <div class="segmented-btn-group" id="keyStereoSpreadToggle">
-          <button class="segmented-btn active" data-kspread="on">ON (Auto PAN)</button>
-          <button class="segmented-btn" data-kspread="off">OFF</button>
+          <button class="segmented-btn" data-kspread="on">ON (Auto PAN)</button>
+          <button class="segmented-btn active" data-kspread="off">OFF</button>
+        </div>
+      </div>
+      
+      <div class="control-group">
+        <span class="control-label">CHORD ARPEGGIO MODE</span>
+        <div class="segmented-btn-group" id="chordPlayModeToggle">
+          <button class="segmented-btn" data-chordplay="follow">Follow Preset </button>
+          <button class="segmented-btn active" data-chordplay="snapshot">Lock Tone & Ratio</button>
         </div>
       </div>
       <div class="control-group">
         <span class="control-label">LONG PRESS MODE</span>
         <div class="segmented-btn-group" id="longPressToggle">
-          <button class="segmented-btn active" data-longpress="long">Long Tone</button>
+          <button class="segmented-btn" data-longpress="long">Long Tone</button>
           <button class="segmented-btn" data-longpress="repeat">Rapid Fire</button>
-          <button class="segmented-btn" data-longpress="off">OFF</button>
+          <button class="segmented-btn active" data-longpress="off">OFF</button>
         </div>
       </div>
 
       <div class="control-group">
         <span class="control-label">COMPRESSOR</span>
         <div class="segmented-btn-group" id="compressorModeToggle">
-          <button class="segmented-btn active" data-comp="std">Standard</button>
+          <button class="segmented-btn" data-comp="std">Standard</button>
           <button class="segmented-btn" data-comp="hard">Hard</button>
-          <button class="segmented-btn" data-comp="off">OFF (Bypass)</button>
+          <button class="segmented-btn active" data-comp="off">OFF (Bypass)</button>
         </div>
       </div>
 
@@ -537,6 +688,45 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
           <button class="segmented-btn active" data-engine="worklet">AudioWorklet</button>
           <button class="segmented-btn" data-engine="script">ScriptProcessor</button>
         </div>
+      </div>
+
+      <div style="font-size:.72rem;font-weight:700;color:#f59e0b;border-bottom:1px solid #252b3d;padding-bottom:4px;margin-top:10px;">
+        💾 Storage & Data Reset
+      </div>
+      <div class="control-group" style="display:flex;justify-content:space-between;align-items:center;">
+        <span class="control-label">LOCAL STORAGE INSPECTOR</span>
+        <button class="btn btn-primary" id="btnOpenStorageModal" style="padding:4px 10px;font-size:.62rem;background:#d97706;border-color:#b45309;font-weight:700;">
+          📁 Open Storage Manager
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="storageModal">
+    <div class="modal-card" style="max-width:520px;">
+      <div class="modal-header">
+        <span class="modal-title">💾 Local Storage Manager</span>
+        <button class="btn" id="btnCloseStorageModal">✕</button>
+      </div>
+
+      <p style="font-size:.65rem;color:#9ca3af;line-height:1.3;margin-bottom:4px;">
+        Inspect active browser localStorage keys, delete specific configuration items, or perform a full hard reset to restore default settings.
+      </p>
+
+      <div style="font-size:.68rem;font-weight:700;color:#38bdf8;margin-bottom:2px;">
+        Active Storage Keys:
+      </div>
+
+      <div id="localStorageKeyList" style="display:flex;flex-direction:column;gap:5px;max-height:220px;overflow-y:auto;background-color:#0d0f17;border:1px solid #1f2433;border-radius:8px;padding:6px;font-size:.6rem;font-family:monospace;">
+      </div>
+
+      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+        <button id="btnRefreshStorage" class="segmented-btn" style="flex:1;padding:6px 0;justify-content:center;background:#181b26;border:1px solid #252b3d;color:#e5e7eb;font-weight:600;">
+          🔄 Refresh Key List
+        </button>
+        <button id="btnClearAllStorage" class="segmented-btn" style="flex:1;color:#ef4444;border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.12);font-weight:700;padding:6px 0;justify-content:center;">
+          ⚠️ Hard Reset All Data
+        </button>
       </div>
     </div>
   </div>
@@ -682,7 +872,7 @@ const BUILTIN_SCALES = {
       { num: 28, den: 25, name: '28/25' }
     ],
     chords8: [{ label: "Chord1", indices: [0, 3, 6] }, { label: "Chord2", indices: [1, 2, 3, 4] }, {label:'Chord3',indices:[4,5,6,0]}, {label:'Chord4',indices:[4,5,6,7]}],
-    chords17: [{ label: "Cricket Sweep", indices: [14, 2, 11, 10, 7, 8, 13, 1, 9] }, { label: "Chord", indices: [1, 2, 3, 4, 5] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }]
+    chords17: [{ label: "Cricket Sweep", indices: [14, 2, 11, 10, 7, 8, 13, 1, 9] }, { label: "Chord", indices: [1, 2, 3, 4, 5] },{ label: "Chord", indices: [0] }, { label: "Chord", indices: [0] }]
   },
   'harmonics': {
     title: '23-Limit Natural Harmonics',
@@ -716,7 +906,7 @@ const BUILTIN_SCALES = {
       { num: 5, den: 2, name: "40th Harmonic" }
     ],
     chords8: [{ label: "Chord1", indices: [0, 2, 4, 6] }, { label: "Chord2", indices: [2, 4, 5, 0] }, {label:'Chord3',indices:[4,5,6,0]}, {label:'Chord4',indices:[4,5,6,7]}],
-    chords17: [{ label: "Chord1", indices: [0, 2, 4, 7, 10, 12] }, { label: "Chord2", indices: [12, 13, 14, 15, 16] },{ label: "Undefined", indices: [0] }, { label: "Undefined", indices: [0] }]
+    chords17: [{ label: "Chord1", indices: [0, 2, 4, 7, 10, 12] }, { label: "Chord2", indices: [12, 13, 14, 15, 16] },{ label: "Chord3", indices: [0] }, { label: "Chord4", indices: [0] }]
   },
   'nearlytet19':{
     title:'Nearly TET 19-limit JI',
@@ -825,12 +1015,12 @@ const DEFAULT_PRESETS = [
       attackTime: 0.004, decayTime: 2.5, sustainLevel: 0.0, releaseTime: 0.012, 
       harmonicMode: 'inharm', harmonicRatio: 2.756, harmonicGain: 0.18, noiseGain: 0.10, noiseCutoff: 1400, 
       decayPower: 0.50, chirpDepth: 0.015, chirpDuration: 0.008,
-      isPhysicalNoiseEnabled: false, isNonlinearDecayEnabled: true, isInitialChirpEnabled: true,
+      isPhysicalNoiseEnabled: true, isNonlinearDecayEnabled: true, isInitialChirpEnabled: true,
       isVibratoEnabled: false, vibratoRate: 6.0, vibratoDepth: 0.025,
       isRandomNoiseEnabled: false, 
       isNoiseFilterEnabled: false,
       filters: {
-        lpf: { isEnabled: false, frequency: 12000, characteristic: '12_std' },
+        lpf: { isEnabled: true, frequency: 12000, characteristic: '12_std' },
         hpf: { isEnabled: false, frequency: 100, characteristic: '12_std' },
         bpf: { isEnabled: false, frequency: 1000, characteristic: '12_std' }
       }
@@ -929,13 +1119,17 @@ const shortcuts8 = ['1','2','3','4','5','6','7','8'];
 const shortcuts17 = ['1','2','3','4','5','6','7','8','9','0','q','w','e','r','t','y','u'];
 
 let activeSlotIndex = 0, activeKeyMode = "8", selectedRatioIndex = 0;
-let longPressBehavior = 'long';
+let chordPlayMode = 'snapshot';
+let longPressBehavior = 'off';
 let currentEnvParam = 'decay';
 let currentTimbreParam = 'vibrato';
 let currentHarmParam = 'vol';
 let currentFilterSubTab = 'lpf';
 let isStereoEnabled = false;
-let isKeyStereoSpreadEnabled = true;
+let isKeyStereoSpreadEnabled = false;
+let chordGain = parseFloat(localStorage.getItem('cfg_chordGain')) || 1.0;
+let playbackGain = parseFloat(localStorage.getItem('cfg_playbackGain')) || 1.0;
+let selectedGainTarget = 'preset';
 const activeHoldTrackers = new Map();
 
 let perfRecordedEvents = [];
@@ -944,6 +1138,7 @@ let perfIsRecording = false;
 let perfIsPlaying = false;
 let perfTimeoutId = null;
 let perfLoopDuration = 0;
+  try { localStorage.removeItem('ji_kalimba_phrase_loop'); } catch (err) {}
 
 const TYPICAL_INHARM_RATIOS = [
   { val: 1.000, label: "1.000 (Fundamental / Sine Wave)" },
@@ -1191,7 +1386,7 @@ function updateFFTScaleLabels() {
   });
 }
 
-let compressorMode = 'std';
+let compressorMode = 'off';
 
 function applyCompressorSettings() {
   if (!compressor || !audioCtx) return;
@@ -1211,7 +1406,27 @@ function applyCompressorSettings() {
   }
 }
 
+
+    let isAudioBooted = false;
+    function triggerAudioBootNotification() {
+      if (isAudioBooted) return;
+      isAudioBooted = true;
+      const overlay = document.getElementById('audioBootOverlay');
+      const txt = document.getElementById('audioBootText');
+      if (!overlay || !txt) return;
+
+      txt.textContent = 'Booting Audio Context...';
+      overlay.classList.add('active');
+
+      setTimeout(() => {
+        txt.textContent = 'Ready to play';
+        setTimeout(() => {
+          overlay.classList.remove('active');
+        }, 1400);
+      }, 800);
+    }
 async function initAudio() {
+  triggerAudioBootNotification();
   const { sampleRate: targetSampleRate } = parseRecFormat(document.getElementById('selectRecFormat').value);
   if (audioCtx && audioCtx.sampleRate !== targetSampleRate) {
     await audioCtx.close();
@@ -1245,9 +1460,18 @@ async function initAudio() {
     const data = sharedNoiseBuffer.getChannelData(0);
     for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
 
-    await setupRecorderNode(audioCtx);
+    setupRecorderNode(audioCtx).catch(e => {});
   }
-  if (audioCtx.state === 'suspended') await audioCtx.resume();
+if (audioCtx.state === 'suspended') {
+  const targetVol = parseFloat(document.getElementById('inputMasterGain').value) || 0.05;
+  if (masterGain) masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+  
+  await audioCtx.resume();
+  
+  setTimeout(() => {
+    if (masterGain) masterGain.gain.setValueAtTime(targetVol, audioCtx.currentTime);
+  }, 500);
+}
 }
 
 async function setupRecorderNode(ctx) {
@@ -1514,10 +1738,17 @@ async function playTone(freq, isLongPress = false, overrideTimbre = null, overri
       gainNode.gain.linearRampToValueAtTime(0, tDecayEnd + releaseTime);
     }
 
+
     osc.connect(gainNode);
     gainNode.connect(dest);
     osc.start(now);
     osc.stop(tReleaseEnd + 0.005);
+osc.onended = () => {
+      try {
+        osc.disconnect();
+        gainNode.disconnect();
+      } catch (e) {}
+    };
   }
 
   if (freq < maxAllowedFreq) {
@@ -1830,11 +2061,11 @@ function getCalculatedPan(slotIdx, totalKeys) {
   return Math.max(-1.0, Math.min(1.0, basePan + autoPan));
 }
 
-function triggerPluck(tine, wrapper, isLongPress = false) {
+function triggerPluck(tine, wrapper, isLongPress = false, overrideTimbre = null, overridePan = null, overrideGain = null) {
   const totalKeys = activeTinesData.length || 8;
   const calcPan = getCalculatedPan(tine.slotIdx, totalKeys);
 
-playTone(tine.freq, isLongPress, null, calcPan, null);
+playTone(tine.freq, isLongPress, overrideTimbre, calcPan !== null ? calcPan : getCalculatedPan(tine.slotIdx, totalKeys), overrideGain);
   
   if (perfIsRecording) {
     const elapsed = performance.now() - perfStartTime;
@@ -1878,6 +2109,9 @@ function togglePerfRecord() {
     if (perfRecordedEvents.length > 0) {
       perfLoopDuration = performance.now() - perfStartTime;
       document.getElementById('txtPerfStatus').textContent = `Recorded (${perfRecordedEvents.length} notes)`;
+      try {
+        localStorage.setItem('ji_kalimba_phrase_loop', JSON.stringify({ duration: perfLoopDuration, events: perfRecordedEvents }));
+      } catch (err) {}
     } else {
       document.getElementById('txtPerfStatus').textContent = "Ready (0 notes)";
     }
@@ -1890,7 +2124,7 @@ function togglePerfPlay() {
     if (perfRecordedEvents.length === 0) return;
     perfIsPlaying = true;
     const btn = document.getElementById('btnPerfPlay');
-    btn.textContent = "Loop: ON";
+    btn.textContent = "Loop";
     btn.style.color = "#38bdf8";
     runPerfLoop();
   } else {
@@ -1905,7 +2139,7 @@ function stopPerfPlay() {
     perfTimeoutId = null;
   }
   const btn = document.getElementById('btnPerfPlay');
-  btn.textContent = "Play: OFF";
+  btn.textContent = "Play";
   btn.style.color = "#9ca3af";
 }
 function runPerfLoop() {
@@ -1932,7 +2166,8 @@ function runPerfLoop() {
 
     perfTimeoutId = setTimeout(() => {
       if (!perfIsPlaying) return;
-      playTone(ev.freq, false, ev.timbre, ev.presetPan, ev.presetGain);
+      const baseG = ev.presetGain !== undefined ? ev.presetGain : 1.0;
+      playTone(ev.freq, false, ev.timbre, ev.presetPan, baseG * playbackGain);
       document.getElementById('valLastPlucked').innerHTML = `<span class="line">Loop Playback</span><span class="line">(${ev.freq.toFixed(1)}Hz)</span>`;
       eventIdx++;
       scheduleNext();
@@ -1946,7 +2181,65 @@ function clearPerfData() {
   if (perfIsRecording) togglePerfRecord();
   perfRecordedEvents = [];
   perfLoopDuration = 0;
+  try { localStorage.removeItem('ji_kalimba_phrase_loop'); } catch (err) {}
   document.getElementById('txtPerfStatus').textContent = "Ready (0 notes)";
+}
+
+function savePerfLoopToFile() {
+  if (!perfRecordedEvents || perfRecordedEvents.length === 0) {
+    if (typeof showToast === 'function') showToast('No recorded loop data to save.');
+    return;
+  }
+  const now = new Date();
+  const YYYY = now.getFullYear();
+  const MM = String(now.getMonth() + 1).padStart(2, '0');
+  const DD = String(now.getDate()).padStart(2, '0');
+  const hh = String(now.getHours()).padStart(2, '0');
+  const mm = String(now.getMinutes()).padStart(2, '0');
+  const ss = String(now.getSeconds()).padStart(2, '0');
+  const timestamp = `${YYYY}${MM}${DD}_${hh}${mm}${ss}`;
+
+  const loopData = {
+    version: "1.0",
+    timestamp: now.toISOString(),
+    duration: perfLoopDuration,
+    events: perfRecordedEvents
+  };
+
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(loopData, null, 2));
+  const downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute("href", dataStr);
+  downloadAnchor.setAttribute("download", `EJI_loop_${timestamp}.json`);
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+  if (typeof showToast === 'function') showToast(`Loop saved (${perfRecordedEvents.length} notes)`, 'success');
+}
+
+function loadPerfLoopFromFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data && Array.isArray(data.events) && data.events.length > 0) {
+        stopPerfPlay();
+        perfRecordedEvents = data.events;
+        perfLoopDuration = data.duration || 1000;
+        try {
+          localStorage.setItem('ji_kalimba_phrase_loop', JSON.stringify({ events: perfRecordedEvents, duration: perfLoopDuration }));
+        } catch(err){}
+        const statusEl = document.getElementById('txtPerfStatus');
+        if (statusEl) statusEl.textContent = `Loaded (${perfRecordedEvents.length} notes)`;
+        if (typeof showToast === 'function') showToast(`Loaded ${perfRecordedEvents.length} notes`, 'success');
+      } else {
+        if (typeof showToast === 'function') showToast('Invalid loop file format.');
+      }
+    } catch(err) {
+      if (typeof showToast === 'function') showToast('Failed to parse loop file.');
+    }
+  };
+  reader.readAsText(file);
 }
 
 function startHold(keyId, tine, wrapper) {
@@ -2048,12 +2341,82 @@ function updateSettingsModalUI() {
   document.querySelectorAll('#recEngineToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.engine === selectedRecEngine));
   document.querySelectorAll('#stereoModeToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.stereo === 'on') === isStereoEnabled));
   document.querySelectorAll('#keyStereoSpreadToggle .segmented-btn').forEach(b => b.classList.toggle('active', (b.dataset.kspread === 'on') === isKeyStereoSpreadEnabled));
+  document.querySelectorAll('#chordPlayModeToggle .segmented-btn').forEach(b => b.classList.toggle('active', b.dataset.chordplay === chordPlayMode));
 
   const savedRecFormat = localStorage.getItem('cfg_recFormat');
   if (savedRecFormat) {
     const recFormatEl = document.getElementById('selectRecFormat');
     if (recFormatEl) recFormatEl.value = savedRecFormat;
   }
+}
+
+
+function renderLocalStorageInspector() {
+  const container = document.getElementById('localStorageKeyList');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const knownKeys = [
+    'kalimba_custom_master_presets',
+    'cfg_recFormat',
+    'cfg_longPress',
+    'cfg_kspread',
+    'cfg_comp',
+    'cfg_recEng',
+    'cfg_stereo',
+    'cfg_chordPlay',
+    'ji_kalimba_phrase_loop',
+    'ji_kalimba_index_config'
+  ];
+
+  const allKeys = Array.from(new Set([...knownKeys, ...Object.keys(localStorage)]));
+  let activeCount = 0;
+
+  allKeys.forEach(key => {
+    const val = localStorage.getItem(key);
+    if (val !== null) {
+      activeCount++;
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;background:#12141c;padding:4px 8px;border-radius:6px;border:1px solid #252b3d;gap:6px;';
+
+      const previewVal = val.length > 32 ? val.substring(0, 29) + '...' : val;
+
+      row.innerHTML = `
+        <div style="display:flex;flex-direction:column;min-width:0;flex:1;">
+          <span style="color:#38bdf8;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${key}</span>
+          <span style="color:#9ca3af;font-size:.52rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Val: ${previewVal}</span>
+        </div>
+        <button class="btn-delete-key" data-key="${key}" style="background:#ef4444;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:.55rem;font-weight:700;flex-shrink:0;">
+          Delete
+        </button>
+      `;
+      container.appendChild(row);
+    }
+  });
+
+  if (activeCount === 0) {
+    container.innerHTML = '<span style="color:#6b7280;padding:8px;text-align:center;">No stored configuration keys found. App is running on default settings.</span>';
+  }
+
+  container.querySelectorAll('.btn-delete-key').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const keyToDelete = e.target.dataset.key;
+      if (confirm(`Are you sure you want to delete the key "${keyToDelete}"?`)) {
+        localStorage.removeItem(keyToDelete);
+        renderLocalStorageInspector();
+        if (typeof showToast === 'function') showToast(`Key "${keyToDelete}" removed.`);
+      }
+    });
+  });
+}
+
+function openStorageModal() {
+  renderLocalStorageInspector();
+  document.getElementById('storageModal').classList.add('open');
+}
+
+function closeStorageModal() {
+  document.getElementById('storageModal').classList.remove('open');
 }
 
 function openSettingsModal() {
@@ -2133,10 +2496,27 @@ function updateHarmParamSliderUI() {
   }
 }
 
+
+function updateGainSliderUI() {
+  const selectEl = document.getElementById('selectGainTarget');
+  if (selectEl) selectEl.value = selectedGainTarget;
+  let curVal = 1.0;
+  if (selectedGainTarget === 'preset') {
+    curVal = (activePreset && activePreset.presetGain !== undefined) ? parseFloat(activePreset.presetGain) : 1.0;
+  } else if (selectedGainTarget === 'chord') {
+    curVal = chordGain;
+  } else if (selectedGainTarget === 'playback') {
+    curVal = playbackGain;
+  }
+  const inputGain = document.getElementById('inputPresetGain');
+  const txtGain = document.getElementById('txtPresetGain');
+  if (inputGain) inputGain.value = curVal;
+  if (txtGain) txtGain.textContent = curVal.toFixed(2);
+}
+
 function updateStereoBarUI() {
   const bar = document.getElementById('stereoControlBar');
   const panGroup = document.getElementById('panControlGroup');
-  const gainLabel = document.getElementById('gainControlLabel');
   if (!bar) return;
 
   bar.style.display = 'flex';
@@ -2146,15 +2526,12 @@ function updateStereoBarUI() {
   document.getElementById('inputPresetPan').value = panVal;
   document.getElementById('txtPresetPan').textContent = panVal === 0 ? 'C' : (panVal < 0 ? `L${Math.abs(panVal).toFixed(2)}` : `R${panVal.toFixed(2)}`);
 
-  document.getElementById('inputPresetGain').value = gainVal;
-  document.getElementById('txtPresetGain').textContent = gainVal.toFixed(2);
+  updateGainSliderUI();
 
   if (isStereoEnabled) {
     if (panGroup) panGroup.style.display = 'flex';
-    if (gainLabel) gainLabel.textContent = 'GAIN';
   } else {
     if (panGroup) panGroup.style.display = 'none';
-    if (gainLabel) gainLabel.textContent = 'PRESET GAIN';
   }
 }
 
@@ -2293,12 +2670,18 @@ function playNextChordStep() {
     }
   }
   const keyIdx = currentActiveChord.indices[chordIndex];
-  const targetTine = activeTinesData.find(t => t.idx === keyIdx) || activeTinesData[keyIdx];
-  if (targetTine) {
-    triggerPluck(targetTine, document.getElementById(`tine-wrapper-${targetTine.slotIdx}`));
-  }
-  chordIndex++;
-  lastChordStepTime = performance.now();
+  const useSnap = chordPlayMode === 'snapshot' && currentActiveChord.snapshot;
+  const sourceTines = useSnap ? currentActiveChord.snapshot.tinesData : activeTinesData;
+  const targetTine = sourceTines.find(t => t.idx === keyIdx) || sourceTines[keyIdx] || activeTinesData.find(t => t.idx === keyIdx);
+
+if (targetTine) {
+  const wrapper = document.getElementById(`tine-wrapper-${targetTine.slotIdx}`);
+  const baseG = useSnap ? (currentActiveChord.snapshot.presetGain ?? 1.0) : (activePreset.presetGain ?? 1.0);
+  
+  triggerPluck(targetTine, useSnap ? null : wrapper, false, useSnap ? currentActiveChord.snapshot.timbre : null, null, baseG * chordGain);
+}
+chordIndex++;
+lastChordStepTime = performance.now();
 
   const bpm = parseFloat(document.getElementById('inputChordBpm').value) || 90;
   const interval = (60 / bpm) * 1000;
@@ -2308,14 +2691,21 @@ function playNextChordStep() {
 
 function startChord(chordObj) {
   stopChord();
-  currentActiveChord = chordObj;
+  currentActiveChord = JSON.parse(JSON.stringify(chordObj));
+  if (chordPlayMode === 'snapshot') {
+    currentActiveChord.snapshot = {
+      timbre: JSON.parse(JSON.stringify(activePreset.timbre)),
+      presetGain: activePreset.presetGain !== undefined ? activePreset.presetGain : 1.0,
+      tinesData: activeTinesData.map(t => ({ idx: t.idx, slotIdx: t.slotIdx, freq: t.freq, num: t.num, den: t.den, name: t.name }))
+    };
+  }
   chordIndex = 0;
   playNextChordStep();
 }
 
 function updateBpmAndRefreshChord() {
   if (chordTimer && currentActiveChord) {
-    const bpm = parseFloat(document.getElementById('inputChordBpm').value) || 90;
+    const bpm = parseFloat(document.getElementById('inputChordBpm').value) || 87;
     const interval = (60 / bpm) * 1000;
     const elapsed = performance.now() - lastChordStepTime;
     const remaining = Math.max(0, interval - elapsed);
@@ -2476,7 +2866,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   longPressBehavior = localStorage.getItem('cfg_longPress') || longPressBehavior;
-  isKeyStereoSpreadEnabled = (localStorage.getItem('cfg_kspread') ?? 'true') === 'true';
+  chordPlayMode = localStorage.getItem('cfg_chordPlay') || 'snapshot';
+  isKeyStereoSpreadEnabled = (localStorage.getItem('cfg_kspread') ?? 'false') === 'true';
   compressorMode = localStorage.getItem('cfg_comp') || compressorMode;
   selectedRecEngine = localStorage.getItem('cfg_recEng') || selectedRecEngine;
   isStereoEnabled = localStorage.getItem('cfg_stereo') === 'true';
@@ -2681,9 +3072,22 @@ document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(btn => 
     document.getElementById('txtPresetPan').textContent = val === 0 ? 'C' : (val < 0 ? `L${Math.abs(val).toFixed(2)}` : `R${val.toFixed(2)}`);
   });
 
+  document.getElementById('selectGainTarget')?.addEventListener('change', (e) => {
+    selectedGainTarget = e.target.value;
+    updateGainSliderUI();
+  });
+
   document.getElementById('inputPresetGain').addEventListener('input', (e) => {
     const val = parseFloat(e.target.value);
-    activePreset.presetGain = val;
+    if (selectedGainTarget === 'preset') {
+      activePreset.presetGain = val;
+    } else if (selectedGainTarget === 'chord') {
+      chordGain = val;
+      localStorage.setItem('cfg_chordGain', chordGain);
+    } else if (selectedGainTarget === 'playback') {
+      playbackGain = val;
+      localStorage.setItem('cfg_playbackGain', playbackGain);
+    }
     document.getElementById('txtPresetGain').textContent = val.toFixed(2);
   });
 
@@ -2692,7 +3096,9 @@ document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(btn => 
       document.querySelectorAll('#stereoModeToggle .segmented-btn').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
       isStereoEnabled = (e.target.dataset.stereo === 'on');
-      localStorage.setItem('cfg_stereo', isStereoEnabled);
+      localStorage.setItem('cfg_stereo',
+    'cfg_chordPlay',
+    'ji_kalimba_phrase_loop', isStereoEnabled);
       updateStereoBarUI();
     });
   });
@@ -2880,7 +3286,7 @@ document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(btn => 
   document.getElementById('btnChordBpmMinus').addEventListener('click', () => {
     const input = document.getElementById('inputChordBpm');
     let val = parseInt(input.value);
-    if (isNaN(val)) val = 90;
+    if (isNaN(val)) val = 87;
     input.value = Math.max(1, val - 1);
     updateBpmAndRefreshChord();
   });
@@ -2888,7 +3294,7 @@ document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(btn => 
   document.getElementById('btnChordBpmPlus').addEventListener('click', () => {
     const input = document.getElementById('inputChordBpm');
     let val = parseInt(input.value);
-    if (isNaN(val)) val = 90;
+    if (isNaN(val)) val = 87;
     input.value = Math.min(500, val + 1);
     updateBpmAndRefreshChord();
   });
@@ -2907,6 +3313,14 @@ document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(btn => 
   document.getElementById('btnPerfRec').addEventListener('click', togglePerfRecord);
   document.getElementById('btnPerfPlay').addEventListener('click', togglePerfPlay);
   document.getElementById('btnPerfClear').addEventListener('click', clearPerfData);
+  document.getElementById('btnPerfSave')?.addEventListener('click', savePerfLoopToFile);
+  document.getElementById('btnPerfLoad')?.addEventListener('click', () => document.getElementById('inputPerfFile')?.click());
+  document.getElementById('inputPerfFile')?.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files[0]) {
+      loadPerfLoopFromFile(e.target.files[0]);
+      e.target.value = '';
+    }
+  });
 
   document.getElementById('btnFullscreen').addEventListener('click', () => {
     const card = document.getElementById('appCard');
@@ -2920,8 +3334,47 @@ document.querySelectorAll('#physicalNoiseToggle .segmented-btn').forEach(btn => 
   document.addEventListener('fullscreenchange', updateFullscreenButtonText);
   document.addEventListener('webkitfullscreenchange', updateFullscreenButtonText);
 
+  
+  try {
+    const savedLoopStr = localStorage.getItem('ji_kalimba_phrase_loop');
+    if (savedLoopStr) {
+      const savedLoopData = JSON.parse(savedLoopStr);
+      if (savedLoopData && Array.isArray(savedLoopData.events) && savedLoopData.events.length > 0) {
+        perfRecordedEvents = savedLoopData.events;
+        perfLoopDuration = savedLoopData.duration || 0;
+        const statusEl = document.getElementById('txtPerfStatus');
+        if (statusEl) statusEl.textContent = `Recorded (${perfRecordedEvents.length} notes)`;
+      }
+    }
+  } catch (e) {}
+
   document.getElementById('btnOpenSettings').addEventListener('click', openSettingsModal);
   document.getElementById('btnCloseSettings').addEventListener('click', () => document.getElementById('settingsModal').classList.remove('open'));
+
+  document.getElementById('btnOpenStorageModal')?.addEventListener('click', openStorageModal);
+  document.getElementById('btnCloseStorageModal')?.addEventListener('click', closeStorageModal);
+  document.getElementById('btnRefreshStorage')?.addEventListener('click', renderLocalStorageInspector);
+  document.getElementById('btnClearAllStorage')?.addEventListener('click', () => {
+    if (confirm('Are you sure you want to clear ALL stored configurations and custom presets?')) {
+      localStorage.clear();
+      renderLocalStorageInspector();
+      if (typeof showToast === 'function') showToast('All storage data reset successfully.');
+      setTimeout(() => location.reload(), 400);
+    }
+  });
+
+  [document.getElementById('settingsModal'), document.getElementById('editorModal'), document.getElementById('storageModal')].forEach(m => {
+    m?.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('open'); });
+  });
+
+  document.querySelectorAll('#chordPlayModeToggle .segmented-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#chordPlayModeToggle .segmented-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      chordPlayMode = e.target.dataset.chordplay;
+      localStorage.setItem('cfg_chordPlay', chordPlayMode);
+    });
+  });
 
   document.getElementById('btnOpenEditor').addEventListener('click', openEditor);
   document.getElementById('btnCloseEditor').addEventListener('click', () => document.getElementById('editorModal').classList.remove('open'));
