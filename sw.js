@@ -1,9 +1,23 @@
-const CACHE_NAME = 'ji-kalimba-ver.1.0.5.3.5.2.2.3.9.7.0'; // アプリ更新時はここを v3, v4... とインクリメントします
+const CACHE_NAME = 'ji-kalimba-ver.1.0.5.3.5.2.2.3.9.8'; // アプリ更新時はここを v3, v4... とインクリメントします
 const urlsToCache = [
   './',
   './index.html',
   './custom.html',
-  './manifest.json'
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
+  './chinese3limit_8.scl',
+  './chinese3limit_17.scl',
+  './pythagorean_8.scl',
+  './pythagorean_17.scl',
+  './classic5limit_8.scl',
+  './classic5limit_17.scl',
+  './7limitsouljazz_8.scl',
+  './7limitsouljazz_17.scl',
+  './7limitarchytas_8.scl',
+  './7limitarchytas_17.scl',
+  './23limitharmonics_8.scl',
+  './23limitharmonics_17.scl'
 ];
 
 // インストール時に新しいファイルをキャッシュ
