@@ -290,7 +290,7 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
           <button class="btn btn-primary" id="btnOpenEditor" style="padding:3px 5px;font-size:.59rem;border-radius:6px;">Edit</button>
           <button class="btn" id="btnSavePreset" style="padding:3px 5px;font-size:.59rem;border-radius:6px;">Save</button>
           <button class="btn" id="btnLoadPreset" style="padding:3px 5px;font-size:.59rem;border-radius:6px;">Load</button>
-          <input type="file" id="inputPresetFile" accept=".json,application/json,text/json,text/plain" style="display:none;">
+          <input type="file" id="inputPresetFile" accept=".json,application/json,text/json,text/plain,application/octet-stream" style="display:none;">
           <button class="rec-btn" id="btnResetPreset" style="padding:3px 5px;font-size:.59rem;border-radius:6px;">Reset</button>
         </div>
       </div>
@@ -594,7 +594,7 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
         <button class="segmented-btn" id="btnPerfClear" style="padding:2px 3px;font-size:.65rem;color:#ef4444;" title="Clear">🗑️</button>
         <button class="segmented-btn" id="btnPerfSave" style="padding:2px 3px;font-size:.65rem;" title="Save JSON">💾</button>
         <button class="segmented-btn" id="btnPerfLoad" style="padding:2px 6px;font-size:.55rem;" title="Load JSON">📂</button>
-        <input type="file" id="inputPerfFile" accept=".json,application/json,text/json,text/plain" style="display:none;">
+        <input type="file" id="inputPerfFile" accept=".json,application/json,text/json,text/plain,application/octet-stream" style="display:none;">
         <span id="txtPerfStatus" style="color:#8b92a5;font-size:.45rem;margin-left:2px;">Ready (0 notes)</span>
       </div>
     </div>
@@ -674,11 +674,11 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
       <div class="control-group">
         <span class="control-label">REC FORMAT</span>
         <select id="selectRecFormat" class="select-input" style="width:160px;">
-          <option value="32float-192k" selected>32-bit Float / 192 kHz</option>
+          <option value="32float-192k">32-bit Float / 192 kHz</option>
           <option value="16pcm-192k">16-bit PCM / 192 kHz</option>
           <option value="32float-96k">32-bit Float / 96 kHz</option>
           <option value="16pcm-96k">16-bit PCM / 96 kHz</option>
-          <option value="32float-48k">32-bit Float / 48 kHz</option>
+          <option value="32float-48k" selected>32-bit Float / 48 kHz</option>
           <option value="16pcm-48k">16-bit PCM / 48 kHz</option>
         </select>
       </div>
