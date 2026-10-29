@@ -182,14 +182,15 @@
             </a>
           </div>
           <div class="segmented-btn-group" id="scaleToggle">
+            <button class="segmented-btn active" data-scale="souljazz">7-Limit Soul</button>
             <button class="segmented-btn" data-scale="harmonics">23-Limit Natural Harmonics</button>
             <button class="segmented-btn" data-scale="chinesetuning">Chinese 3-Limit Dao</button>
             <button class="segmented-btn" data-scale="pythagorean">Pythagorean 3-Limit</button>
             <button class="segmented-btn" data-scale="archytas">Archytas's 7-Limit</button>
-            <button class="segmented-btn" data-scale="ragasandmodes">5-limit Ragas & Modes</button>
+            <button class="segmented-btn" data-scale="ragasandmodes">5-limit Ragas</button>
             <button class="segmented-btn" data-scale="classic5limit">Classic 5-Limit</button>
+            <button class="segmented-btn" data-scale="islamic">17-limit Islamic</button>
             <button class="segmented-btn" data-scale="nearlytet19">Nearly TET 19-limit</button>
-            <button class="segmented-btn active" data-scale="souljazz">7-Limit Soul Jazz Blues</button>
           </div>
         </div>
         <div class="control-group">
@@ -663,8 +664,74 @@ chords17: [
   { id: 'c5_maj7', label: 'Classic Major 7th', pitchIndices: [0, 5, 9, 14] },
   { id: 'c5_min7', label: 'Just Minor 7th', pitchIndices: [0, 4, 9, 13] }
 ]
-
       },
+'islamic':{
+        title: "17-Limit Islamic Just Intonation inspired from Al-Farabi's Kitab al-Musiqa al-Kabir",
+        keys8:[
+          {id:8,num:2,den:1,name:'Nawā',cents:1200.00},
+          {id:6,num:27,den:17,name:'Wusṭā al-Furs Mathlath',cents:800.91},
+          {id:4,num:4,den:3,name:'Khinsir Bamm',cents:498.04},
+          {id:2,num:18,den:17,name:'Mujannab al-Sabbaba',cents:98.95},
+          {id:1,num:1,den:1,name:'Mutlaq Bamm',cents:0.00},
+          {id:3,num:81,den:64,name:'Binṣir Bamm',cents:407.82},
+          {id:5,num:3,den:2,name:'Sabbaba Mathlath',cents:701.96},
+          {id:7,num:16,den:9,name:'Khinsir Mathlath',cents:996.09}
+        ],
+        keys13:[
+          {num:1,den:1,name:'Mutlaq Bamm',cents:0.00},
+          {num:18,den:17,name:'Mujannab al-Sabbaba',cents:98.95},
+          {num:12,den:11,name:'Mujannab al-Wusṭā',cents:150.64},
+          {num:9,den:8,name:'Sabbaba Bamm',cents:203.91},
+          {num:81,den:68,name:'Wusṭā al-Furs Bamm',cents:302.86},
+          {num:27,den:22,name:'Wusṭā Zalzal Bamm',cents:354.55},
+          {num:81,den:64,name:'Binṣir Bamm',cents:407.82},
+          {num:4,den:3,name:'Khinsir Bamm',cents:498.04},
+          {num:3,den:2,name:'Sabbaba Mathlath',cents:701.96},
+          {num:27,den:17,name:'Wusṭā al-Furs Mathlath',cents:800.91},
+          {num:18,den:11,name:'Wusṭā Zalzal Mathlath',cents:852.59},
+          {num:27,den:16,name:'Binṣir Mathlath',cents:905.87},
+          {num:16,den:9,name:'Khinsir Mathlath',cents:996.09}
+        ],
+        keys17:[
+          {num:1,den:1,name:'Mutlaq Bamm',cents:0.00},
+          {num:18,den:17,name:'Mujannab al-Sabbaba I',cents:98.95},
+          {num:12,den:11,name:'Mujannab al-Wusṭā I',cents:150.64},
+          {num:9,den:8,name:'Sabbaba Bamm',cents:203.91},
+          {num:32,den:27,name:'Lower Wusṭā al-Furs',cents:294.13},
+          {num:81,den:68,name:'Wusṭā al-Furs Bamm',cents:302.86},
+          {num:27,den:22,name:'Wusṭā Zalzal Bamm',cents:354.55},
+          {num:81,den:64,name:'Binṣir Bamm',cents:407.82},
+          {num:4,den:3,name:'Khinsir Bamm',cents:498.04},
+          {num:24,den:17,name:'Mujannab al-Sabbaba II',cents:597.00},
+          {num:16,den:11,name:'Mujannab al-Wusṭā II',cents:648.68},
+          {num:3,den:2,name:'Sabbaba Mathlath',cents:701.96},
+          {num:27,den:17,name:'Wusṭā al-Furs Mathlath',cents:800.91},
+          {num:18,den:11,name:'Wusṭā Zalzal Mathlath',cents:852.59},
+          {num:27,den:16,name:'Binṣir Mathlath',cents:905.87},
+          {num:16,den:9,name:'Khinsir Mathlath',cents:996.09},
+          {num:2,den:1,name:'Nawā',cents:1200.00}
+        ],
+        chords8:[
+          {id:'farabi_skeleton',label:'Pythagorean Core',slotIndices:[4,2,6,0]},
+          {id:'farabi_mujannab',label:'17-Limit Mujannab',slotIndices:[3,2,7,0]},
+          {id:'rast_skeleton',label:'Maqam Rast Core',slotIndices:[4,5,6,0]}
+        ],
+        chords13:[
+          {id:'farabi_4th_stack',label:'Perfect 4ths Stack',pitchIndices:[0,7,12]},   // 1/1, 4/3, 16/9 (開放弦の重なり)
+          {id:'zalzal_neutral_triad',label:'Zalzal Neutral Chord',pitchIndices:[0,5,8]}, // 1/1, 27/22, 3/2 (中立3度の響き)
+          {id:'pythagorean_triad',label:'Pythagorean Major-like',pitchIndices:[0,6,8]},  // 1/1, 81/64, 3/2 (ピタゴラス和音)
+          {id:'17limit_mujannab_triad',label:'17-Limit Mujannab Triad',pitchIndices:[1,7,12]} // 18/17, 4/3, 16/9
+        ],
+        chords17:[
+          {id:'maqam_rast_16',label:'Maqam Rast',pitchIndices:[0,3,6,8,11,13,15,16]},
+          {id:'maqam_bayati_16',label:'Maqam Bayati',pitchIndices:[0,2,5,8,11,12,15,16]},
+          {id:'maqam_saba_16',label:'Maqam Saba',pitchIndices:[0,2,5,9,11,12,15,16]},
+          {id:'maqam_hijaz_16',label:'Maqam Hijaz',pitchIndices:[0,1,7,8,11,12,15,16]},
+          {id:'maqam_sikah_16',label:'Maqam Sikah',pitchIndices:[0,2,5,8,11,13,15,16]},
+          {id:'maqam_nahawand_16',label:'Maqam Nahawand',pitchIndices:[0,3,4,8,11,12,15,16]},
+          {id:'maqam_kurd_16',label:'Maqam Kurd',pitchIndices:[0,1,5,8,11,12,15,16]}
+        ]
+},
             'nearlytet19':{
         title:'Nearly TET 19-limit JI (ver.2)',
         keys8:[
