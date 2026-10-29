@@ -182,13 +182,14 @@
             </a>
           </div>
           <div class="segmented-btn-group" id="scaleToggle">
-            <button class="segmented-btn active" data-scale="souljazz">7-Limit JI Soul Jazz Blues</button>
             <button class="segmented-btn" data-scale="harmonics">23-Limit Natural Harmonics</button>
-            <button class="segmented-btn" data-scale="chinesetuning">Chinese 3-Limit JI Dao</button>
-            <button class="segmented-btn" data-scale="pythagorean">Pythagorean 3-Limit JI</button>
-            <button class="segmented-btn" data-scale="archytas">Archytas's 7-Limit JI</button>
-            <button class="segmented-btn" data-scale="classic5limit">Classic 5-Limit JI</button>
-            <button class="segmented-btn" data-scale="nearlytet19">Nearly TET 19-limit JI</button>
+            <button class="segmented-btn" data-scale="chinesetuning">Chinese 3-Limit Dao</button>
+            <button class="segmented-btn" data-scale="pythagorean">Pythagorean 3-Limit</button>
+            <button class="segmented-btn" data-scale="archytas">Archytas's 7-Limit</button>
+            <button class="segmented-btn" data-scale="ragasandmodes">5-limit Ragas & Modes</button>
+            <button class="segmented-btn" data-scale="classic5limit">Classic 5-Limit</button>
+            <button class="segmented-btn" data-scale="nearlytet19">Nearly TET 19-limit</button>
+            <button class="segmented-btn active" data-scale="souljazz">7-Limit Soul Jazz Blues</button>
           </div>
         </div>
         <div class="control-group">
@@ -331,17 +332,17 @@
           {id:'blues_2',label:' Major Blues',pitchIndices:[0,2,4,5,7,5,4,2,0,2,4,5,7,5,4,2,5,7,9,10,12,10,9,7,5,7,9,10,12,10,9,5,2,4,5,7,5,4,2,4,0,4,2,5,7,null,null,null]}
         ]
       },
-      'harmonics':{
-        title:'23-Limit Natural Harmonics',
+            'harmonics':{
+        title:'23-Limit Just Intonation Natural Harmonics',
         keys8:[
           {id:8,num:2,den:1,name:'32nd Harmonic',cents:1200.00},
-          {id:6,num:13,den:8,name:'26th Harmonic',cents:840.53},
-          {id:4,num:23,den:16,name:'23rd Harmonic',cents:628.27},
+          {id:6,num:3,den:2,name:'24th Harmonic',cents:701.96},
+          {id:4,num:11,den:8,name:'22nd Harmonic',cents:551.32},
           {id:2,num:17,den:16,name:'17th Harmonic',cents:104.96},
           {id:1,num:1,den:1,name:'16th Harmonic',cents:0.00},
-          {id:3,num:11,den:8,name:'22nd Harmonic',cents:551.32},
-          {id:5,num:3,den:2,name:'24th Harmonic',cents:701.96},
-          {id:7,num:7,den:4,name:'28th Harmonic',cents:968.83}
+          {id:3,num:19,den:16,name:'19th Harmonic',cents:297.51},
+          {id:5,num:23,den:16,name:'23rd Harmonic',cents:628.27},
+          {id:7,num:13,den:8,name:'26th Harmonic',cents:840.53}
         ],
         keys13:[
           {num:1,den:1,name:'16th Harmonic',cents:0.00},
@@ -378,16 +379,24 @@
           {num:5,den:2,name:'40th Harmonic',cents:1586}
         ],
         chords8:[
-          {id:'harmonics',label:'Harmonic 7th',slotIndices:[4,5,6,7]},
-          {id:'undecimal',label:'Undecimal IV',slotIndices:[3,5,6,0]},
-          {id:'tridecimal',label:'Tridecimal 6th',slotIndices:[4,6,1,0]},
-          {id:'limit23',label:'23-Limit Tritone',slotIndices:[4,2,6,7]}
+{id:'okinawa',label:'Okinawan',slotIndices:[4,3,2,6,7,0,7,6]},
+{id:'okinawa2',label:'Okinawan 2',slotIndices:[3,5,2,6,7,0,7,6]}, 
+{id:'okinawa2',label:'Okinawan 3',slotIndices:[5,2,6,1,7,0,7,1]}, 
+{id:'ratio1',label:'17:22:26:32',slotIndices:[3,2,7,0]},
+{id:'ratio2',label:'16:19:24:32',slotIndices:[4,5,1,0]},
+{id:'rario3',label:'19:24:26:32',slotIndices:[5,1,7,0]}
         ],
         chords13:[
-          {id:'harmonics',label:'Harmonic 7th',pitchIndices:[0,5,7,10]},
-          {id:'undecimal',label:'Undecimal IV',pitchIndices:[1,5,7,12]},
-          {id:'tridecimal',label:'Tridecimal 6th',pitchIndices:[0,7,8,12]},
-          {id:'limit23',label:'23-Limit Tritone',pitchIndices:[0,6,7,10]}
+{id:'raga_okinawa',label:'Okinawan',pitchIndices:[0,1,5,6,8,12,8,6]}, {id:'raga_okinawa2',label:'Okinawan 2',pitchIndices:[1,3,5,6,8,12,8,6]}, {id:'raga_okinawa3',label:'Okinawan 3',pitchIndices:[3,5,6,7,8,12,8,7]}, {id:'ratio1_13k',label:'17:22:26:32',pitchIndices:[1,5,8,12]},
+{id:'ratio3_13k',label:'16:19:24:32',pitchIndices:[0,3,7,12]}, {id:'ratio4_13k',label:'19:24:26:32',pitchIndices:[3,7,8,12]}
+        ],
+        chords17:[
+{id:'raga_okinawa',label:'Okinawan',pitchIndices:[0,1,5,6,8,12,8,6]}, {id:'raga_okinawa2',label:'Okinawan 2',pitchIndices:[1,3,5,6,8,12,8,6]}, {id:'raga_okinawa3',label:'Okinawan 3',pitchIndices:[3,5,6,7,8,12,8,7]},
+{id:'ratio1_17',label:'17:22:26:34',pitchIndices:[1,5,8,13]},
+{id:'ratio2_17k',label:'17:22:26:32',pitchIndices:[1,5,8,12]},
+{id:'ratio3_17k',label:'16:19:24:32',pitchIndices:[0,3,7,12]},
+{id:'ratio4_17k',label:'19:24:26:34',pitchIndices:[3,7,8,13]},
+{id:'ratio5_17k',label:'19:24:26:32',pitchIndices:[3,7,8,12]}
         ]
       },
       'chinesetuning':{
@@ -481,6 +490,52 @@
           {id:'p13_maj7',label:'Major 7th',pitchIndices:[0,4,7,11]},
           {id:'p13_5th',label:'7-tone Spiral of 5ths',pitchIndices:[1,8,3,10,5,12,7]},
           {id:'p17_5th',label:'8-tone Spiral of 5ths',pitchIndices:[1,8,3,10,5,12,7,14]}
+        ]
+      },
+      'ragasandmodes':{
+        title:'Michael Harrison‘s 12-tone 5-limit Just Intonation Ragas and Modes Tuning',
+        keys8:[
+          {id:8,num:2,den:1,name:'Taar Sa',cents:1200.00},
+          {id:6,num:5,den:3,name:'Shuddha Dha',cents:884.36},        
+          {id:4,num:45,den:32,name:'Tivra Ma',cents:590.22},         
+          {id:2,num:9,den:8,name:'Shuddha Re',cents:203.91},         
+          {id:1,num:1,den:1,name:'Sa',cents:0.00},                   
+          {id:3,num:5,den:4,name:'Shuddha Ga',cents:386.31},         
+          {id:5,num:3,den:2,name:'Pa',cents:701.96},                 
+          {id:7,num:16,den:9,name:'Komal Ni',cents:996.09}          
+        ],
+        keys13:[
+          {num:1,den:1,name:'Sa',cents:0.00},
+          {num:256,den:243,name:'Komal Re',cents:90.22},
+          {num:9,den:8,name:'Shuddha Re',cents:203.91},
+          {num:32,den:27,name:'Komal Ga',cents:294.13},
+          {num:5,den:4,name:'Shuddha Ga',cents:386.31},
+          {num:4,den:3,name:'Shuddha Ma',cents:498.04},
+          {num:45,den:32,name:'Tivra Ma',cents:590.22},
+          {num:3,den:2,name:'Pa',cents:701.96},
+          {num:128,den:81,name:'Komal Dha',cents:792.18},
+          {num:5,den:3,name:'Shuddha Dha',cents:884.36},
+          {num:16,den:9,name:'Komal Ni',cents:996.09},
+          {num:15,den:8,name:'Shuddha Ni',cents:1088.27},
+          {num:2,den:1,name:'Taar Sa',cents:1200.00}
+        ],
+        chords8: [ 
+          { id: 'pure_major_triad', label: 'Sa-Ga-Pa', slotIndices: [4, 5, 6] }, 
+          { id: 'major_triad', label: 'Sa-Ga-Pa-Sa', slotIndices: [4, 5, 6, 0] }, 
+          { id: 'bhupali', label: 'Raga Bhupali', slotIndices: [4, 3, 5, 6, 1, 0] }, 
+          { id: 'sarang', label: 'Raga Sarang', slotIndices: [4, 3, 2, 6, 7, 0] }, 
+          { id: 'fundamental_drone', label: 'Sa-Pa', slotIndices: [4, 6] },
+          { id: '3tone_drone', label: 'Sa-Pa-Sa', slotIndices: [4, 6, 0] } 
+        ], 
+        chords13: [ 
+          { id: 'raga_bilaval', label: 'Raga Bilaval', pitchIndices: [0, 2, 4, 5, 7, 9, 11, 12] }, 
+          { id: 'raga_yaman', label: 'Raga Yaman', pitchIndices: [0, 2, 4, 6, 7, 9, 11, 12] }, 
+          { id: 'raga_kafi', label: 'Raga Kafi', pitchIndices: [0, 2, 3, 5, 7, 9, 10, 12] }, 
+          { id: 'raga_asavari', label: 'Raga Asavari', pitchIndices: [0, 2, 3, 5, 7, 8, 10, 12] }, 
+          { id: 'raga_bhairavi', label: 'Raga Bhairavi', pitchIndices: [0, 1, 3, 5, 7, 8, 10, 12] }, 
+          { id: 'raga_bhupali', label: 'Raga Bhupali', pitchIndices: [0, 2, 4, 7, 9, 12] }, 
+          { id: 'raga_sarang', label: 'Raga Sarang', pitchIndices: [0, 2, 6, 7, 10, 12] }, 
+          { id: 'tanpura_drone', label: 'Sa-Pa-Sa', pitchIndices: [0, 7, 12] } 
         ]
       },
       'archytas':{
@@ -610,17 +665,16 @@ chords17: [
 ]
 
       },
-      'nearlytet19':{
-        title:'Nearly TET 19-limit JI',
+            'nearlytet19':{
+        title:'Nearly TET 19-limit JI (ver.2)',
         keys8:[
-          {id:8,num:2,den:1,name:'Octave',cents:1200.00},
+          {id:8,num:2,den:1,name:'Octave',cents:1200.00},          
           {id:6,num:27,den:16,name:'Pythagorean Major 6th',cents:905.87},
           {id:4,num:4,den:3,name:'Perfect 4th',cents:498.04},
-          {id:2,num:9,den:8,name:'Major Whole Tone',cents:203.91},
-          {id:1,num:1,den:1,name:'Tonic',cents:0.00},
+          {id:2,num:9,den:8,name:'Major Whole Tone',cents:203.91},          {id:1,num:1,den:1,name:'Tonic',cents:0.00},
           {id:3,num:63,den:50,name:'63/50 Major 3rd',cents:400.10},
           {id:5,num:3,den:2,name:'Perfect 5th',cents:701.96},
-          {id:7,num:15,den:8,name:'Classic Major 7th',cents:1088.27}
+          {id:7,num:17,den:9,name:'17/9 Septendecimal Major 7th',cents:1106.80}
         ],
         keys13:[
           {num:1,den:1,name:'Tonic',cents:0.00},
@@ -629,12 +683,12 @@ chords17: [
           {num:19,den:16,name:'19/16 Minor 3rd',cents:297.51},
           {num:63,den:50,name:'63/50 Major 3rd',cents:400.10},
           {num:4,den:3,name:'Perfect 4th',cents:498.04},
-          {num:45,den:32,name:'45/32 Tritone',cents:590.22},
+          {num:17,den:12,name:'17/12 Septendecimal Tritone',cents:603.00},
           {num:3,den:2,name:'Perfect 5th',cents:701.96},
           {num:100,den:63,name:'100/63 Minor 6th',cents:799.90},
           {num:27,den:16,name:'Pythagorean Major 6th',cents:905.87},
           {num:25,den:14,name:'25/14 Minor 7th',cents:1003.80},
-          {num:15,den:8,name:'Classic Major 7th',cents:1088.27},
+          {num:17,den:9,name:'17/9 Septendecimal Major 7th',cents:1106.80},
           {num:2,den:1,name:'Octave',cents:1200.00}
         ],
         chords8:[
@@ -647,9 +701,10 @@ chords17: [
           {id:'tet19_M',label:'63/50 Major Triad',pitchIndices:[0,4,7,12]},
           {id:'tet19_M7',label:'63/50 Major 7th',pitchIndices:[0,4,7,11]},
           {id:'tet19_m7',label:'19/16 Minor 7th',pitchIndices:[0,3,7,10]},
-          {id:'tet19_approx',label:'Near 19-TET Sweep',pitchIndices:[0,4,8,12]}
+          {id:'tet19_approx',label:'19-limit Sweep',pitchIndices:[0,4,8,12]}
         ]
       }
+
     };
 
     const vSlot13=[11,9,7,5,3,1,0,2,4,6,8,10,12];
@@ -726,7 +781,6 @@ registerProcessor('recorder-processor', RecorderProcessor);
 
     function formatPrimeRatio(num, den) {
       const original = `${num}/${den}`;
-      // 4桁まではそのままで、5桁以上(10000以上)の場合のみ素因数分解を試みる
       if (num < 10000 && den < 10000) return original;
       
       let tn1 = num, a = 0;
