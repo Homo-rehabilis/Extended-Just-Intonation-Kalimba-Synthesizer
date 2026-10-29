@@ -754,14 +754,22 @@ body{background-color:#090a0f;color:#f3f4f6;font-family:-apple-system,BlinkMacSy
               <option value="chinese3limit_17.scl">chinese3limit_17.scl</option>
               <option value="pythagorean_8.scl">pythagorean_8.scl</option>
               <option value="pythagorean_17.scl">pythagorean_17.scl</option>
+              <option value="5limit_raga_bhupali_8.scl">5limit_raga_bhupali_8.scl</option>
+              <option value="5limit_raga_yaman_8.scl">5limit_raga_yaman_8.scl</option>
+              <option value="5limit_ragas_17.scl">5limit_ragas_17.scl</option>
               <option value="classic5limit_8.scl">classic5limit_8.scl</option>
               <option value="classic5limit_17.scl">classic5limit_17.scl</option>
-              <option value="7limitsouljazz_8.scl">7limitsouljazz_8.scl</option>
-              <option value="7limitsouljazz_17.scl">7limitsouljazz_17.scl</option>
               <option value="7limitarchytas_8.scl">7limitarchytas_8.scl</option>
               <option value="7limitarchytas_17.scl">7limitarchytas_17.scl</option>
+              <option value="7limitsouljazz_8.scl">7limitsouljazz_8.scl</option>
+              <option value="7limitsouljazz_17.scl">7limitsouljazz_17.scl</option>
+              <option value="17limit_Islamic_8">17limit_Islamic_8</option>
+              <option value="17limit_Islamic_17">17limit_Islamic_17</option>
+              <option value="19limit_nearlyTET_17.scl">19limit_nearlyTET_17.scl</option>
+              <option value="19limit_nearlyTET_17.scl">19limit_nearlyTET_17.scl</option>
               <option value="23limitharmonics_8.scl">23limitharmonics_8.scl</option>
               <option value="23limitharmonics_17.scl">23limitharmonics_17.scl</option>
+              <option value="16-32harmonics_17.scl">16-32harmonics_17.scl</option>
             </select>
             <button class="btn btn-primary" id="btnLoadServerScl">🌐 Load Server .scl</button>
           </div>
@@ -917,7 +925,7 @@ const BUILTIN_SCALES = {
       {num:4,den:3,name:'Perfect 4th',cents:498.04},
       {num:3,den:2,name:'Perfect 5th',cents:701.96},
       {num:27,den:16,name:'Pythagorean Major 6th',cents:905.87},
-      {num:15,den:8,name:'Classic Major 7th',cents:1088.27},
+      {num:17,den:9,name:'17/9 Septendecimal Major 7th',cents:1106.80},
       {num:2,den:1,name:'Octave',cents:1200.00}
     ],
     keys17:[
@@ -927,12 +935,12 @@ const BUILTIN_SCALES = {
       {num:19,den:16,name:'19/16 Minor 3rd',cents:297.51},
       {num:63,den:50,name:'63/50 Major 3rd',cents:400.10},
       {num:4,den:3,name:'Perfect 4th',cents:498.04},
-      {num:45,den:32,name:'45/32 Tritone',cents:590.22},
+      {num:17,den:12,name:'17/12 Septendecimal Tritone',cents:603.00},
       {num:3,den:2,name:'Perfect 5th',cents:701.96},
       {num:100,den:63,name:'100/63 Minor 6th',cents:799.90},
       {num:27,den:16,name:'Pythagorean Major 6th',cents:905.87},
       {num:25,den:14,name:'25/14 Minor 7th',cents:1003.80},
-      {num:15,den:8,name:'Classic Major 7th',cents:1088.27},
+      {num:17,den:9,name:'17/9 Septendecimal Major 7th',cents:1106.80},
       {num:2,den:1,name:'Octave',cents:1200.00},
       {num:17,den:8,name:'Septendecimal Semitone'},
       {num:9,den:4,name:'Major Whole Tone'},
@@ -1272,7 +1280,6 @@ function handlePresetFileImport(e) {
     try {
       const rawData = JSON.parse(evt.target.result);
 
-      // Loop Playback 用 JSON だった場合は自動的に Loop 読み込みへ転送
       if (rawData && (rawData.events || Array.isArray(rawData))) {
         loadPerfLoopFromFile(file);
         return;
@@ -2231,7 +2238,6 @@ function loadPerfLoopFromFile(file) {
       let events = null;
       let duration = 0;
 
-      // オブジェクト形式 (data.events) または 直列配列形式 (data) の両方に対応
       if (data && Array.isArray(data.events)) {
         events = data.events;
         duration = data.duration || 0;
@@ -2246,14 +2252,12 @@ function loadPerfLoopFromFile(file) {
         stopPerfPlay();
         perfRecordedEvents = events;
         
-        // duration 未設定時の自動補正（最後の打鍵時間 + 余白時間）
         if (!duration || duration <= 0) {
           const lastEv = events[events.length - 1];
           duration = (lastEv && lastEv.time) ? Math.ceil(lastEv.time + 500) : 1000;
         }
         perfLoopDuration = duration;
 
-        // localStorage へ復元用データを保存
         try {
           localStorage.setItem('ji_kalimba_phrase_loop', JSON.stringify({ events: perfRecordedEvents, duration: perfLoopDuration }));
         } catch(err){}
@@ -2590,20 +2594,28 @@ function renderApp() {
   document.querySelectorAll('#harmonicModeGroup .segmented-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.mode === t.harmonicMode));
   document.querySelectorAll('#presetSlotsGroup .segmented-btn').forEach((btn, idx) => btn.classList.toggle('active', idx === activeSlotIndex));
 
-  const ratioContainer = document.getElementById('tonicRatioBtns');
-  ratioContainer.innerHTML = '';
-  (activePreset.tonicRatios || DEFAULT_12_RATIOS).forEach((r, idx) => {
-    const btn = document.createElement('button');
-    btn.className = `segmented-btn ${idx === selectedRatioIndex ? 'active' : ''}`;
-    btn.textContent = `${r.num}/${r.den}`;
-    btn.addEventListener('click', () => {
-      selectedRatioIndex = idx;
-      activePreset.tonicNum = r.num;
-      activePreset.tonicDen = r.den;
-      renderApp();
-    });
-    ratioContainer.appendChild(btn);
+document.querySelectorAll('#tonicPresetBtns .segmented-btn').forEach(btn => {
+  btn.classList.toggle('active', parseFloat(btn.dataset.freq) === activePreset.baseTonicFreq);
+});
+
+const ratioContainer = document.getElementById('tonicRatioBtns');
+ratioContainer.innerHTML = '';
+(activePreset.tonicRatios || DEFAULT_12_RATIOS).forEach((r, idx) => {
+  const btn = document.createElement('button');
+  
+  const isActive = (r.num === activePreset.tonicNum && r.den === activePreset.tonicDen);
+  btn.className = `segmented-btn ${isActive ? 'active' : ''}`;
+  
+  btn.textContent = `${r.num}/${r.den}`;
+  btn.addEventListener('click', () => {
+    selectedRatioIndex = idx;
+    activePreset.tonicNum = r.num;
+    activePreset.tonicDen = r.den;
+    savePresetsToStorage();
+    renderApp();
   });
+  ratioContainer.appendChild(btn);
+});
 
   const is17 = activeKeyMode === "17";
   const keyList = is17 ? (activePreset.keys17 || []) : (activePreset.keys8 || []);
