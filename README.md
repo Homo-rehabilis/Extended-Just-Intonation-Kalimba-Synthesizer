@@ -11,7 +11,7 @@ A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built wi
 
 ---
 
-## 🌟 What's New
+## What's New
 ### Custom Mode: Extended Just Intonation Custom Synthesizer β
 
 https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/custom.html
@@ -80,7 +80,7 @@ An advanced custom extension designed for exploring tuning systems using custom 
 ## Standard Key Features
 
 *   **Adaptive Key Layouts:** Automatically switches between an **8-Key mode** (ideal for portrait or mobile views) and a **13-Key or 17-Key mode** (for landscape views).
-*   **7 Distinct Scale Systems:** Switch instantly between 7 microtonal and historical just intonation tuning presets, including 7-Limit Soul Jazz Blues, 23-Limit Natural Harmonics, Chinese 3-Limit JI, Pythagorean 3-Limit JI, Archytas's 7-Limit JI, Classic 5-Limit JI, and Nearly TET 19-limit JI.
+*   **9 Distinct Scale Systems:** Switch instantly between 9 microtonal and historical just intonation tuning presets, including 7-Limit Soul Jazz Blues, 23-Limit Natural Harmonics, Chinese 3-Limit JI, Pythagorean 3-Limit JI, Michael Harrison's 5-Limit Ragas and Modes, Archytas's 7-Limit JI, Classic 5-Limit JI, 17-Limit Islamic JI, and Nearly TET 19-limit JI.
 *   **Customizable Base Tonic (1/1) & Ratio Multiplier:** Tune the root frequency using standard presets (417.6 Hz, 432 Hz, 440 Hz, 512 Hz) or custom input, with real-time tonic fraction multipliers and octave shifting (+/-).
 *   **High-Quality Recording Engine:** Built-in WAV audio recording supporting 32-bit Float and 16-bit PCM formats at 48 kHz or 96 kHz. Enabled to select low-latency `AudioWorklet` or `ScriptProcessor`.
 *   **Advanced Audio Customization:** A dedicated settings modal allows toggling of Random Noise textures, Tine Noise Filters, Harmonic Effects, and Compressor Routing to shape the perfect tone.
@@ -92,16 +92,17 @@ An advanced custom extension designed for exploring tuning systems using custom 
 
 ## Supported Scale Systems
 
-The synthesizer includes 7 distinct microtonal and just intonation tuning systems:
+The synthesizer includes 9 distinct microtonal and just intonation tuning systems:
 
 1.  **7-Limit Soul Jazz Blues Tuning** – Explores septimal intervals tailored for soulful, bluesy microtonal expressions.
 2.  **23-Limit Natural Harmonics** – Features upper partials derived from 16-32 natural harmonic series up to the 23rd prime limit.
 3.  **Chinese 3-Limit Dao** – Traditional Chinese 3-limit tuning based on the Sanfen Sunyi (pythagorean-like) method, mapping classic pitch names.
 4.  **Pythagorean 3-Limit** – Pure 3-limit tuning based on 3:2 fifths, recognized as the oldest recorded tuning system in history (Philolaos's Fragment B6).
-5.  **Archytas's 7-Limit Tetrachords** – Ancient Greek tuning system utilizing septimal ratios based on Archytas's tetrachord.
-6.  **Classic 5-Limit Just Intonation** – Traditional 5-limit tuning optimized for pure major and minor triads.
-7.  **Nearly TET 19-limit Just Intonation** – A 19-limit just intonation scale approximating 12-tone Equal Temperament intervals.
-
+5.  **Michael Harrison's 5-Limit Ragas and Modes** – A 12-tone 5-limit just intonation system optimized for Indian Raga modes (including Bhupali, Yaman, Kafi, Asavari, Bhairavi, Bilaval, and Sarang).
+6.  **Archytas's 7-Limit Tetrachords** – Ancient Greek tuning system utilizing septimal ratios based on Archytas's tetrachord.
+7.  **Classic 5-Limit Just Intonation** – Traditional 5-limit tuning optimized for pure major and minor triads.
+8.  **17-Limit Islamic Just Intonation** – A 17-limit tuning system inspired by Al-Farabi's *Kitab al-Musiqa al-Kabir*, covering traditional Maqam structures (such as Rast, Bayati, Sikah, Ajam, Saba, Hijaz, Nahawand, and Kurd).
+9.  **Nearly TET 19-limit Just Intonation** – A 19-limit just intonation scale approximating 12-tone Equal Temperament intervals.
 ---
 
 ## Controls & How to Play
@@ -164,7 +165,7 @@ If you prefer to run or modify the code locally:
 
 ---
 
-## 🌟 新機能
+## 新機能
 ### Custom Mode：Extended Just Intonation Custom Synthesizer β
 
 https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/custom.html
@@ -232,7 +233,7 @@ https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/cu
 ## 主な機能
 
 *   **アダプティブ・キーレイアウト:** 縦画面（モバイル）に最適な**8キーモード**と、横画面用の**13キーモードまたは17キーモード**を自動・手動で切り替えることができます。
-*   **7種類の音階システム:** 7-Limit Soul Jazz Blues、23-Limit Natural Harmonics、Chinese 3-Limit JI、Pythagorean 3-Limit JI、Archytas's 7-Limit JI、Classic 5-Limit JI、Nearly TET 19-limit JI の7つのチューニングプリセットを瞬時に切り替え可能です。
+*   **9種類の音階システム:** 7-Limit Soul Jazz Blues、23-Limit Natural Harmonics、Chinese 3-Limit JI、Pythagorean 3-Limit JI、5-Limit Ragas and Modes（マイケル・ハリソン）、Archytas's 7-Limit JI、Classic 5-Limit JI、17-Limit Islamic JI（アル＝ファーラービー）、Nearly TET 19-limit JI の9つのチューニングプリセットを瞬時に切り替え可能です。
 *   **基音と比率のカスタマイズ:** 417.6 Hz、432 Hz、440 Hz、512 Hzの標準プリセット、または任意のカスタム周波数でルート音をチューニングできます。さらに分数倍率やオクターブシフト（+/-）によるリアルタイム調整をサポートしています。
 *   **高品質レコーディングエンジン:** 32-bit Float および 16-bit PCM（48kHz / 96kHz）フォーマットに対応したWAVレコーダーを内蔵しています。低遅延の `AudioWorklet` を採用し、不具合がある場合の`ScriptProcessor` への切り替え機能も搭載しています。
 *   **詳細なサウンドカスタマイズ:** 右上の⚙️にあるオーディオ設定画面から、サウンドテクスチャ用のランダムノイズ、タイン（キー）ノイズフィルター、インハーモニック倍音エフェクト、コンプレッサーのルーティングを切り替え、理想の音作りが可能です。
@@ -244,16 +245,17 @@ https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/cu
 
 ## 対応している音律
 
-このシンセサイザーには、7つの異なる微小音律・純正律システムが含まれています：
+このシンセサイザーには、9つの異なる微小音律・純正律システムが含まれています：
 
 1.  **7-Limit Soul Jazz Blues Tuning** – ソウルフルでブルージーな微小音律の表現に合わせたセプティマル音程（7限界）。
 2.  **23-Limit Natural Harmonics** – 第16-32の自然倍音列から抽出した素数23までの上位倍音で音律を構成。
 3.  **Chinese 3-Limit Dao** – 三分損益法に基づく伝統的な中国の3限界純正律（黄鐘・大呂・太簇などの律呂名と執始を含む音律）。
-4.  **Pythagorean 3-Limit** – 3:2の完全五度をベースにした、文献史上世界最古の音律（Philolaos's Fragment B6）。
-5.  **Archytas's 7-Limit Tetrachords** – 古代ギリシャのアルキタスの理論に基づく素数7までの比率を利用したテトラコルド音律。
-6.  **Classic 5-Limit Just Intonation** – 純正な長三度・短三度に最適化された伝統的な5限界純正律。
-7.  **Nearly TET 19-limit Just Intonation** – 12平均律に近似した音程を持つ19限界純正律プリセット。
-
+4.  **Pythagorean 3-Limit** – 3:2の完全五度をベースにした、文献史上最古の音律（Philolaos's Fragment B6）。
+5.  **Michael Harrison's 5-Limit Ragas and Modes** – マイケル・ハリソンによる12音5限界純正律システム。各種ラーガ（Bhupali, Yaman, Kafi, Asavari, Bhairavi, Bilaval, Sarang等）の演奏に対応。
+6.  **Archytas's 7-Limit Tetrachords** – 古代ギリシャのアルキタスの理論に基づく素数7までの比率を利用したテトラコルド音律。
+7.  **Classic 5-Limit Just Intonation** – 純正な長三度・短三度に最適化された伝統的な5限界純正律。
+8.  **17-Limit Islamic Just Intonation** – アル＝ファーラービーの『音楽大海』（Kitab al-Musiqa al-Kabir）に着想を得た17限界イスラム音律。マカーム（Rast, Bayati, Sikah, Ajam, Saba, Hijaz, Nahawand, Kurd等）の音階構造に対応。
+9.  **Nearly TET 19-limit Just Intonation** – 12平均律に近似した音程を持つ19限界純正律プリセット。
 ---
 
 ## 操作方法と演奏方法
