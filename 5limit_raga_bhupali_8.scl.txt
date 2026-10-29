@@ -1,0 +1,12 @@
+! raga_bhupali_8.scl
+!
+Michael Harrisones 5-limit Raga Bhupali(8-Key)
+7
+!
+9/8
+5/4
+4/3
+3/2
+5/3
+16/9
+2/1
