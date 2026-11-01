@@ -16,7 +16,7 @@ A browser-based **Just Intonation Kalimba Synthesizer** built with vanilla HTML5
 
 https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/custom.html
 
-An advanced custom extension designed for exploring tuning systems using custom frequency ratios. It features 4 highly customizable preset slots, harmonic modes inspired by physical and biological acoustics (*Syrinx*, *Cricket*, and instrument inharmonics), acoustic parameters (LFO Vibrato, Initial Pitch Chirp, ADSR, Nonlinear Decay), high-definition WAV recording (up to 32-bit Float / 192 kHz), HPF/LPF filters, a compressor, real-time performance looping, and full **Scala (`.scl`)** file import/export support.
+An advanced custom extension designed for exploring tuning systems using custom frequency ratios. It features 4 highly customizable preset slots, harmonic modes inspired by physical and biological acoustics (*Syrinx*, *Cricket*, and instrument inharmonics), acoustic parameters (LFO Vibrato, Initial Pitch Chirp, ADSR, Nonlinear Decay), high-definition WAV recording (up to 32-bit Float / 192 kHz), HPF/LPF/BPF filters, a compressor, real-time performance looping, and full **Scala (`.scl`)** file import/export support.
 
 1. **Preset Management, Base Tonic & Tuning Layout**
    * **4 Individual Preset Slots:** Save, Load, and Reset to Default for 4 independent preset slots using `localStorage` (Preset 1–4) with download support.
@@ -170,7 +170,7 @@ If you prefer to run or modify the code locally:
 
 https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/custom.html
 
-細部まで調整可能な4つの個別プリセット、生体音響や音響物理の特性を応用した倍音モード（シリンクス・コオロギ・各種楽器の非調和倍音など）、音響パラメータ（LFOビブラート・ピッチチャープ・ADSR・非線形減衰特性）、ハイレゾWAV録音（最大32-bit Float/192kHz）、HPF/LPFフィルター、コンプレッサー、リアルタイムループ録音、および **Scala (`.scl`) ファイル** のインポート/エクスポート機能を備えた、ユーザー独自の比率を用いた音律を探求できるカスタム拡張モードです。
+細部まで調整可能な4つの個別プリセット、生体音響や音響物理の特性を応用した倍音モード（シリンクス・コオロギ・各種楽器の非調和倍音など）、音響パラメータ（LFOビブラート・ピッチチャープ・ADSR・非線形減衰特性）、ハイレゾWAV録音（最大32-bit Float/192kHz）、HPF/LPF/BPFフィルター、コンプレッサー、リアルタイムループ録音、および **Scala (`.scl`) ファイル** のインポート/エクスポート機能を備えた、ユーザー独自の比率を用いた音律を探求できるカスタム拡張モードです。
 
 1. **プリセット管理 & 基音・音律レイアウト**
    * **4つのプリセットスロット:** `localStorage` を活用した個別の保存（Save）、読込（Load）、デフォルトリセット（Reset）機能（Preset 1〜4）。最新版ではDownloadフォルダへの保存と読込が可能に。
@@ -233,7 +233,7 @@ https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/cu
 ## 主な機能
 
 *   **アダプティブ・キーレイアウト:** 縦画面（モバイル）に最適な**8キーモード**と、横画面用の**13キーモードまたは17キーモード**を自動・手動で切り替えることができます。
-*   **9種類の音階システム:** 7-Limit Soul Jazz Blues、23-Limit Natural Harmonics、Chinese 3-Limit JI、Pythagorean 3-Limit JI、5-Limit Ragas and Modes（マイケル・ハリソン）、Archytas's 7-Limit JI、Classic 5-Limit JI、17-Limit Islamic JI（アル＝ファーラービー）、Nearly TET 19-limit JI の9つのチューニングプリセットを瞬時に切り替え可能です。
+*   **9種類の音階システム:** 7-Limit Soul Jazz Blues、23-Limit Natural Harmonics、Chinese 3-Limit JI、Pythagorean 3-Limit JI、5-Limit Ragas and Modes、Archytas's 7-Limit JI、Classic 5-Limit JI、17-Limit Islamic JI、Nearly TET 19-limit JI の9つのチューニングプリセットを瞬時に切り替え可能です。
 *   **基音と比率のカスタマイズ:** 417.6 Hz、432 Hz、440 Hz、512 Hzの標準プリセット、または任意のカスタム周波数でルート音をチューニングできます。さらに分数倍率やオクターブシフト（+/-）によるリアルタイム調整をサポートしています。
 *   **高品質レコーディングエンジン:** 32-bit Float および 16-bit PCM（48kHz / 96kHz）フォーマットに対応したWAVレコーダーを内蔵しています。低遅延の `AudioWorklet` を採用し、不具合がある場合の`ScriptProcessor` への切り替え機能も搭載しています。
 *   **詳細なサウンドカスタマイズ:** 右上の⚙️にあるオーディオ設定画面から、サウンドテクスチャ用のランダムノイズ、タイン（キー）ノイズフィルター、インハーモニック倍音エフェクト、コンプレッサーのルーティングを切り替え、理想の音作りが可能です。
@@ -251,10 +251,10 @@ https://homo-rehabilis.github.io/Extended-Just-Intonation-Kalimba-Synthesizer/cu
 2.  **23-Limit Natural Harmonics** – 第16-32の自然倍音列から抽出した素数23までの上位倍音で音律を構成。
 3.  **Chinese 3-Limit Dao** – 三分損益法に基づく伝統的な中国の3限界純正律（黄鐘・大呂・太簇などの律呂名と執始を含む音律）。
 4.  **Pythagorean 3-Limit** – 3:2の完全五度をベースにした、文献史上最古の音律（Philolaos's Fragment B6）。
-5.  **Michael Harrison's 5-Limit Ragas and Modes** – マイケル・ハリソンによる12音5限界純正律システム。各種ラーガ（Bhupali, Yaman, Kafi, Asavari, Bhairavi, Bilaval, Sarang等）の演奏に対応。
-6.  **Archytas's 7-Limit Tetrachords** – 古代ギリシャのアルキタスの理論に基づく素数7までの比率を利用したテトラコルド音律。
+5.  **Michael Harrison's 5-Limit Ragas and Modes** – Michael Harrisonによる12音5限界純正律システム。各種ラーガ（Bhupali, Yaman, Kafi, Asavari, Bhairavi, Bilaval, Sarang等）の演奏に対応。
+6.  **Archytas's 7-Limit Tetrachords** – 古代ギリシャの哲学者アルキタスの理論に基づく素数7までの比率を利用したテトラコルド音律。
 7.  **Classic 5-Limit Just Intonation** – 純正な長三度・短三度に最適化された伝統的な5限界純正律。
-8.  **17-Limit Islamic Just Intonation** – アル＝ファーラービーの『音楽大海』（Kitab al-Musiqa al-Kabir）に着想を得た17限界イスラム音律。マカーム（Rast, Bayati, Sikah, Ajam, Saba, Hijaz, Nahawand, Kurd等）の音階構造に対応。
+8.  **17-Limit Islamic Just Intonation** – アル＝ファーラービーの『音楽大論』（Kitab al-Musiqa al-Kabir）から導かれた17限界イスラム音律。マカーム（Rast, Bayati, Sikah, Ajam, Saba, Hijaz, Nahawand, Kurd等）の音階構造に対応。
 9.  **Nearly TET 19-limit Just Intonation** – 12平均律に近似した音程を持つ19限界純正律プリセット。
 ---
 
