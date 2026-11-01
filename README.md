@@ -7,7 +7,7 @@
 <a id="english"></a>
 # Extended Just Intonation Kalimba Synthesizer
 
-A browser-based, high-precision **Just Intonation Kalimba Synthesizer** built with vanilla HTML5, CSS3, and the Web Audio API. This application allows musicians, microtonal enthusiasts, and learners to explore historical and alternative tuning systems through an interactive, responsive thumb piano interface.
+A browser-based **Just Intonation Kalimba Synthesizer** built with vanilla HTML5, CSS3, and the Web Audio API. This application allows musicians, microtonal enthusiasts, and learners to explore historical and alternative tuning systems through an interactive, responsive thumb piano interface.
 
 ---
 
